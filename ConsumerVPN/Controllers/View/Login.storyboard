@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="UTm-sO-f0A">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Login View Controller-->
+        <scene sceneID="euj-bd-oAP">
+            <objects>
+                <viewController storyboardIdentifier="LoginViewController" id="UTm-sO-f0A" customClass="LoginViewController" customModule="Consumer_VPN" customModuleProvider="target" sceneMemberID="viewController">
+                    <customView key="view" id="KyG-8Q-ae0" userLabel="Login View" customClass="ColorView" customModule="Consumer_VPN" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="700" height="500"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <subviews>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="2RD-Ge-8Fm">
+                                <rect key="frame" x="332" y="0.0" width="368" height="500"/>
+                                <subviews>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4aS-Tr-NGa">
+                                        <rect key="frame" x="42" y="354" width="54" height="24"/>
+                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Login" id="eXU-MT-RT9">
+                                            <font key="font" metaFont="systemMedium" size="20"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="7" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="faF-CQ-tXH">
+                                        <rect key="frame" x="44" y="297" width="280" height="33"/>
+                                        <subviews>
+                                            <stackView distribution="fill" orientation="horizontal" alignment="bottom" spacing="5" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mzg-NC-B41">
+                                                <rect key="frame" x="0.0" y="8" width="269" height="25"/>
+                                                <subviews>
+                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="IhD-Qp-LP2" userLabel="Icon User">
+                                                        <rect key="frame" x="0.0" y="0.0" width="23" height="25"/>
+                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="user_avatar" id="pgg-oY-PCX"/>
+                                                    </imageView>
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5ky-BH-9TM" customClass="WLCustomTextField">
+                                                        <rect key="frame" x="26" y="0.0" width="245" height="16"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" state="on" focusRingType="none" placeholderString="Email" id="M7j-B3-0ul">
+                                                            <font key="font" metaFont="cellTitle"/>
+                                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <color key="backgroundColor" red="0.094117647060000004" green="0.1019607843" blue="0.1137254902" alpha="1" colorSpace="calibratedRGB"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <outlet property="nextKeyView" destination="gdA-Av-oeL" id="vQj-cl-wAp"/>
+                                                        </connections>
+                                                    </textField>
+                                                </subviews>
+                                                <visibilityPriorities>
+                                                    <integer value="1000"/>
+                                                    <integer value="1000"/>
+                                                </visibilityPriorities>
+                                                <customSpacing>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                </customSpacing>
+                                            </stackView>
+                                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="hhD-sE-UZW" userLabel="Username Underline View" customClass="ColorView" customModule="Consumer_VPN" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="272" height="1"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="1" id="NlK-y2-T0h"/>
+                                                </constraints>
+                                            </customView>
+                                        </subviews>
+                                        <visibilityPriorities>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                        </visibilityPriorities>
+                                        <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                        </customSpacing>
+                                    </stackView>
+                                    <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="7" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e1T-xF-Ece">
+                                        <rect key="frame" x="44" y="240" width="280" height="33"/>
+                                        <subviews>
+                                            <stackView distribution="fill" orientation="horizontal" alignment="bottom" spacing="10" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZQm-Oj-7hm">
+                                                <rect key="frame" x="0.0" y="8" width="280" height="25"/>
+                                                <subviews>
+                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8Mm-Yo-eyT" userLabel="Icon Key">
+                                                        <rect key="frame" x="0.0" y="0.0" width="18" height="25"/>
+                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="lock" id="JpY-xj-ca7"/>
+                                                    </imageView>
+                                                    <secureTextField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gdA-Av-oeL" customClass="WLCustomSecureTextField">
+                                                        <rect key="frame" x="26" y="0.0" width="256" height="16"/>
+                                                        <secureTextFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" focusRingType="none" placeholderString="Password" usesSingleLineMode="YES" id="eFm-at-unu">
+                                                            <font key="font" metaFont="cellTitle"/>
+                                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <allowedInputSourceLocales>
+                                                                <string>NSAllRomanInputSourcesLocaleIdentifier</string>
+                                                            </allowedInputSourceLocales>
+                                                        </secureTextFieldCell>
+                                                        <connections>
+                                                            <outlet property="nextKeyView" destination="8UA-01-84e" id="vF8-Un-xga"/>
+                                                        </connections>
+                                                    </secureTextField>
+                                                </subviews>
+                                                <visibilityPriorities>
+                                                    <integer value="1000"/>
+                                                    <integer value="1000"/>
+                                                </visibilityPriorities>
+                                                <customSpacing>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                </customSpacing>
+                                            </stackView>
+                                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="7Pq-xO-Ugk" customClass="ColorView" customModule="Consumer_VPN" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="272" height="1"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="1" id="jml-Vx-L0F"/>
+                                                </constraints>
+                                            </customView>
+                                        </subviews>
+                                        <visibilityPriorities>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                        </visibilityPriorities>
+                                        <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                        </customSpacing>
+                                    </stackView>
+                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="8UA-01-84e" customClass="CustomButton" customModule="Consumer_VPN" customModuleProvider="target">
+                                        <rect key="frame" x="44" y="146" width="280" height="42"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="42" id="lgF-8R-KI5"/>
+                                        </constraints>
+                                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="SWG-Tg-Xv3">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                        </buttonCell>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="4"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                                <integer key="value" value="17"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="buttonText" value="Login"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="loginActionHandler:" target="UTm-sO-f0A" id="FGY-e1-bMJ"/>
+                                        </connections>
+                                    </button>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="EDa-f8-n6F" customClass="ClickableTextField" customModule="Consumer_VPN" customModuleProvider="target">
+                                        <rect key="frame" x="221" y="216" width="105" height="16"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Forgot Password?" id="WlK-vg-AHa">
+                                            <font key="font" metaFont="cellTitle"/>
+                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="uKg-RM-DNa" customClass="CustomButton" customModule="Consumer_VPN" customModuleProvider="target">
+                                        <rect key="frame" x="72" y="18" width="224" height="22"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="22" id="4td-z5-Rm8"/>
+                                            <constraint firstAttribute="width" constant="224" id="mZJ-Qp-4tt"/>
+                                        </constraints>
+                                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="nTK-3j-1gj">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="20"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                                <integer key="value" value="12"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="buttonText" value="Don't have an account? SIGN UP"/>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                <real key="value" value="1.5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="signupActionHandler:" target="UTm-sO-f0A" id="dfD-Ld-D5X"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="faF-CQ-tXH" firstAttribute="top" secondItem="4aS-Tr-NGa" secondAttribute="bottom" constant="24" id="0UA-J6-uHf"/>
+                                    <constraint firstItem="e1T-xF-Ece" firstAttribute="top" secondItem="faF-CQ-tXH" secondAttribute="bottom" constant="24" id="5aX-CZ-4Tr"/>
+                                    <constraint firstItem="8UA-01-84e" firstAttribute="top" secondItem="EDa-f8-n6F" secondAttribute="bottom" constant="28" id="73w-vZ-bOS"/>
+                                    <constraint firstItem="8UA-01-84e" firstAttribute="centerX" secondItem="faF-CQ-tXH" secondAttribute="centerX" id="Agy-Cp-2p8"/>
+                                    <constraint firstItem="4aS-Tr-NGa" firstAttribute="top" secondItem="2RD-Ge-8Fm" secondAttribute="top" constant="122" id="CKm-Hb-Jw5"/>
+                                    <constraint firstItem="faF-CQ-tXH" firstAttribute="leading" secondItem="2RD-Ge-8Fm" secondAttribute="leading" constant="44" id="Cqj-6R-8Q3"/>
+                                    <constraint firstItem="uKg-RM-DNa" firstAttribute="centerX" secondItem="2RD-Ge-8Fm" secondAttribute="centerX" id="Mma-Et-bLS"/>
+                                    <constraint firstAttribute="bottom" secondItem="uKg-RM-DNa" secondAttribute="bottom" constant="18" id="QCr-ZM-KsX"/>
+                                    <constraint firstItem="e1T-xF-Ece" firstAttribute="centerX" secondItem="faF-CQ-tXH" secondAttribute="centerX" id="T4A-q7-RVz"/>
+                                    <constraint firstItem="e1T-xF-Ece" firstAttribute="width" secondItem="faF-CQ-tXH" secondAttribute="width" id="Tkp-t0-Mrd"/>
+                                    <constraint firstItem="4aS-Tr-NGa" firstAttribute="leading" secondItem="faF-CQ-tXH" secondAttribute="leading" id="UCP-p8-J1m"/>
+                                    <constraint firstAttribute="width" constant="368" id="USS-iB-DtU"/>
+                                    <constraint firstAttribute="height" constant="500" id="YPR-2T-eUc"/>
+                                    <constraint firstItem="EDa-f8-n6F" firstAttribute="trailing" secondItem="e1T-xF-Ece" secondAttribute="trailing" id="erA-9b-X8F"/>
+                                    <constraint firstItem="8UA-01-84e" firstAttribute="width" secondItem="faF-CQ-tXH" secondAttribute="width" id="pMa-6f-sIL"/>
+                                    <constraint firstAttribute="trailing" secondItem="faF-CQ-tXH" secondAttribute="trailing" constant="44" id="pSF-tF-8eo"/>
+                                    <constraint firstItem="EDa-f8-n6F" firstAttribute="top" secondItem="e1T-xF-Ece" secondAttribute="bottom" constant="8" id="ufM-XH-rGT"/>
+                                </constraints>
+                            </customView>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="rej-1L-1gA">
+                                <rect key="frame" x="0.0" y="0.0" width="332" height="500"/>
+                                <subviews>
+                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="meO-Sr-VPV">
+                                        <rect key="frame" x="66" y="229" width="200" height="42"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="meO-Sr-VPV" secondAttribute="height" multiplier="91:19" id="0B7-dl-IQy"/>
+                                            <constraint firstAttribute="width" constant="200" id="88g-j1-1KN"/>
+                                        </constraints>
+                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="logo-1" id="Esj-RH-wOL"/>
+                                    </imageView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="meO-Sr-VPV" firstAttribute="centerX" secondItem="rej-1L-1gA" secondAttribute="centerX" id="DJ2-18-Cih"/>
+                                    <constraint firstAttribute="width" constant="332" id="PYy-Tb-R6f"/>
+                                    <constraint firstItem="meO-Sr-VPV" firstAttribute="centerY" secondItem="rej-1L-1gA" secondAttribute="centerY" id="iGZ-sY-ngl"/>
+                                    <constraint firstAttribute="height" constant="500" id="lnu-9b-BM0"/>
+                                </constraints>
+                            </customView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="2RD-Ge-8Fm" firstAttribute="top" secondItem="KyG-8Q-ae0" secondAttribute="top" id="8W6-ab-XOP"/>
+                            <constraint firstItem="rej-1L-1gA" firstAttribute="leading" secondItem="KyG-8Q-ae0" secondAttribute="leading" id="F6i-1Q-rb9"/>
+                            <constraint firstItem="rej-1L-1gA" firstAttribute="top" secondItem="KyG-8Q-ae0" secondAttribute="top" id="INX-Ko-9oh"/>
+                            <constraint firstItem="2RD-Ge-8Fm" firstAttribute="leading" secondItem="rej-1L-1gA" secondAttribute="trailing" id="bEL-YZ-Gvz"/>
+                            <constraint firstAttribute="trailing" secondItem="2RD-Ge-8Fm" secondAttribute="trailing" id="doR-7c-fQk"/>
+                            <constraint firstAttribute="bottom" secondItem="rej-1L-1gA" secondAttribute="bottom" id="fNS-RK-siT"/>
+                            <constraint firstAttribute="bottom" secondItem="2RD-Ge-8Fm" secondAttribute="bottom" id="sNq-m6-geG"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="color" keyPath="backgroundColor">
+                                <color key="value" red="0.13725490200000001" green="0.1450980392" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </customView>
+                    <connections>
+                        <outlet property="forgotUserNameTextField" destination="EDa-f8-n6F" id="Dei-U9-m2D"/>
+                        <outlet property="gradientContainerView" destination="rej-1L-1gA" id="LNV-L5-iYh"/>
+                        <outlet property="loginButton" destination="8UA-01-84e" id="maA-kM-j2V"/>
+                        <outlet property="loginTitleLabel" destination="4aS-Tr-NGa" id="nld-VY-LWH"/>
+                        <outlet property="passwordTextField" destination="gdA-Av-oeL" id="KM7-xA-BBR"/>
+                        <outlet property="passwordUnderlineView" destination="7Pq-xO-Ugk" id="PDu-7Q-Uze"/>
+                        <outlet property="signupButton" destination="uKg-RM-DNa" id="4VU-Cr-xsF"/>
+                        <outlet property="userNameUnderlineView" destination="hhD-sE-UZW" id="4ur-fQ-Jja"/>
+                        <outlet property="usernameTextField" destination="5ky-BH-9TM" id="OZq-8I-Bqz"/>
+                    </connections>
+                </viewController>
+                <customObject id="Pli-Jk-Ael" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2" y="101"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="lock" width="18" height="25"/>
+        <image name="logo-1" width="273" height="57"/>
+        <image name="user_avatar" width="23" height="25"/>
+    </resources>
+</document>

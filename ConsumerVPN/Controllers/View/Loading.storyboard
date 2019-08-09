@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="9Su-gV-eOy">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Loading View Controller-->
+        <scene sceneID="FGc-7r-bF3">
+            <objects>
+                <viewController storyboardIdentifier="LoadingViewController" id="9Su-gV-eOy" customClass="LoadingViewController" customModule="Consumer_VPN" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="jZK-Cx-Q2D">
+                        <rect key="frame" x="0.0" y="0.0" width="376" height="480"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="gMl-Vg-t5M" customClass="LoadingCircle" customModule="Consumer_VPN" customModuleProvider="target">
+                                <rect key="frame" x="48" y="100" width="280" height="280"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="280" id="8Fe-bu-sxj"/>
+                                    <constraint firstAttribute="height" constant="280" id="f6o-Xh-Z3I"/>
+                                </constraints>
+                            </customView>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="OHt-4T-jzr" customClass="CustomButton" customModule="Consumer_VPN" customModuleProvider="target">
+                                <rect key="frame" x="63" y="42" width="250" height="42"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="42" id="iaK-Fc-SVU"/>
+                                    <constraint firstAttribute="width" constant="250" id="zuI-Lu-NwA"/>
+                                </constraints>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="5Vv-IR-njP">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="systemLight" size="10"/>
+                                </buttonCell>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <real key="value" value="4"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                        <integer key="value" value="18"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="buttonText" value="Disconnect"/>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="shouldBoldText" value="NO"/>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="backgroundColor">
+                                        <color key="value" red="0.039215686270000001" green="0.51764705879999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="cancelConnect:" target="9Su-gV-eOy" id="xmF-5w-oKH"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="gMl-Vg-t5M" firstAttribute="centerX" secondItem="jZK-Cx-Q2D" secondAttribute="centerX" id="7bT-PA-2g8"/>
+                            <constraint firstItem="gMl-Vg-t5M" firstAttribute="top" relation="greaterThanOrEqual" secondItem="jZK-Cx-Q2D" secondAttribute="top" constant="48" id="9F8-NR-1Rr"/>
+                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="OHt-4T-jzr" secondAttribute="bottom" constant="42" id="Dey-vT-7QR"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="gMl-Vg-t5M" secondAttribute="trailing" constant="48" id="Wvp-IV-nFH"/>
+                            <constraint firstItem="OHt-4T-jzr" firstAttribute="top" secondItem="gMl-Vg-t5M" secondAttribute="bottom" constant="16" id="h74-Xc-SLX"/>
+                            <constraint firstItem="OHt-4T-jzr" firstAttribute="centerX" secondItem="jZK-Cx-Q2D" secondAttribute="centerX" id="hZQ-AY-m8x"/>
+                            <constraint firstItem="gMl-Vg-t5M" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="jZK-Cx-Q2D" secondAttribute="leading" constant="48" id="lWK-nM-Ero"/>
+                            <constraint firstItem="gMl-Vg-t5M" firstAttribute="centerY" secondItem="jZK-Cx-Q2D" secondAttribute="centerY" id="zf4-hB-g5p"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="cancelButton" destination="OHt-4T-jzr" id="FXf-0R-A9x"/>
+                    </connections>
+                </viewController>
+                <customObject id="TpO-qb-zoZ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="196" y="-51"/>
+        </scene>
+    </scenes>
+</document>

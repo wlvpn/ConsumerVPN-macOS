@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="FV7-gA-iXn">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Connect View Controller-->
+        <scene sceneID="SUc-wn-KI7">
+            <objects>
+                <viewController storyboardIdentifier="ConnectViewController" id="FV7-gA-iXn" customClass="ConnectViewController" customModule="Consumer_VPN" customModuleProvider="target" sceneMemberID="viewController">
+                    <customView key="view" id="9aY-OP-YTb">
+                        <rect key="frame" x="0.0" y="0.0" width="700" height="500"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <subviews>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="6BC-Zc-SbU" customClass="GradientView" customModule="Consumer_VPN" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="700" height="500"/>
+                                <subviews>
+                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="g5y-q1-x0X" customClass="CustomButton" customModule="Consumer_VPN" customModuleProvider="target">
+                                        <rect key="frame" x="225" y="88" width="250" height="42"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="250" id="IMF-pl-dHV"/>
+                                            <constraint firstAttribute="height" constant="42" id="rgI-8N-sKz"/>
+                                        </constraints>
+                                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="ruY-Mg-qlE">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                        </buttonCell>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="8"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                                <integer key="value" value="18"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                <real key="value" value="2"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="buttonText" value="Connect"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="connectToVPNActionHandler:" target="FV7-gA-iXn" id="PFM-Go-g3E"/>
+                                        </connections>
+                                    </button>
+                                    <stackView distribution="fill" orientation="vertical" alignment="centerX" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8wH-Bd-hk4">
+                                        <rect key="frame" x="100" y="301" width="500" height="54"/>
+                                        <subviews>
+                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KPe-Mm-RzC">
+                                                <rect key="frame" x="182" y="35" width="137" height="19"/>
+                                                <textFieldCell key="cell" lineBreakMode="clipping" title="Location selected:" id="M0x-AU-kdk">
+                                                    <font key="font" metaFont="system" size="16"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                            </textField>
+                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="HeR-r0-Dm3">
+                                                <rect key="frame" x="188" y="0.0" width="124" height="27"/>
+                                                <textFieldCell key="cell" lineBreakMode="clipping" title="Server Name" id="rTd-KX-QH4">
+                                                    <font key="font" metaFont="system" size="22"/>
+                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                            </textField>
+                                        </subviews>
+                                        <visibilityPriorities>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                        </visibilityPriorities>
+                                        <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                        </customSpacing>
+                                    </stackView>
+                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="w5u-z5-zhF">
+                                        <rect key="frame" x="50" y="146" width="600" height="304"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="w5u-z5-zhF" secondAttribute="height" multiplier="493:250" id="0Sx-9a-UBv"/>
+                                        </constraints>
+                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="map" id="9S5-bA-ubb"/>
+                                    </imageView>
+                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="x4v-SD-Lbg" customClass="CustomButton" customModule="Consumer_VPN" customModuleProvider="target">
+                                        <rect key="frame" x="225" y="146" width="250" height="35"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="250" id="2ed-x6-NIN"/>
+                                            <constraint firstAttribute="height" constant="35" id="6MP-re-lL4"/>
+                                        </constraints>
+                                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="CB6-uK-auI">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                        </buttonCell>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="8"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                                <integer key="value" value="17"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                <real key="value" value="2"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="buttonText" value="Connect"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="didSelectServers:" target="FV7-gA-iXn" id="keX-b3-OZ6"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="w5u-z5-zhF" firstAttribute="centerX" secondItem="6BC-Zc-SbU" secondAttribute="centerX" id="0ga-6z-G7L"/>
+                                    <constraint firstItem="w5u-z5-zhF" firstAttribute="top" secondItem="6BC-Zc-SbU" secondAttribute="top" constant="50" id="5mT-Js-oej"/>
+                                    <constraint firstItem="g5y-q1-x0X" firstAttribute="top" secondItem="x4v-SD-Lbg" secondAttribute="bottom" constant="16" id="6z3-2n-9KX"/>
+                                    <constraint firstItem="8wH-Bd-hk4" firstAttribute="leading" secondItem="6BC-Zc-SbU" secondAttribute="leading" constant="100" id="CoO-DH-zlr"/>
+                                    <constraint firstItem="g5y-q1-x0X" firstAttribute="centerX" secondItem="6BC-Zc-SbU" secondAttribute="centerX" id="P69-3k-HpY"/>
+                                    <constraint firstItem="8wH-Bd-hk4" firstAttribute="centerX" secondItem="6BC-Zc-SbU" secondAttribute="centerX" id="TEu-YW-RfT"/>
+                                    <constraint firstItem="w5u-z5-zhF" firstAttribute="leading" secondItem="6BC-Zc-SbU" secondAttribute="leading" constant="50" id="TVa-Jm-4Xc"/>
+                                    <constraint firstAttribute="bottom" secondItem="g5y-q1-x0X" secondAttribute="bottom" constant="88" id="ba6-oq-fhI"/>
+                                    <constraint firstAttribute="trailing" secondItem="8wH-Bd-hk4" secondAttribute="trailing" constant="100" id="enx-NK-v4X"/>
+                                    <constraint firstItem="x4v-SD-Lbg" firstAttribute="centerX" secondItem="6BC-Zc-SbU" secondAttribute="centerX" id="lQ8-DC-xzx"/>
+                                    <constraint firstAttribute="trailing" secondItem="w5u-z5-zhF" secondAttribute="trailing" constant="50" id="tTD-Qo-Wm0"/>
+                                    <constraint firstItem="x4v-SD-Lbg" firstAttribute="top" secondItem="8wH-Bd-hk4" secondAttribute="bottom" constant="120" id="vJu-tt-E22"/>
+                                    <constraint firstItem="8wH-Bd-hk4" firstAttribute="centerY" secondItem="6BC-Zc-SbU" secondAttribute="centerY" constant="-78" id="wTA-5E-J1l"/>
+                                </constraints>
+                            </customView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="6BC-Zc-SbU" firstAttribute="leading" secondItem="9aY-OP-YTb" secondAttribute="leading" id="Bv3-iB-M6y"/>
+                            <constraint firstItem="6BC-Zc-SbU" firstAttribute="leading" secondItem="9aY-OP-YTb" secondAttribute="leading" id="GKj-V3-bVc"/>
+                            <constraint firstAttribute="trailing" secondItem="6BC-Zc-SbU" secondAttribute="trailing" id="Mua-sp-Geh"/>
+                            <constraint firstAttribute="bottom" secondItem="6BC-Zc-SbU" secondAttribute="bottom" id="UId-od-h4l"/>
+                            <constraint firstItem="6BC-Zc-SbU" firstAttribute="top" secondItem="9aY-OP-YTb" secondAttribute="top" id="XdE-3v-0LC"/>
+                            <constraint firstAttribute="trailing" secondItem="6BC-Zc-SbU" secondAttribute="trailing" id="mR4-6N-PvD"/>
+                            <constraint firstAttribute="bottom" secondItem="6BC-Zc-SbU" secondAttribute="bottom" id="rgX-13-9ut"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="color" keyPath="backgroundColor">
+                                <color key="value" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </customView>
+                    <connections>
+                        <outlet property="contentView" destination="6BC-Zc-SbU" id="v0s-nC-aTb"/>
+                        <outlet property="locationNameLabel" destination="HeR-r0-Dm3" id="Vg4-6g-jvV"/>
+                        <outlet property="locationTitleLabel" destination="KPe-Mm-RzC" id="LW2-WB-bey"/>
+                        <outlet property="serverLocationButton" destination="x4v-SD-Lbg" id="3LE-RS-1q6"/>
+                        <outlet property="vpnConnectButton" destination="g5y-q1-x0X" id="qEM-vf-EHu"/>
+                    </connections>
+                </viewController>
+                <customObject id="Uh2-ZX-6jO" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-248" y="62"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="map" width="493" height="250"/>
+    </resources>
+</document>

@@ -1,0 +1,740 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		07BDB6DA2241814E004884A0 /* Connect.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07BDB6D92241814E004884A0 /* Connect.storyboard */; };
+		07BDB6DC22419260004884A0 /* Disconnect.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07BDB6DB22419260004884A0 /* Disconnect.storyboard */; };
+		07BDB6DE22429EEB004884A0 /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07BDB6DD22429EEB004884A0 /* Login.storyboard */; };
+		07BDB6E02242A5DF004884A0 /* Servers.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07BDB6DF2242A5DF004884A0 /* Servers.storyboard */; };
+		07BDB6E22242D064004884A0 /* Loading.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07BDB6E12242D064004884A0 /* Loading.storyboard */; };
+		07BDB6E42242D08F004884A0 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BDB6E32242D08F004884A0 /* LoadingViewController.swift */; };
+		07C2D35F2243DD0F001F6FEA /* NSBezierPath + UIBezierPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C2D35E2243DD0F001F6FEA /* NSBezierPath + UIBezierPath.swift */; };
+		07C2D3612243DD4A001F6FEA /* LoadingCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C2D3602243DD4A001F6FEA /* LoadingCircle.swift */; };
+		450E63842118E0C20071D061 /* VPNV3APIAdapter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 459CAF3F2118E09A00D094D4 /* VPNV3APIAdapter.framework */; };
+		450E63852118E0C20071D061 /* VPNV3APIAdapter.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 459CAF3F2118E09A00D094D4 /* VPNV3APIAdapter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		45109E22204DDE9D0092D9F1 /* Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = B840555C1D9EA5010028941D /* Animations.swift */; };
+		45109E41204DDE9D0092D9F1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45F2CF9E1C57CCA60022458C /* QuartzCore.framework */; };
+		45109E49204DDE9D0092D9F1 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = B84845C51DE5E1C2008FA97C /* Localizable.stringsdict */; };
+		45109E4C204DDE9D0092D9F1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B85CBB291D889303004B9839 /* Localizable.strings */; };
+		45109E4F204DDE9D0092D9F1 /* Flags.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 450C578B1C401071008F35D8 /* Flags.xcassets */; };
+		4563E07D20AF56D300D64D7F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4563E07C20AF56D300D64D7F /* Assets.xcassets */; };
+		4563E08220AF571A00D64D7F /* VPNKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4563E07A20AF568A00D64D7F /* VPNKit.framework */; };
+		4563E08320AF571A00D64D7F /* VPNKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4563E07A20AF568A00D64D7F /* VPNKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		4563E08520AF572600D64D7F /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 455F5DE31CF78ACC0082C953 /* NetworkExtension.framework */; };
+		4563E08620AF572B00D64D7F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 450D1C6C1C88D10A00C30C6C /* Security.framework */; };
+		458003212118E22200F912FF /* CustomColorHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 450E63862118E2000071D061 /* CustomColorHeaderCell.m */; };
+		F5C1604AC1AB24A4B2EDFC02 /* MainWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F5C1638C59B1C16C894D357D /* MainWindowController.xib */; };
+		F5C160A8B1793505E97CB6C6 /* CityTableCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F5C161D3415AB0790AD978F1 /* CityTableCellView.xib */; };
+		F5C1613C2B5E5C5F64118FCC /* tos.html in Resources */ = {isa = PBXBuildFile; fileRef = F5C16BE6443FD08B1935D10E /* tos.html */; };
+		F5C1613F13A38623AB048A2C /* ConnectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C163AA64801D9180CB022E /* ConnectViewController.swift */; };
+		F5C161BB6DCB1F1D1FC8E9AF /* WLCustomSecureTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = F5C1645080E9E77F746C3DF8 /* WLCustomSecureTextField.m */; };
+		F5C162FCC35C89D80E7751EC /* WLCustomTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = F5C163355871D291B8B9FF47 /* WLCustomTextField.m */; };
+		F5C1631104A6D517BC578D65 /* SDKInitializer.m in Sources */ = {isa = PBXBuildFile; fileRef = F5C16BD3ECD94C40AD5F24DD /* SDKInitializer.m */; };
+		F5C163445C3139814DCD8131 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C16410A47E4151C418D4BE /* GradientView.swift */; };
+		F5C163C9CE838D85F6B02468 /* ServerTableCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F5C1606E8AB01945D0AD8801 /* ServerTableCellView.xib */; };
+		F5C1646A8A7A22E9D6468C85 /* ServerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C16E1149EDAEB4FD391043 /* ServerViewController.swift */; };
+		F5C1646B7A62C9235719A5C3 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C16393D78576D040E6FF98 /* CustomButton.swift */; };
+		F5C1649C704C0ECD81A13747 /* ServerTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C16F6C19248AA935DAFEE7 /* ServerTableCellView.swift */; };
+		F5C164AD5F2B190B5E763478 /* PreferencesWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F5C167A604620AE48898C01A /* PreferencesWindowController.xib */; };
+		F5C164E9C69BCBB3036753C5 /* BaseWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C163BE9662DA58E6516C79 /* BaseWindowController.swift */; };
+		F5C164E9E9842591312F573F /* CustomSearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C16E8625C90D912921340A /* CustomSearchField.swift */; };
+		F5C16569770A2B0FEEF1036A /* servers.json in Resources */ = {isa = PBXBuildFile; fileRef = F5C16D9844142F5C50E44013 /* servers.json */; };
+		F5C166DA7ABDEEBF919472B1 /* ClickableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C1647A773604C32FBF13BF /* ClickableTextField.swift */; };
+		F5C16759D5772838882F1E87 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C164F7A8DE775EE020B2CC /* AppDelegate.swift */; };
+		F5C1677CF2CEA856FC07F88F /* FilterOptionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C1620F71E710FBEA3F0CD2 /* FilterOptionModel.swift */; };
+		F5C1679528AD37C7F02E3E40 /* BaseTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C160B98927807F79B1459D /* BaseTableCellView.swift */; };
+		F5C167D508B8C3FEA464982F /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C166689659B15136362921 /* MainWindowController.swift */; };
+		F5C168A7CDEFC77CC23CFBB3 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C16AC19D2D7C149166A544 /* BackButton.swift */; };
+		F5C16A543A2C71FCAD7BF7D3 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C163A89B12110852F35E22 /* Theme.swift */; };
+		F5C16B4C6E9FBE229C9E75DD /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C16C38FF49AE459F134DBB /* BaseViewController.swift */; };
+		F5C16BCCA84C7F8F2A8E8CCC /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C16824C2D328A60DBFADD9 /* LoginViewController.swift */; };
+		F5C16C022F5502934E6D0BFD /* NSColor+HexColor.m in Sources */ = {isa = PBXBuildFile; fileRef = F5C16E279F4B7BD180BC9188 /* NSColor+HexColor.m */; };
+		F5C16C614CAAE992DBBB1431 /* CellDisplayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C16B9D281C4179B8FB4ED3 /* CellDisplayModel.swift */; };
+		F5C16C7B6B8B51CAFA089F76 /* AboutWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C1611419194A760653A7F8 /* AboutWindowController.swift */; };
+		F5C16CB56A1664564EBD8B5E /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = F5C16597E600B52A2AB34F29 /* MainMenu.xib */; };
+		F5C16CFB1BD81BE577A8B118 /* protocols.json in Resources */ = {isa = PBXBuildFile; fileRef = F5C167BCC9679D67A8FFEEB9 /* protocols.json */; };
+		F5C16D41FB33BA74D6F37900 /* ColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C16B0393B3645B4B54BDDA /* ColorView.swift */; };
+		F5C16E957E6BEA85C9B290DE /* AboutWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F5C16124AF4F4BC8D7ECCE96 /* AboutWindowController.xib */; };
+		F5C16EC037821A8829EC84A8 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C16591845A48AD0B6FD837 /* PreferencesWindowController.swift */; };
+		F5C16ED1013E5B39B1316B6B /* CityTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C16ECA23543F929097FC38 /* CityTableCellView.swift */; };
+		F5C16F75EF5EE609E2FE4F81 /* DisconnectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C160E0B30A31C4BF04E2FD /* DisconnectViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4563E08420AF571A00D64D7F /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				4563E08320AF571A00D64D7F /* VPNKit.framework in Embed Frameworks */,
+				450E63852118E0C20071D061 /* VPNV3APIAdapter.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		07BDB6D92241814E004884A0 /* Connect.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Connect.storyboard; sourceTree = "<group>"; };
+		07BDB6DB22419260004884A0 /* Disconnect.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Disconnect.storyboard; sourceTree = "<group>"; };
+		07BDB6DD22429EEB004884A0 /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
+		07BDB6DF2242A5DF004884A0 /* Servers.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Servers.storyboard; sourceTree = "<group>"; };
+		07BDB6E12242D064004884A0 /* Loading.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Loading.storyboard; sourceTree = "<group>"; };
+		07BDB6E32242D08F004884A0 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
+		07C2D35E2243DD0F001F6FEA /* NSBezierPath + UIBezierPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSBezierPath + UIBezierPath.swift"; sourceTree = "<group>"; };
+		07C2D3602243DD4A001F6FEA /* LoadingCircle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingCircle.swift; sourceTree = "<group>"; };
+		4506EFC11C52E0F90068F244 /* ConsumerVPN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ConsumerVPN.entitlements; sourceTree = "<group>"; };
+		450C578B1C401071008F35D8 /* Flags.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Flags.xcassets; sourceTree = "<group>"; };
+		450D1C6C1C88D10A00C30C6C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		450E63862118E2000071D061 /* CustomColorHeaderCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomColorHeaderCell.m; sourceTree = "<group>"; };
+		450E63872118E2000071D061 /* CustomColorHeaderCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CustomColorHeaderCell.h; sourceTree = "<group>"; };
+		45109E64204DDE9D0092D9F1 /* Consumer VPN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Consumer VPN.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		453BC1AE1C172D6900E2FA80 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
+		455F5DE31CF78ACC0082C953 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
+		4563E07A20AF568A00D64D7F /* VPNKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VPNKit.framework; sourceTree = "<group>"; };
+		4563E07C20AF56D300D64D7F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		45953E671C457A9A0012D512 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		459CAF3F2118E09A00D094D4 /* VPNV3APIAdapter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VPNV3APIAdapter.framework; sourceTree = "<group>"; };
+		45A01EE61C8895FE001D8F69 /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
+		45F2CF9E1C57CCA60022458C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		B83107B71D805E3B0031E590 /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
+		B840555C1D9EA5010028941D /* Animations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Animations.swift; sourceTree = "<group>"; };
+		B84845C51DE5E1C2008FA97C /* Localizable.stringsdict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.stringsdict; path = Localizable.stringsdict; sourceTree = "<group>"; };
+		B85CBB291D889303004B9839 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		F5C1605C8FEA50D279DD04CB /* AppConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppConstants.h; sourceTree = "<group>"; };
+		F5C1606E8AB01945D0AD8801 /* ServerTableCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ServerTableCellView.xib; sourceTree = "<group>"; };
+		F5C160B98927807F79B1459D /* BaseTableCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseTableCellView.swift; sourceTree = "<group>"; };
+		F5C160E0B30A31C4BF04E2FD /* DisconnectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisconnectViewController.swift; sourceTree = "<group>"; };
+		F5C1611419194A760653A7F8 /* AboutWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutWindowController.swift; sourceTree = "<group>"; };
+		F5C16124AF4F4BC8D7ECCE96 /* AboutWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutWindowController.xib; sourceTree = "<group>"; };
+		F5C161D3415AB0790AD978F1 /* CityTableCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CityTableCellView.xib; sourceTree = "<group>"; };
+		F5C1620F71E710FBEA3F0CD2 /* FilterOptionModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterOptionModel.swift; sourceTree = "<group>"; };
+		F5C163355871D291B8B9FF47 /* WLCustomTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WLCustomTextField.m; sourceTree = "<group>"; };
+		F5C1638C59B1C16C894D357D /* MainWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindowController.xib; sourceTree = "<group>"; };
+		F5C16393D78576D040E6FF98 /* CustomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
+		F5C163A89B12110852F35E22 /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		F5C163AA64801D9180CB022E /* ConnectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectViewController.swift; sourceTree = "<group>"; };
+		F5C163BE9662DA58E6516C79 /* BaseWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseWindowController.swift; sourceTree = "<group>"; };
+		F5C16410A47E4151C418D4BE /* GradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
+		F5C1645080E9E77F746C3DF8 /* WLCustomSecureTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WLCustomSecureTextField.m; sourceTree = "<group>"; };
+		F5C1647A773604C32FBF13BF /* ClickableTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClickableTextField.swift; sourceTree = "<group>"; };
+		F5C164F7A8DE775EE020B2CC /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		F5C1655BC42AAE08D8C18017 /* SDKInitializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDKInitializer.h; sourceTree = "<group>"; };
+		F5C16591845A48AD0B6FD837 /* PreferencesWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
+		F5C16597E600B52A2AB34F29 /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
+		F5C166689659B15136362921 /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
+		F5C167A604620AE48898C01A /* PreferencesWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PreferencesWindowController.xib; sourceTree = "<group>"; };
+		F5C167BCC9679D67A8FFEEB9 /* protocols.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = protocols.json; sourceTree = "<group>"; };
+		F5C16824C2D328A60DBFADD9 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		F5C1688F884D739849944D6C /* WLCustomSecureTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WLCustomSecureTextField.h; sourceTree = "<group>"; };
+		F5C16AC19D2D7C149166A544 /* BackButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
+		F5C16B0393B3645B4B54BDDA /* ColorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorView.swift; sourceTree = "<group>"; };
+		F5C16B9D281C4179B8FB4ED3 /* CellDisplayModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellDisplayModel.swift; sourceTree = "<group>"; };
+		F5C16BD3ECD94C40AD5F24DD /* SDKInitializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDKInitializer.m; sourceTree = "<group>"; };
+		F5C16BE6443FD08B1935D10E /* tos.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = tos.html; sourceTree = "<group>"; };
+		F5C16C38FF49AE459F134DBB /* BaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
+		F5C16CD8C6CA044135064D6B /* WLCustomTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WLCustomTextField.h; sourceTree = "<group>"; };
+		F5C16D9844142F5C50E44013 /* servers.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = servers.json; sourceTree = "<group>"; };
+		F5C16D9E489B022C362C6963 /* NSColor+HexColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSColor+HexColor.h"; sourceTree = "<group>"; };
+		F5C16E1149EDAEB4FD391043 /* ServerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerViewController.swift; sourceTree = "<group>"; };
+		F5C16E279F4B7BD180BC9188 /* NSColor+HexColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSColor+HexColor.m"; sourceTree = "<group>"; };
+		F5C16E8625C90D912921340A /* CustomSearchField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchField.swift; sourceTree = "<group>"; };
+		F5C16ECA23543F929097FC38 /* CityTableCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CityTableCellView.swift; sourceTree = "<group>"; };
+		F5C16F6C19248AA935DAFEE7 /* ServerTableCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerTableCellView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		45109E3F204DDE9D0092D9F1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4563E08620AF572B00D64D7F /* Security.framework in Frameworks */,
+				4563E08520AF572600D64D7F /* NetworkExtension.framework in Frameworks */,
+				45109E41204DDE9D0092D9F1 /* QuartzCore.framework in Frameworks */,
+				4563E08220AF571A00D64D7F /* VPNKit.framework in Frameworks */,
+				450E63842118E0C20071D061 /* VPNV3APIAdapter.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		453BC1911C172D6900E2FA80 = {
+			isa = PBXGroup;
+			children = (
+				45953E671C457A9A0012D512 /* README.md */,
+				453BC19C1C172D6900E2FA80 /* ConsumerVPN */,
+				453BC19B1C172D6900E2FA80 /* Products */,
+				D9569E99871BFF135281E7C5 /* Frameworks */,
+				F5C16245F2043A2EB0EB8C2B /* SDK */,
+			);
+			sourceTree = "<group>";
+		};
+		453BC19B1C172D6900E2FA80 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				45109E64204DDE9D0092D9F1 /* Consumer VPN.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		453BC19C1C172D6900E2FA80 /* ConsumerVPN */ = {
+			isa = PBXGroup;
+			children = (
+				F5C164F7A8DE775EE020B2CC /* AppDelegate.swift */,
+				45ACC88220BDDE4400AEF62D /* SDKInitializer */,
+				F5C160AAE3939B5BEE469A2A /* Controllers */,
+				F5C1632DF3AAFCE7062A2727 /* CustomViews */,
+				F5C1670D23D7D9723686118A /* TableViewCells */,
+				F5C16B90DA1DE1237BDDB43D /* Theme */,
+				F5C163546E3162545CFEC3D5 /* Resources */,
+				F5C16B88C9246FE21A2C8A2F /* ServerList */,
+				453BC1A01C172D6900E2FA80 /* Supporting Files */,
+				B8E37D5D1D8368C00045D39B /* Utilities */,
+			);
+			path = ConsumerVPN;
+			sourceTree = "<group>";
+		};
+		453BC1A01C172D6900E2FA80 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F5C1605C8FEA50D279DD04CB /* AppConstants.h */,
+				B83107B71D805E3B0031E590 /* Bridging-Header.h */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		45ACC88220BDDE4400AEF62D /* SDKInitializer */ = {
+			isa = PBXGroup;
+			children = (
+				F5C1655BC42AAE08D8C18017 /* SDKInitializer.h */,
+				F5C16BD3ECD94C40AD5F24DD /* SDKInitializer.m */,
+			);
+			path = SDKInitializer;
+			sourceTree = "<group>";
+		};
+		B8E37D5D1D8368C00045D39B /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				B840555C1D9EA5010028941D /* Animations.swift */,
+				F5C16D9E489B022C362C6963 /* NSColor+HexColor.h */,
+				F5C16E279F4B7BD180BC9188 /* NSColor+HexColor.m */,
+			);
+			name = Utilities;
+			path = Classes/Utilities;
+			sourceTree = "<group>";
+		};
+		D9569E99871BFF135281E7C5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				455F5DE31CF78ACC0082C953 /* NetworkExtension.framework */,
+				450D1C6C1C88D10A00C30C6C /* Security.framework */,
+				45A01EE61C8895FE001D8F69 /* ServiceManagement.framework */,
+				45F2CF9E1C57CCA60022458C /* QuartzCore.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F5C160AAE3939B5BEE469A2A /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				F5C169B661E31EA232ED74C5 /* Base */,
+				F5C16571AD13898A07A5DF7E /* View */,
+				F5C168354FFC298A2D225476 /* Window */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		F5C160EBF8CF819E6F088512 /* ServerList */ = {
+			isa = PBXGroup;
+			children = (
+				450E63872118E2000071D061 /* CustomColorHeaderCell.h */,
+				450E63862118E2000071D061 /* CustomColorHeaderCell.m */,
+				F5C16E8625C90D912921340A /* CustomSearchField.swift */,
+				F5C16AC19D2D7C149166A544 /* BackButton.swift */,
+			);
+			path = ServerList;
+			sourceTree = "<group>";
+		};
+		F5C16245F2043A2EB0EB8C2B /* SDK */ = {
+			isa = PBXGroup;
+			children = (
+				459CAF3F2118E09A00D094D4 /* VPNV3APIAdapter.framework */,
+				4563E07A20AF568A00D64D7F /* VPNKit.framework */,
+			);
+			path = SDK;
+			sourceTree = "<group>";
+		};
+		F5C1632DF3AAFCE7062A2727 /* CustomViews */ = {
+			isa = PBXGroup;
+			children = (
+				F5C16FC5647FC66CA4ADBD54 /* General */,
+				F5C16FED763E773A7148350D /* Login */,
+				F5C160EBF8CF819E6F088512 /* ServerList */,
+			);
+			path = CustomViews;
+			sourceTree = "<group>";
+		};
+		F5C163546E3162545CFEC3D5 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				4506EFC11C52E0F90068F244 /* ConsumerVPN.entitlements */,
+				B84845C51DE5E1C2008FA97C /* Localizable.stringsdict */,
+				453BC1AE1C172D6900E2FA80 /* Info.plist */,
+				B85CBB291D889303004B9839 /* Localizable.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		F5C16571AD13898A07A5DF7E /* View */ = {
+			isa = PBXGroup;
+			children = (
+				07BDB6D92241814E004884A0 /* Connect.storyboard */,
+				F5C163AA64801D9180CB022E /* ConnectViewController.swift */,
+				07BDB6DB22419260004884A0 /* Disconnect.storyboard */,
+				F5C160E0B30A31C4BF04E2FD /* DisconnectViewController.swift */,
+				07BDB6E12242D064004884A0 /* Loading.storyboard */,
+				07BDB6E32242D08F004884A0 /* LoadingViewController.swift */,
+				07BDB6DD22429EEB004884A0 /* Login.storyboard */,
+				F5C16824C2D328A60DBFADD9 /* LoginViewController.swift */,
+				07BDB6DF2242A5DF004884A0 /* Servers.storyboard */,
+				F5C16E1149EDAEB4FD391043 /* ServerViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		F5C1670D23D7D9723686118A /* TableViewCells */ = {
+			isa = PBXGroup;
+			children = (
+				F5C16ECA23543F929097FC38 /* CityTableCellView.swift */,
+				F5C161D3415AB0790AD978F1 /* CityTableCellView.xib */,
+				F5C160B98927807F79B1459D /* BaseTableCellView.swift */,
+				F5C16F6C19248AA935DAFEE7 /* ServerTableCellView.swift */,
+				F5C1606E8AB01945D0AD8801 /* ServerTableCellView.xib */,
+				F5C16B9D281C4179B8FB4ED3 /* CellDisplayModel.swift */,
+				F5C1620F71E710FBEA3F0CD2 /* FilterOptionModel.swift */,
+			);
+			path = TableViewCells;
+			sourceTree = "<group>";
+		};
+		F5C168354FFC298A2D225476 /* Window */ = {
+			isa = PBXGroup;
+			children = (
+				F5C1611419194A760653A7F8 /* AboutWindowController.swift */,
+				F5C16124AF4F4BC8D7ECCE96 /* AboutWindowController.xib */,
+				F5C166689659B15136362921 /* MainWindowController.swift */,
+				F5C1638C59B1C16C894D357D /* MainWindowController.xib */,
+				F5C16591845A48AD0B6FD837 /* PreferencesWindowController.swift */,
+				F5C167A604620AE48898C01A /* PreferencesWindowController.xib */,
+			);
+			path = Window;
+			sourceTree = "<group>";
+		};
+		F5C169B661E31EA232ED74C5 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				F5C16597E600B52A2AB34F29 /* MainMenu.xib */,
+				F5C163BE9662DA58E6516C79 /* BaseWindowController.swift */,
+				F5C16C38FF49AE459F134DBB /* BaseViewController.swift */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		F5C16B88C9246FE21A2C8A2F /* ServerList */ = {
+			isa = PBXGroup;
+			children = (
+				F5C16D9844142F5C50E44013 /* servers.json */,
+				F5C167BCC9679D67A8FFEEB9 /* protocols.json */,
+			);
+			path = ServerList;
+			sourceTree = "<group>";
+		};
+		F5C16B90DA1DE1237BDDB43D /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				450C578B1C401071008F35D8 /* Flags.xcassets */,
+				4563E07C20AF56D300D64D7F /* Assets.xcassets */,
+				F5C16BE6443FD08B1935D10E /* tos.html */,
+				F5C163A89B12110852F35E22 /* Theme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		F5C16FC5647FC66CA4ADBD54 /* General */ = {
+			isa = PBXGroup;
+			children = (
+				F5C16B0393B3645B4B54BDDA /* ColorView.swift */,
+				07C2D35E2243DD0F001F6FEA /* NSBezierPath + UIBezierPath.swift */,
+				07C2D3602243DD4A001F6FEA /* LoadingCircle.swift */,
+				F5C16410A47E4151C418D4BE /* GradientView.swift */,
+				F5C16393D78576D040E6FF98 /* CustomButton.swift */,
+			);
+			path = General;
+			sourceTree = "<group>";
+		};
+		F5C16FED763E773A7148350D /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				F5C1647A773604C32FBF13BF /* ClickableTextField.swift */,
+				F5C1645080E9E77F746C3DF8 /* WLCustomSecureTextField.m */,
+				F5C163355871D291B8B9FF47 /* WLCustomTextField.m */,
+				F5C16CD8C6CA044135064D6B /* WLCustomTextField.h */,
+				F5C1688F884D739849944D6C /* WLCustomSecureTextField.h */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		45109E17204DDE9D0092D9F1 /* Consumer VPN */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 45109E61204DDE9D0092D9F1 /* Build configuration list for PBXNativeTarget "Consumer VPN" */;
+			buildPhases = (
+				45109E19204DDE9D0092D9F1 /* Download servers.json */,
+				45109E1A204DDE9D0092D9F1 /* Sources */,
+				45109E3F204DDE9D0092D9F1 /* Frameworks */,
+				45109E47204DDE9D0092D9F1 /* Resources */,
+				4563E08420AF571A00D64D7F /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Consumer VPN";
+			productName = ConsumerVPN;
+			productReference = 45109E64204DDE9D0092D9F1 /* Consumer VPN.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		453BC1921C172D6900E2FA80 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = WL;
+				LastSwiftUpdateCheck = 0800;
+				LastUpgradeCheck = 1020;
+				ORGANIZATIONNAME = WLVPN;
+				TargetAttributes = {
+					45109E17204DDE9D0092D9F1 = {
+						DevelopmentTeam = J6DC9F6B59;
+						LastSwiftMigration = 1020;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 453BC1951C172D6900E2FA80 /* Build configuration list for PBXProject "ConsumerVPN" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 453BC1911C172D6900E2FA80;
+			productRefGroup = 453BC19B1C172D6900E2FA80 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				45109E17204DDE9D0092D9F1 /* Consumer VPN */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		45109E47204DDE9D0092D9F1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				45109E49204DDE9D0092D9F1 /* Localizable.stringsdict in Resources */,
+				07BDB6DE22429EEB004884A0 /* Login.storyboard in Resources */,
+				45109E4C204DDE9D0092D9F1 /* Localizable.strings in Resources */,
+				45109E4F204DDE9D0092D9F1 /* Flags.xcassets in Resources */,
+				F5C16CB56A1664564EBD8B5E /* MainMenu.xib in Resources */,
+				F5C16E957E6BEA85C9B290DE /* AboutWindowController.xib in Resources */,
+				F5C1604AC1AB24A4B2EDFC02 /* MainWindowController.xib in Resources */,
+				F5C164AD5F2B190B5E763478 /* PreferencesWindowController.xib in Resources */,
+				07BDB6E02242A5DF004884A0 /* Servers.storyboard in Resources */,
+				07BDB6E22242D064004884A0 /* Loading.storyboard in Resources */,
+				07BDB6DC22419260004884A0 /* Disconnect.storyboard in Resources */,
+				F5C160A8B1793505E97CB6C6 /* CityTableCellView.xib in Resources */,
+				F5C163C9CE838D85F6B02468 /* ServerTableCellView.xib in Resources */,
+				F5C16569770A2B0FEEF1036A /* servers.json in Resources */,
+				F5C16CFB1BD81BE577A8B118 /* protocols.json in Resources */,
+				07BDB6DA2241814E004884A0 /* Connect.storyboard in Resources */,
+				4563E07D20AF56D300D64D7F /* Assets.xcassets in Resources */,
+				F5C1613C2B5E5C5F64118FCC /* tos.html in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		45109E19204DDE9D0092D9F1 /* Download servers.json */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Download servers.json";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/usr/bin/env bash";
+			shellScript = "${PROJECT_DIR}/ConsumerVPN/ServerList/load_serverlist \"${PROJECT_DIR}\" \"<username>\" \"<password>\" \"<apikey>\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		45109E1A204DDE9D0092D9F1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				45109E22204DDE9D0092D9F1 /* Animations.swift in Sources */,
+				F5C1631104A6D517BC578D65 /* SDKInitializer.m in Sources */,
+				F5C16C022F5502934E6D0BFD /* NSColor+HexColor.m in Sources */,
+				458003212118E22200F912FF /* CustomColorHeaderCell.m in Sources */,
+				F5C164E9C69BCBB3036753C5 /* BaseWindowController.swift in Sources */,
+				F5C16B4C6E9FBE229C9E75DD /* BaseViewController.swift in Sources */,
+				07C2D35F2243DD0F001F6FEA /* NSBezierPath + UIBezierPath.swift in Sources */,
+				F5C1613F13A38623AB048A2C /* ConnectViewController.swift in Sources */,
+				F5C16F75EF5EE609E2FE4F81 /* DisconnectViewController.swift in Sources */,
+				F5C16BCCA84C7F8F2A8E8CCC /* LoginViewController.swift in Sources */,
+				F5C1646A8A7A22E9D6468C85 /* ServerViewController.swift in Sources */,
+				F5C16C7B6B8B51CAFA089F76 /* AboutWindowController.swift in Sources */,
+				F5C167D508B8C3FEA464982F /* MainWindowController.swift in Sources */,
+				07C2D3612243DD4A001F6FEA /* LoadingCircle.swift in Sources */,
+				F5C16EC037821A8829EC84A8 /* PreferencesWindowController.swift in Sources */,
+				F5C16D41FB33BA74D6F37900 /* ColorView.swift in Sources */,
+				F5C163445C3139814DCD8131 /* GradientView.swift in Sources */,
+				F5C1646B7A62C9235719A5C3 /* CustomButton.swift in Sources */,
+				F5C166DA7ABDEEBF919472B1 /* ClickableTextField.swift in Sources */,
+				07BDB6E42242D08F004884A0 /* LoadingViewController.swift in Sources */,
+				F5C161BB6DCB1F1D1FC8E9AF /* WLCustomSecureTextField.m in Sources */,
+				F5C162FCC35C89D80E7751EC /* WLCustomTextField.m in Sources */,
+				F5C164E9E9842591312F573F /* CustomSearchField.swift in Sources */,
+				F5C168A7CDEFC77CC23CFBB3 /* BackButton.swift in Sources */,
+				F5C16ED1013E5B39B1316B6B /* CityTableCellView.swift in Sources */,
+				F5C1679528AD37C7F02E3E40 /* BaseTableCellView.swift in Sources */,
+				F5C1649C704C0ECD81A13747 /* ServerTableCellView.swift in Sources */,
+				F5C16C614CAAE992DBBB1431 /* CellDisplayModel.swift in Sources */,
+				F5C1677CF2CEA856FC07F88F /* FilterOptionModel.swift in Sources */,
+				F5C16759D5772838882F1E87 /* AppDelegate.swift in Sources */,
+				F5C16A543A2C71FCAD7BF7D3 /* Theme.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		45109E62204DDE9D0092D9F1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = ConsumerVPN/Resources/ConsumerVPN.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = J6DC9F6B59;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SDK",
+				);
+				INFOPLIST_FILE = "$(SRCROOT)/ConsumerVPN/Resources/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wlvpn.macos.consumervpn;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OBJC_BRIDGING_HEADER = "ConsumerVPN/Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(PROJECT_NAME)-Swift.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		45109E63204DDE9D0092D9F1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = ConsumerVPN/Resources/ConsumerVPN.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = J6DC9F6B59;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SDK",
+				);
+				INFOPLIST_FILE = "$(SRCROOT)/ConsumerVPN/Resources/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wlvpn.macos.consumervpn;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "ConsumerVPN/Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(PROJECT_NAME)-Swift.h";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		453BC1C51C172D6900E2FA80 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(CONFIGURATION_BUILD_DIR)",
+					"$(SRCROOT)/SDK",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		453BC1C61C172D6900E2FA80 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		45109E61204DDE9D0092D9F1 /* Build configuration list for PBXNativeTarget "Consumer VPN" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				45109E62204DDE9D0092D9F1 /* Debug */,
+				45109E63204DDE9D0092D9F1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		453BC1951C172D6900E2FA80 /* Build configuration list for PBXProject "ConsumerVPN" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				453BC1C51C172D6900E2FA80 /* Debug */,
+				453BC1C61C172D6900E2FA80 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 453BC1921C172D6900E2FA80 /* Project object */;
+}

@@ -1,0 +1,10 @@
+Pods
+.idea
+.vagrant
+puphpet
+Vagrantfile
+xcuserdata
+servers.json
+protocols.json
+SDK/*.framework
+.DS_Store
