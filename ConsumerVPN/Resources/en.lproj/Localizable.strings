@@ -1,0 +1,97 @@
+/* 
+  Localizable.strings
+  WhiteLabelVPN
+
+  Created by Zeph Cohen on 9/13/16.
+  Copyright © 2016 WLVPN. All rights reserved.
+*/
+
+/* Connect View Controller Strings */
+
+"FastestAvailable" = "Fastest Available";
+
+/* Disconnect View Controller Strings */
+"PublicIPAddress" = "Public IP Address:";
+"IPAddressError" = "Could not load IP Address";
+"EncryptionNone" = "NONE";
+"ProtocolOption" = "Protocol Option:";
+
+/* Main Window Header View Strings */
+"ServerList" = "Server List";
+"Filter" = "Filter";
+"About" = "About";
+"Hide" = "Hide";
+"Quit" = "Quit";
+"Logout" = "Logout";
+"Preferences" = "Preferences";
+"UpdateServersNow" = "Update Servers Now";
+
+/* Server List View Strings */
+"Connect" = "Connect";
+"Cancel" = "Cancel";
+"Disconnect" = "Disconnect";
+"DisconnectPrompt" = "You are currently connected, would you like to disconnect first?";
+"ConnectPrompt" = "Would you like to connect to";
+"ServerConnectPrompt" = "Would you like to connect to server";
+"ServerConnectPromptFallback" = "Would you like to connect to this server?";
+"ServerUpdateFailedMessage" = "Failed to update the server list.";
+"ServerUpdateFailedTitle" = "Server Update Failed";
+"Yes" = "Yes";
+"No" = "No";
+"Ok" = "Ok";
+"ConfigurationUpdated" = "Configuration Updated";
+"LoadingInitialServers" = "Loading Initial Servers...";
+"LocationSelected" = "Location selected";
+"ServerLocations" = "Server Locations";
+"Country" = "Country";
+"City" = "City";
+
+/* Connection Strings */
+
+"Connecting" = "Connecting...";
+"UpdatingServers" = "Updating Servers...";
+"Connected" = "Connection Succeeded";
+"Disconnecting" = "Disconnecting...";
+"Disconnected" = "Disconnected";
+"Disconnect" = "Disconnect";
+"ConnectionFailed" = "Connection Failed";
+"OnDemandConfirm" = "Disconnecting from the VPN will disable OnDemand settings. Do you wish to continue?";
+"OnDemandDisconnect" = "Disabling OnDemand will disconnect you from the VPN. Would you like to continue?";
+
+
+/* Filter View Strings */
+"ResetFilters" = "Reset";
+"SortBy" = "Sort By";
+"Ping" = "Ping";
+"PingAny" = "Any";
+"PingLessThanFifty" = "< 50";
+"PingFiftyThroughHundred" = "50-100";
+"PingHundredThroughTwoHundred" = "100-200";
+"PingGreaterThanTwoHundred" = "> 200";
+"FiltersApplied" = "Filters Applied";
+"NoResultsFound" = "No Results Found";
+
+/* Custom Search Bar Strings */
+"Search" = "Search";
+
+/* Login Strings */
+"InvalidCredentialsTitle" = "Missing Credentials";
+"InvalidCredentials" = "A username and password are required to login.";
+"LoginFailed" = "Username or password is incorrect.";
+"LoginFailedTitle" = "Login Failed";
+"LoginFailedGeneral" = "Failed to login please try again.";
+"LoggingIn" = "Logging In...";
+"LoginGeneral" = "Log In";
+
+/* Preferences */
+"OnDemand" = "On Demand";
+"OnDemandEnabled" = "Enabled";
+
+"SystemStartup" = "System Startup";
+"HideOnStartup" = "Hide on startup";
+
+"Startup" = "Startup:";
+"DoNotAutomaticallyConnect" = "Do not automatically connect";
+"ConnectToLastConnected" = "Connect to last connected server";
+"ConnectToFastest" = "Connect to fastest server";
+"ConnectToFastestInCountry" = "Connect to fastest in country:";

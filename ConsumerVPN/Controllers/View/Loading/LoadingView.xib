@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <view id="teR-zr-vQX" customClass="LoadingView" customModule="ConsumerVPN" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="700" height="500"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <customView translatesAutoresizingMaskIntoConstraints="NO" id="7zN-nU-sfI" customClass="LoadingCircle" customModule="ConsumerVPN" customModuleProvider="target">
+                    <rect key="frame" x="210" y="145" width="280" height="280"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="280" id="gCV-Fu-y5G"/>
+                        <constraint firstAttribute="width" constant="280" id="r8K-DH-Ezp"/>
+                    </constraints>
+                </customView>
+                <button translatesAutoresizingMaskIntoConstraints="NO" id="ly7-P8-L9q" customClass="CustomButton" customModule="ConsumerVPN" customModuleProvider="target">
+                    <rect key="frame" x="225" y="51" width="250" height="42"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="42" id="1n3-J2-mgU"/>
+                        <constraint firstAttribute="width" constant="250" id="ple-21-43Z"/>
+                    </constraints>
+                    <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="Pdh-l3-Ovi">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="systemLight" size="10"/>
+                    </buttonCell>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="8"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                            <integer key="value" value="15"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                            <real key="value" value="0.0"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="string" keyPath="buttonText" value="Disconnect"/>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="shouldBoldText" value="NO"/>
+                        <userDefinedRuntimeAttribute type="color" keyPath="backgroundColor">
+                            <color key="value" red="0.039215686270000001" green="0.51764705879999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="cancelConnect:" target="teR-zr-vQX" id="0Gm-pn-Zav"/>
+                    </connections>
+                </button>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="ly7-P8-L9q" secondAttribute="bottom" constant="51" id="0nv-az-eFA"/>
+                <constraint firstItem="7zN-nU-sfI" firstAttribute="top" secondItem="teR-zr-vQX" secondAttribute="top" constant="75" id="Czl-SS-g2b"/>
+                <constraint firstItem="7zN-nU-sfI" firstAttribute="centerX" secondItem="teR-zr-vQX" secondAttribute="centerX" id="sJc-Ay-4FK"/>
+                <constraint firstItem="ly7-P8-L9q" firstAttribute="centerX" secondItem="teR-zr-vQX" secondAttribute="centerX" id="z1m-ou-GsQ"/>
+            </constraints>
+            <connections>
+                <outlet property="cancelButton" destination="ly7-P8-L9q" id="f1h-ld-UcK"/>
+            </connections>
+        </view>
+    </objects>
+</document>

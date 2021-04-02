@@ -1,0 +1,98 @@
+/* 
+  Localizable.strings
+  WhiteLabelVPN
+
+  Created by Zeph Cohen on 9/13/16.
+  Copyright © 2016 WLVPN. All rights reserved.
+*/
+
+/* Connect View Controller Strings */
+
+"FastestAvailable" = "Más Rápido Disponible";
+
+/* Disconnect View Controller Strings */
+"PublicIPAddress" = "Dirección IP Pública:";
+"IPAddressError" = "No se pudo cargar la Dirección IP";
+"EncryptionNone" = "NINGUNA";
+"ProtocolOption" = "Opción de Protocolo:";
+
+/* Main Window Header View Strings */
+"ServerList" = "Lista de Servidores";
+"Filter" = "Filtro";
+"About" = "Acerca de";
+"Hide" = "Ocultar";
+"Quit" = "Cerrar";
+"Logout" = "Salir";
+"Preferences" = "Preferencias";
+"UpdateServersNow" = "Actualizar Servidores Ahora";
+
+/* Server List View Strings */
+"Connect" = "Conectar";
+"Cancel" = "Cancelar";
+"Disconnect" = "Desconectar";
+"DisconnectPrompt" = "Actualmente estás conectado, ¿Te gustaría desconectarte primero?";
+"ConnectPrompt" = "¿Te gustaría conectarte a";
+"ServerConnectPrompt" = "¿Te gustaría conectarte al servidor?";
+"ServerConnectPromptFallback" = "¿Te gustaría conectarte a este servidor?";
+"ServerUpdateFailedMessage" = "Error al actualizar la lista de servidores.";
+"ServerUpdateFailedTitle" = "Error de actualización del servidor";
+"Yes" = "Si";
+"No" = "No";
+"Ok" = "Ok";
+"ConfigurationUpdated" = "Configuración Actualizada";
+"LoadingInitialServers" = "Carga Inicial de Servidores ...";
+"LocationSelected" = "Ubicación seleccionada";
+"ServerLocations" = "Servidores";
+"Servers" = "Servidores";
+"Country" = "País";
+"City" = "Ciudad";
+
+/* Connection Strings */
+
+"Connecting" = "Conectando...";
+"UpdatingServers" = "Actualizando Servidores...";
+"Connected" = "Conexión Exitosa";
+"Disconnecting" = "Desconectando...";
+"Disconnected" = "Desconectado";
+"Disconnect" = "Desconectar";
+"ConnectionFailed" = "Conexión Fallida";
+"OnDemandConfirm" = "Desconectarse de la VPN deshabilitará la configuración de Bajo Demanda. ¿Deseas continuar?";
+"OnDemandDisconnect" = "Deshabilitar Bajo Demanda te desconectará de la VPN. ¿Te gustaria continuar?";
+
+
+/* Filter View Strings */
+"ResetFilters" = "Reiniciar";
+"SortBy" = "Ordenar Por";
+"Ping" = "Ping";
+"PingAny" = "Cualquiera";
+"PingLessThanFifty" = "< 50";
+"PingFiftyThroughHundred" = "50-100";
+"PingHundredThroughTwoHundred" = "100-200";
+"PingGreaterThanTwoHundred" = "> 200";
+"FiltersApplied" = "Filtros Aplicados";
+"NoResultsFound" = "No Se Encontratorn Resultados";
+
+/* Custom Search Bar Strings */
+"Search" = "Buscar";
+
+/* Login Strings */
+"InvalidCredentialsTitle" = "Credenciales Faltantes";
+"InvalidCredentials" = "Se requiere un nombre de usuario y contraseña para iniciar sesión.";
+"LoginFailed" = "El nombre de usuario o la contraseña son incorrectos";
+"LoginFailedTitle" = "Error de Inicio de Sesión";
+"LoginFailedGeneral" = "Error al iniciar sesión, intente nuevamente.";
+"LoggingIn" = "Iniciando Sesión...";
+"LoginGeneral" = "Iniciar Sesión";
+
+/* Preferences */
+"OnDemand" = "Bajo Demanda";
+"OnDemandEnabled" = "Habilitado";
+
+"SystemStartup" = "Inicio de Sistema";
+"HideOnStartup" = "Ocultar al Inicio";
+
+"Startup" = "Inicio:";
+"DoNotAutomaticallyConnect" = "No conectar automáticamente";
+"ConnectToLastConnected" = "Conectar al último servidor conectado";
+"ConnectToFastest" = "Conectarse al servidor más rapido";
+"ConnectToFastestInCountry" = "Conectarse al mar rapido del país:";

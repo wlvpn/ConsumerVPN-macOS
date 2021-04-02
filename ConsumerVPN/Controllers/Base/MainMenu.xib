@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16096" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16096"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
+            <connections>
+                <outlet property="delegate" destination="Voe-Tx-rLC" id="GzC-gU-4Uq"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customObject id="aIN-k3-dqQ" customClass="SUUpdater"/>
+        <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="ConsumerVPN" customModuleProvider="target">
+            <connections>
+                <outlet property="aboutMenuItem" destination="31G-fd-EgW" id="Fcs-zv-wqa"/>
+                <outlet property="applicationMenuItem" destination="1Xt-HY-uBw" id="5hZ-gB-SnI"/>
+                <outlet property="checkForUpdatesSeparatorMenuItem" destination="mV3-JY-QMx" id="Zfu-pl-7Yt"/>
+                <outlet property="hideMenuItem" destination="Olw-nP-bQN" id="URU-L9-8UP"/>
+                <outlet property="logoutMenuItem" destination="PGo-4D-vFc" id="gky-zh-59L"/>
+                <outlet property="preferencesMenuItem" destination="78j-YQ-6Yo" id="DZP-V0-fua"/>
+                <outlet property="quitMenuItem" destination="4sb-4s-VLi" id="X4o-BN-fbn"/>
+                <outlet property="updateServersMenuItem" destination="fll-R6-SXE" id="GPj-2O-5Yf"/>
+            </connections>
+        </customObject>
+        <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
+        <menu title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
+            <items>
+                <menuItem title="wlvpn" id="1Xt-HY-uBw">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="wlvpn" systemMenu="apple" id="uQy-DD-JDr">
+                        <items>
+                            <menuItem title="About" id="31G-fd-EgW">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="aboutMenuAction:" target="Voe-Tx-rLC" id="P8z-XM-Pp5"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="uC4-fJ-Pmz"/>
+                            <menuItem title="Preferences..." keyEquivalent="," id="78j-YQ-6Yo">
+                                <connections>
+                                    <action selector="preferencesClicked:" target="Voe-Tx-rLC" id="NFF-vf-EU1"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Update Servers Now" id="fll-R6-SXE">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="updateServers:" target="Voe-Tx-rLC" id="AWo-In-qRJ"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="mV3-JY-QMx"/>
+                            <menuItem title="Hide wlvpn" keyEquivalent="h" id="Olw-nP-bQN">
+                                <connections>
+                                    <action selector="hide:" target="-1" id="PnN-Uc-m68"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Hide Others" keyEquivalent="h" id="Vdr-fp-XzO">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="hideOtherApplications:" target="-1" id="VT4-aY-XCT"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Show All" id="Kd2-mp-pUS">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="unhideAllApplications:" target="-1" id="Dhg-Le-xox"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="kCx-OE-vgT"/>
+                            <menuItem title="Logout" id="PGo-4D-vFc">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="logoutMenuAction:" target="Voe-Tx-rLC" id="m7S-EH-Ha6"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Quit wlvpn" keyEquivalent="q" id="4sb-4s-VLi">
+                                <connections>
+                                    <action selector="terminate:" target="-1" id="Te7-pn-YzF"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="File" id="KtS-1I-sHI">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="File" id="Not-eB-Gt2">
+                        <items>
+                            <menuItem title="Close" keyEquivalent="w" id="her-rM-myW">
+                                <connections>
+                                    <action selector="performClose:" target="-1" id="N6A-To-Psr"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="Edit" id="y6y-9R-Sb5">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Edit" id="ZAs-As-RPv">
+                        <items>
+                            <menuItem title="Undo" keyEquivalent="z" id="Tfd-GN-0PQ">
+                                <connections>
+                                    <action selector="undo:" target="-1" id="Ukk-0a-NpG"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Redo" keyEquivalent="Z" id="wV8-yU-1Pp">
+                                <connections>
+                                    <action selector="redo:" target="-1" id="buX-Bk-g7s"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="OdU-7Q-b75"/>
+                            <menuItem title="Cut" keyEquivalent="x" id="B3d-k3-Njp">
+                                <connections>
+                                    <action selector="cut:" target="-1" id="WqA-3x-sfk"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Copy" keyEquivalent="c" id="fvc-VD-kqK">
+                                <connections>
+                                    <action selector="copy:" target="-1" id="udp-yA-AXa"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Paste" keyEquivalent="v" id="8vu-JE-G1M">
+                                <connections>
+                                    <action selector="paste:" target="-1" id="g9R-Mg-w4v"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Select All" keyEquivalent="a" id="SAl-an-3FV">
+                                <connections>
+                                    <action selector="selectAll:" target="-1" id="ZvI-gX-tdk"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="Window" id="aUF-d1-5bR">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Window" systemMenu="window" id="Td7-aD-5lo">
+                        <items>
+                            <menuItem title="Minimize" keyEquivalent="m" id="OY7-WF-poV">
+                                <connections>
+                                    <action selector="performMiniaturize:" target="-1" id="VwT-WD-YPe"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="eu3-7i-yIM"/>
+                            <menuItem title="Bring All to Front" id="LE2-aR-0XJ">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="arrangeInFront:" target="-1" id="DRN-fu-gQh"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="Help" id="wpr-3q-Mcd">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="-198" y="154"/>
+        </menu>
+        <menuItem title="Window" id="NLH-Sg-fby">
+            <modifierMask key="keyEquivalentModifierMask"/>
+            <menu key="submenu" title="Window" systemMenu="window" id="LMJ-31-QhL">
+                <items>
+                    <menuItem title="Minimize" keyEquivalent="m" id="pSf-Uz-cPj">
+                        <connections>
+                            <action selector="performMiniaturize:" target="-1" id="bdJ-FW-BqO"/>
+                        </connections>
+                    </menuItem>
+                    <menuItem title="Zoom" id="Ah3-oU-v8h">
+                        <modifierMask key="keyEquivalentModifierMask"/>
+                        <connections>
+                            <action selector="performZoom:" target="-1" id="Uvp-ti-zoA"/>
+                        </connections>
+                    </menuItem>
+                    <menuItem isSeparatorItem="YES" id="GbB-ol-cDc"/>
+                    <menuItem title="Bring All to Front" id="HfE-gt-dUZ">
+                        <modifierMask key="keyEquivalentModifierMask"/>
+                        <connections>
+                            <action selector="arrangeInFront:" target="-1" id="aqC-af-z5k"/>
+                        </connections>
+                    </menuItem>
+                </items>
+            </menu>
+        </menuItem>
+    </objects>
+</document>

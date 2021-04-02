@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="w3J-Qq-VRg" customClass="ConnectView" customModule="ConsumerVPN" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="700" height="500"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <customView translatesAutoresizingMaskIntoConstraints="NO" id="E1A-Zh-HB5" customClass="GradientView" customModule="ConsumerVPN" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="700" height="500"/>
+                    <subviews>
+                        <stackView distribution="fill" orientation="vertical" alignment="centerX" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rQp-LL-L6a">
+                            <rect key="frame" x="100" y="242" width="500" height="172"/>
+                            <subviews>
+                                <customView translatesAutoresizingMaskIntoConstraints="NO" id="3tJ-ii-IK8" customClass="ShieldView" customModule="ConsumerVPN" customModuleProvider="target">
+                                    <rect key="frame" x="200" y="61" width="100" height="111"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="100" id="04m-aw-UoT"/>
+                                        <constraint firstAttribute="height" constant="111" id="9w4-A1-M2Q"/>
+                                    </constraints>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="boolean" keyPath="isDisconnected" value="YES"/>
+                                    </userDefinedRuntimeAttributes>
+                                </customView>
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JBU-UV-e54">
+                                    <rect key="frame" x="182" y="34" width="137" height="19"/>
+                                    <textFieldCell key="cell" lineBreakMode="clipping" title="Location selected:" id="cCk-CR-6ok">
+                                        <font key="font" metaFont="system" size="16"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="h7A-4E-VLY">
+                                    <rect key="frame" x="187" y="0.0" width="127" height="26"/>
+                                    <textFieldCell key="cell" lineBreakMode="clipping" title="Server Name" id="iev-By-Smd">
+                                        <font key="font" metaFont="system" size="22"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                            </subviews>
+                            <visibilityPriorities>
+                                <integer value="1000"/>
+                                <integer value="1000"/>
+                                <integer value="1000"/>
+                            </visibilityPriorities>
+                            <customSpacing>
+                                <real value="3.4028234663852886e+38"/>
+                                <real value="3.4028234663852886e+38"/>
+                                <real value="3.4028234663852886e+38"/>
+                            </customSpacing>
+                        </stackView>
+                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Z2S-Pz-KeE">
+                            <rect key="frame" x="50" y="146" width="600" height="304"/>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="Z2S-Pz-KeE" secondAttribute="height" multiplier="493:250" id="bAf-Pv-uvw"/>
+                            </constraints>
+                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Map" id="tQ6-oJ-NX0"/>
+                        </imageView>
+                        <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="16" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iaC-qs-0EQ">
+                            <rect key="frame" x="225" y="51" width="250" height="93"/>
+                            <subviews>
+                                <button translatesAutoresizingMaskIntoConstraints="NO" id="2Cg-Bx-Zlj" customClass="CustomButton" customModule="ConsumerVPN" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="58" width="250" height="35"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="250" id="SRI-fQ-bka"/>
+                                        <constraint firstAttribute="height" constant="35" id="baN-cG-esf"/>
+                                    </constraints>
+                                    <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="bWR-eL-udj">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                        <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                    </buttonCell>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                            <real key="value" value="8"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                            <integer key="value" value="13"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                            <real key="value" value="2"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="buttonText" value="Connect"/>
+                                        <userDefinedRuntimeAttribute type="boolean" keyPath="shouldBoldText" value="NO"/>
+                                    </userDefinedRuntimeAttributes>
+                                    <connections>
+                                        <action selector="didSelectChooseLocation:" target="w3J-Qq-VRg" id="wfS-Jg-INV"/>
+                                    </connections>
+                                </button>
+                                <button translatesAutoresizingMaskIntoConstraints="NO" id="jD5-be-MXo" customClass="CustomButton" customModule="ConsumerVPN" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="250" height="42"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="250" id="8WB-bZ-do7"/>
+                                        <constraint firstAttribute="height" constant="42" id="abQ-tg-8ka"/>
+                                    </constraints>
+                                    <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="YOG-0h-f5e">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                        <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                    </buttonCell>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                            <real key="value" value="8"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                            <integer key="value" value="15"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                            <real key="value" value="2"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="buttonText" value="Connect"/>
+                                    </userDefinedRuntimeAttributes>
+                                    <connections>
+                                        <action selector="didSelectConnectButton:" target="w3J-Qq-VRg" id="UFH-WA-Na2"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <visibilityPriorities>
+                                <integer value="1000"/>
+                                <integer value="1000"/>
+                            </visibilityPriorities>
+                            <customSpacing>
+                                <real value="3.4028234663852886e+38"/>
+                                <real value="3.4028234663852886e+38"/>
+                            </customSpacing>
+                        </stackView>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="rQp-LL-L6a" firstAttribute="centerY" secondItem="E1A-Zh-HB5" secondAttribute="centerY" constant="-78" id="EHh-Cs-IKW"/>
+                        <constraint firstAttribute="bottom" secondItem="iaC-qs-0EQ" secondAttribute="bottom" constant="51" id="PeL-8s-XZS"/>
+                        <constraint firstItem="rQp-LL-L6a" firstAttribute="centerX" secondItem="E1A-Zh-HB5" secondAttribute="centerX" id="Qc0-yv-eoj"/>
+                        <constraint firstItem="iaC-qs-0EQ" firstAttribute="centerX" secondItem="E1A-Zh-HB5" secondAttribute="centerX" id="RGr-X7-P6O"/>
+                        <constraint firstItem="Z2S-Pz-KeE" firstAttribute="leading" secondItem="E1A-Zh-HB5" secondAttribute="leading" constant="50" id="ZhJ-sX-2kc"/>
+                        <constraint firstAttribute="trailing" secondItem="rQp-LL-L6a" secondAttribute="trailing" constant="100" id="ci3-5x-bvc"/>
+                        <constraint firstItem="rQp-LL-L6a" firstAttribute="leading" secondItem="E1A-Zh-HB5" secondAttribute="leading" constant="100" id="hJv-an-eng"/>
+                        <constraint firstItem="Z2S-Pz-KeE" firstAttribute="centerX" secondItem="E1A-Zh-HB5" secondAttribute="centerX" id="pyF-YU-jsJ"/>
+                        <constraint firstItem="Z2S-Pz-KeE" firstAttribute="top" secondItem="E1A-Zh-HB5" secondAttribute="top" constant="50" id="v1z-wX-PUw"/>
+                        <constraint firstAttribute="trailing" secondItem="Z2S-Pz-KeE" secondAttribute="trailing" constant="50" id="wvX-Kb-a4x"/>
+                    </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="color" keyPath="topColor">
+                            <color key="value" red="0.92941176469999998" green="0.92941176469999998" blue="0.92941176469999998" alpha="0.84705882349999995" colorSpace="calibratedRGB"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="bottomColor">
+                            <color key="value" red="0.92941176469999998" green="0.92941176469999998" blue="0.92941176469999998" alpha="0.84705882349999995" colorSpace="calibratedRGB"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </customView>
+            </subviews>
+            <constraints>
+                <constraint firstItem="E1A-Zh-HB5" firstAttribute="top" secondItem="w3J-Qq-VRg" secondAttribute="top" id="0dO-uM-sdy"/>
+                <constraint firstItem="E1A-Zh-HB5" firstAttribute="leading" secondItem="w3J-Qq-VRg" secondAttribute="leading" id="5G8-YV-cNL"/>
+                <constraint firstAttribute="bottom" secondItem="E1A-Zh-HB5" secondAttribute="bottom" id="C5f-nO-oPU"/>
+                <constraint firstAttribute="bottom" secondItem="E1A-Zh-HB5" secondAttribute="bottom" id="euV-Ve-Yqu"/>
+                <constraint firstAttribute="trailing" secondItem="E1A-Zh-HB5" secondAttribute="trailing" id="iUY-pu-tfk"/>
+                <constraint firstAttribute="trailing" secondItem="E1A-Zh-HB5" secondAttribute="trailing" id="vH3-Uk-9lg"/>
+                <constraint firstItem="E1A-Zh-HB5" firstAttribute="leading" secondItem="w3J-Qq-VRg" secondAttribute="leading" id="zOL-wz-IxC"/>
+            </constraints>
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="color" keyPath="backgroundColor">
+                    <color key="value" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                </userDefinedRuntimeAttribute>
+            </userDefinedRuntimeAttributes>
+            <connections>
+                <outlet property="contentView" destination="E1A-Zh-HB5" id="cy0-IT-BHM"/>
+                <outlet property="locationNameLabel" destination="h7A-4E-VLY" id="uqW-GU-6tA"/>
+                <outlet property="locationTitleLabel" destination="JBU-UV-e54" id="7DH-Rp-AjH"/>
+                <outlet property="serverLocationButton" destination="2Cg-Bx-Zlj" id="fCt-ZB-Mgv"/>
+                <outlet property="shieldView" destination="3tJ-ii-IK8" id="Wmi-XG-Ger"/>
+                <outlet property="vpnConnectButton" destination="jD5-be-MXo" id="YVq-hk-xcQ"/>
+            </connections>
+            <point key="canvasLocation" x="139" y="154"/>
+        </customView>
+    </objects>
+    <resources>
+        <image name="Map" width="500" height="252"/>
+    </resources>
+</document>

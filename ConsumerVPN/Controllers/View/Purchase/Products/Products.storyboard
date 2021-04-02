@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17506"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Products View Controller-->
+        <scene sceneID="cia-LT-rwY">
+            <objects>
+                <viewController storyboardIdentifier="ProductsViewController" id="rLZ-0a-nMm" customClass="ProductsViewController" customModule="ConsumerVPN" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="hGa-Em-Va6" customClass="ColorView" customModule="ConsumerVPN" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="797" height="580"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <stackView hidden="YES" orientation="vertical" alignment="centerX" spacing="20" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="feZ-gh-S3y" userLabel="Plans Failed">
+                                <rect key="frame" x="168" y="50" width="461" height="245"/>
+                                <middleViews>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gU7-xF-3Kw">
+                                        <rect key="frame" x="165" y="135" width="131" height="16"/>
+                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Plans fetching failed." id="cOq-lI-G8m">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <button verticalHuggingPriority="750" verticalCompressionResistancePriority="751" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VBy-RM-ucn">
+                                        <rect key="frame" x="197" y="88" width="68" height="32"/>
+                                        <buttonCell key="cell" type="push" title="Retry" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="oCd-eA-wlJ">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="fetchProducts:" target="rLZ-0a-nMm" id="7g4-W0-LiV"/>
+                                        </connections>
+                                    </button>
+                                </middleViews>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
+                            <button tag="10" translatesAutoresizingMaskIntoConstraints="NO" id="Sok-N7-NE7" customClass="CustomButton" customModule="ConsumerVPN" customModuleProvider="target">
+                                <rect key="frame" x="149" y="207" width="231" height="96"/>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="CET-Ub-sAb">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="selectedProduct:" target="rLZ-0a-nMm" id="QZk-vn-23Z"/>
+                                </connections>
+                            </button>
+                            <button tag="11" translatesAutoresizingMaskIntoConstraints="NO" id="7hr-pH-a1O" customClass="CustomButton" customModule="ConsumerVPN" customModuleProvider="target">
+                                <rect key="frame" x="417" y="207" width="231" height="96"/>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="Mj1-hV-Hwz">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="selectedProduct:" target="rLZ-0a-nMm" id="4gc-Ka-UYR"/>
+                                </connections>
+                            </button>
+                            <button tag="20" translatesAutoresizingMaskIntoConstraints="NO" id="xij-3G-Z8Z" customClass="CustomButton" customModule="ConsumerVPN" customModuleProvider="target">
+                                <rect key="frame" x="149" y="62" width="231" height="96"/>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="p2p-Vw-oxm">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="selectedProduct:" target="rLZ-0a-nMm" id="brC-ac-Evu"/>
+                                </connections>
+                            </button>
+                            <button tag="21" translatesAutoresizingMaskIntoConstraints="NO" id="fYo-f4-OY5" customClass="CustomButton" customModule="ConsumerVPN" customModuleProvider="target">
+                                <rect key="frame" x="417" y="62" width="231" height="96"/>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="413-ad-r4r">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="selectedProduct:" target="rLZ-0a-nMm" id="FMy-Lf-QJl"/>
+                                </connections>
+                            </button>
+                            <stackView distribution="fillEqually" orientation="vertical" alignment="centerX" spacing="20" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RwD-uu-4Hb">
+                                <rect key="frame" x="50" y="50" width="697" height="480"/>
+                                <subviews>
+                                    <stackView distribution="fill" orientation="vertical" alignment="centerX" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uuj-IN-umw">
+                                        <rect key="frame" x="275" y="421" width="148" height="59"/>
+                                        <subviews>
+                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8oI-CZ-x49">
+                                                <rect key="frame" x="15" y="38" width="117" height="21"/>
+                                                <textFieldCell key="cell" lineBreakMode="clipping" title="UPGRADE TO" id="reZ-Sv-HhW">
+                                                    <font key="font" metaFont="systemMedium" size="18"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                            </textField>
+                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Neg-EI-BKm">
+                                                <rect key="frame" x="-2" y="0.0" width="152" height="38"/>
+                                                <textFieldCell key="cell" lineBreakMode="clipping" title="PREMIUM" id="2Bb-ji-WLd">
+                                                    <font key="font" metaFont="systemBold" size="32"/>
+                                                    <color key="textColor" red="0.82102853060000003" green="0.1098685786" blue="0.1861492693" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                            </textField>
+                                        </subviews>
+                                        <visibilityPriorities>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                        </visibilityPriorities>
+                                        <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                        </customSpacing>
+                                    </stackView>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bZB-dj-R6j">
+                                        <rect key="frame" x="119" y="385" width="460" height="16"/>
+                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium." id="YaJ-Lv-tnL">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <stackView distribution="fillEqually" orientation="vertical" alignment="centerX" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qh7-ZM-LbZ">
+                                        <rect key="frame" x="240" y="265" width="218" height="100"/>
+                                        <subviews>
+                                            <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Hwe-3N-5t7" userLabel="Bullet point">
+                                                <rect key="frame" x="0.0" y="72" width="218" height="28"/>
+                                                <subviews>
+                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="gMb-tC-21M">
+                                                        <rect key="frame" x="0.0" y="3" width="23" height="25"/>
+                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="user_avatar" id="Gb1-LD-KAU"/>
+                                                    </imageView>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Qcb-st-Hpa">
+                                                        <rect key="frame" x="29" y="12" width="191" height="16"/>
+                                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Sed ut perspiciatis unde omnis" id="ZXR-qF-7xL">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                </subviews>
+                                                <visibilityPriorities>
+                                                    <integer value="1000"/>
+                                                    <integer value="1000"/>
+                                                </visibilityPriorities>
+                                                <customSpacing>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                </customSpacing>
+                                            </stackView>
+                                            <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V5T-qC-AcN" userLabel="Bullet point">
+                                                <rect key="frame" x="0.0" y="36" width="218" height="28"/>
+                                                <subviews>
+                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="tWF-o0-zL5">
+                                                        <rect key="frame" x="0.0" y="3" width="23" height="25"/>
+                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="user_avatar" id="ejf-gF-uln"/>
+                                                    </imageView>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fwh-nn-e59">
+                                                        <rect key="frame" x="29" y="12" width="191" height="16"/>
+                                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Sed ut perspiciatis unde omnis" id="578-1l-rJW">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                </subviews>
+                                                <visibilityPriorities>
+                                                    <integer value="1000"/>
+                                                    <integer value="1000"/>
+                                                </visibilityPriorities>
+                                                <customSpacing>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                </customSpacing>
+                                            </stackView>
+                                            <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pb4-GY-y9p" userLabel="Bullet point">
+                                                <rect key="frame" x="0.0" y="0.0" width="218" height="28"/>
+                                                <subviews>
+                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="aFr-33-p0z">
+                                                        <rect key="frame" x="0.0" y="3" width="23" height="25"/>
+                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="user_avatar" id="Pgo-yu-U5l"/>
+                                                    </imageView>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="su6-U9-aSr">
+                                                        <rect key="frame" x="29" y="12" width="191" height="16"/>
+                                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Sed ut perspiciatis unde omnis" id="8sq-Nh-zkf">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                </subviews>
+                                                <visibilityPriorities>
+                                                    <integer value="1000"/>
+                                                    <integer value="1000"/>
+                                                </visibilityPriorities>
+                                                <customSpacing>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                </customSpacing>
+                                            </stackView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="100" id="hld-gu-c0b"/>
+                                        </constraints>
+                                        <visibilityPriorities>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                        </visibilityPriorities>
+                                        <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                        </customSpacing>
+                                    </stackView>
+                                    <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="45" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="smU-yR-ovL" userLabel="Plans">
+                                        <rect key="frame" x="118" y="0.0" width="461" height="245"/>
+                                        <subviews>
+                                            <stackView distribution="fill" orientation="horizontal" alignment="top" spacing="75" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fwh-fc-waJ" userLabel="Top Plans">
+                                                <rect key="frame" x="0.0" y="145" width="461" height="100"/>
+                                                <subviews>
+                                                    <stackView distribution="fill" orientation="vertical" alignment="centerX" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0ef-ge-LwC">
+                                                        <rect key="frame" x="0.0" y="20" width="193" height="80"/>
+                                                        <subviews>
+                                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="GBx-vA-1zM">
+                                                                <rect key="frame" x="65" y="64" width="64" height="16"/>
+                                                                <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="Daily Plan" id="vKL-0n-pdI">
+                                                                    <font key="font" usesAppearanceFont="YES"/>
+                                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField horizontalHuggingPriority="249" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="751" preferredMaxLayoutWidth="200" translatesAutoresizingMaskIntoConstraints="NO" id="hec-ai-CQL">
+                                                                <rect key="frame" x="-2" y="24" width="197" height="32"/>
+                                                                <textFieldCell key="cell" enabled="NO" alignment="center" title="Duis aute irure dolor in reprerit in lorem ipsum" id="V3e-zi-k4d">
+                                                                    <font key="font" usesAppearanceFont="YES"/>
+                                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="3WB-i6-QyW">
+                                                                <rect key="frame" x="78" y="0.0" width="38" height="16"/>
+                                                                <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="$1.99" id="xk2-8R-gAH">
+                                                                    <font key="font" usesAppearanceFont="YES"/>
+                                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                        </subviews>
+                                                        <visibilityPriorities>
+                                                            <integer value="1000"/>
+                                                            <integer value="1000"/>
+                                                            <integer value="1000"/>
+                                                        </visibilityPriorities>
+                                                        <customSpacing>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                        </customSpacing>
+                                                    </stackView>
+                                                    <stackView distribution="fill" orientation="vertical" alignment="centerX" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gaD-Mi-14I">
+                                                        <rect key="frame" x="268" y="20" width="193" height="80"/>
+                                                        <subviews>
+                                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="qZr-IS-d0y">
+                                                                <rect key="frame" x="73" y="64" width="48" height="16"/>
+                                                                <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="Weekly" id="ppT-It-GBS">
+                                                                    <font key="font" usesAppearanceFont="YES"/>
+                                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField horizontalHuggingPriority="249" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="751" preferredMaxLayoutWidth="200" translatesAutoresizingMaskIntoConstraints="NO" id="fdJ-aL-1nE">
+                                                                <rect key="frame" x="-2" y="24" width="197" height="32"/>
+                                                                <textFieldCell key="cell" enabled="NO" alignment="center" title="Duis aute irure dolor in reprerit in lorem ipsum" id="WQg-FD-JCg">
+                                                                    <font key="font" usesAppearanceFont="YES"/>
+                                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="dRd-nY-mtv">
+                                                                <rect key="frame" x="77" y="0.0" width="40" height="16"/>
+                                                                <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="$4.99" id="jkl-Pt-K5A">
+                                                                    <font key="font" usesAppearanceFont="YES"/>
+                                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                        </subviews>
+                                                        <visibilityPriorities>
+                                                            <integer value="1000"/>
+                                                            <integer value="1000"/>
+                                                            <integer value="1000"/>
+                                                        </visibilityPriorities>
+                                                        <customSpacing>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                        </customSpacing>
+                                                    </stackView>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="100" id="BIz-Be-wQz"/>
+                                                </constraints>
+                                                <visibilityPriorities>
+                                                    <integer value="1000"/>
+                                                    <integer value="1000"/>
+                                                </visibilityPriorities>
+                                                <customSpacing>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                </customSpacing>
+                                            </stackView>
+                                            <stackView distribution="fill" orientation="horizontal" alignment="top" spacing="75" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Lrm-2N-c8l" userLabel="Bottom Plans">
+                                                <rect key="frame" x="0.0" y="0.0" width="461" height="100"/>
+                                                <subviews>
+                                                    <stackView distribution="fill" orientation="vertical" alignment="centerX" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i9F-lX-OoT">
+                                                        <rect key="frame" x="0.0" y="20" width="193" height="80"/>
+                                                        <subviews>
+                                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="g9S-K7-Gyk">
+                                                                <rect key="frame" x="70" y="64" width="53" height="16"/>
+                                                                <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="Monthly" id="Qxq-Wf-fz7">
+                                                                    <font key="font" usesAppearanceFont="YES"/>
+                                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField horizontalHuggingPriority="249" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="752" preferredMaxLayoutWidth="200" translatesAutoresizingMaskIntoConstraints="NO" id="0sw-Tb-bLL">
+                                                                <rect key="frame" x="-2" y="24" width="197" height="32"/>
+                                                                <textFieldCell key="cell" enabled="NO" alignment="center" title="Duis aute irure dolor in reprerit in lorem ipsum" id="0EB-cS-lQm">
+                                                                    <font key="font" usesAppearanceFont="YES"/>
+                                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="8d1-fz-qKm">
+                                                                <rect key="frame" x="73" y="0.0" width="48" height="16"/>
+                                                                <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="$99.99" id="Xoi-ST-Osx">
+                                                                    <font key="font" usesAppearanceFont="YES"/>
+                                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                        </subviews>
+                                                        <visibilityPriorities>
+                                                            <integer value="1000"/>
+                                                            <integer value="1000"/>
+                                                            <integer value="1000"/>
+                                                        </visibilityPriorities>
+                                                        <customSpacing>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                        </customSpacing>
+                                                    </stackView>
+                                                    <stackView distribution="fill" orientation="vertical" alignment="centerX" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E8F-JJ-g0J">
+                                                        <rect key="frame" x="268" y="20" width="193" height="80"/>
+                                                        <subviews>
+                                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="xzi-6g-nt2">
+                                                                <rect key="frame" x="59" y="64" width="76" height="16"/>
+                                                                <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="Annual Plan" id="11P-RC-E97">
+                                                                    <font key="font" usesAppearanceFont="YES"/>
+                                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField horizontalHuggingPriority="249" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="751" preferredMaxLayoutWidth="200" translatesAutoresizingMaskIntoConstraints="NO" id="JT7-St-St9">
+                                                                <rect key="frame" x="-2" y="24" width="197" height="32"/>
+                                                                <textFieldCell key="cell" enabled="NO" alignment="center" title="Duis aute irure dolor in reprerit in lorem ipsum" id="0AE-a2-WFj">
+                                                                    <font key="font" usesAppearanceFont="YES"/>
+                                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="XiI-k9-bS8">
+                                                                <rect key="frame" x="73" y="0.0" width="48" height="16"/>
+                                                                <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="$99.99" id="8AC-33-lUm">
+                                                                    <font key="font" usesAppearanceFont="YES"/>
+                                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                        </subviews>
+                                                        <visibilityPriorities>
+                                                            <integer value="1000"/>
+                                                            <integer value="1000"/>
+                                                            <integer value="1000"/>
+                                                        </visibilityPriorities>
+                                                        <customSpacing>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                        </customSpacing>
+                                                    </stackView>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="100" id="i39-PR-mut"/>
+                                                </constraints>
+                                                <visibilityPriorities>
+                                                    <integer value="1000"/>
+                                                    <integer value="1000"/>
+                                                </visibilityPriorities>
+                                                <customSpacing>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                </customSpacing>
+                                            </stackView>
+                                        </subviews>
+                                        <visibilityPriorities>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                        </visibilityPriorities>
+                                        <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                        </customSpacing>
+                                    </stackView>
+                                </subviews>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
+                            <progressIndicator wantsLayer="YES" maxValue="100" displayedWhenStopped="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="Xmi-1B-js0">
+                                <rect key="frame" x="391" y="165" width="16" height="16"/>
+                            </progressIndicator>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="Xmi-1B-js0" firstAttribute="centerY" secondItem="smU-yR-ovL" secondAttribute="centerY" id="0T5-hE-CJ4"/>
+                            <constraint firstItem="fYo-f4-OY5" firstAttribute="centerX" secondItem="E8F-JJ-g0J" secondAttribute="centerX" id="1Is-WU-KFC"/>
+                            <constraint firstItem="xij-3G-Z8Z" firstAttribute="centerY" secondItem="i9F-lX-OoT" secondAttribute="centerY" id="28I-TG-4Eu"/>
+                            <constraint firstItem="feZ-gh-S3y" firstAttribute="centerY" secondItem="smU-yR-ovL" secondAttribute="centerY" id="3PT-RV-7iq"/>
+                            <constraint firstItem="7hr-pH-a1O" firstAttribute="width" secondItem="gaD-Mi-14I" secondAttribute="width" multiplier="1.19858" id="3Y5-Jg-Y5g"/>
+                            <constraint firstItem="xij-3G-Z8Z" firstAttribute="centerX" secondItem="i9F-lX-OoT" secondAttribute="centerX" id="4iN-91-FLt"/>
+                            <constraint firstItem="7hr-pH-a1O" firstAttribute="height" secondItem="gaD-Mi-14I" secondAttribute="height" multiplier="1.2" id="4wl-0l-drD"/>
+                            <constraint firstItem="Sok-N7-NE7" firstAttribute="centerX" secondItem="0ef-ge-LwC" secondAttribute="centerX" id="7nj-bw-1ch"/>
+                            <constraint firstAttribute="bottom" secondItem="RwD-uu-4Hb" secondAttribute="bottom" constant="50" id="CTP-Px-Rk7"/>
+                            <constraint firstItem="Sok-N7-NE7" firstAttribute="centerY" secondItem="0ef-ge-LwC" secondAttribute="centerY" id="DrB-0O-rRE"/>
+                            <constraint firstItem="fYo-f4-OY5" firstAttribute="height" secondItem="E8F-JJ-g0J" secondAttribute="height" multiplier="1.2" id="G72-2l-21N"/>
+                            <constraint firstItem="7hr-pH-a1O" firstAttribute="centerY" secondItem="gaD-Mi-14I" secondAttribute="centerY" id="HGa-yg-E5L"/>
+                            <constraint firstItem="7hr-pH-a1O" firstAttribute="centerX" secondItem="gaD-Mi-14I" secondAttribute="centerX" id="Lat-UJ-43O"/>
+                            <constraint firstItem="xij-3G-Z8Z" firstAttribute="height" secondItem="i9F-lX-OoT" secondAttribute="height" multiplier="1.2" id="Lky-7M-aed"/>
+                            <constraint firstItem="feZ-gh-S3y" firstAttribute="height" secondItem="smU-yR-ovL" secondAttribute="height" id="RSx-hF-eud"/>
+                            <constraint firstItem="Xmi-1B-js0" firstAttribute="centerX" secondItem="smU-yR-ovL" secondAttribute="centerX" id="S3S-4B-T7Z"/>
+                            <constraint firstItem="RwD-uu-4Hb" firstAttribute="leading" secondItem="hGa-Em-Va6" secondAttribute="leading" constant="50" id="Tjo-jb-O1h"/>
+                            <constraint firstItem="feZ-gh-S3y" firstAttribute="centerX" secondItem="smU-yR-ovL" secondAttribute="centerX" id="Ubh-82-jQp"/>
+                            <constraint firstItem="Sok-N7-NE7" firstAttribute="height" secondItem="0ef-ge-LwC" secondAttribute="height" multiplier="1.2" id="Vls-gz-d91"/>
+                            <constraint firstItem="fYo-f4-OY5" firstAttribute="centerY" secondItem="E8F-JJ-g0J" secondAttribute="centerY" id="XeV-yA-8RA"/>
+                            <constraint firstItem="feZ-gh-S3y" firstAttribute="width" secondItem="smU-yR-ovL" secondAttribute="width" id="b6l-ej-cBA"/>
+                            <constraint firstAttribute="trailing" secondItem="RwD-uu-4Hb" secondAttribute="trailing" constant="50" id="bOR-B0-B0V"/>
+                            <constraint firstItem="Sok-N7-NE7" firstAttribute="width" secondItem="0ef-ge-LwC" secondAttribute="width" multiplier="1.19858" id="hJ5-nu-57K"/>
+                            <constraint firstItem="fYo-f4-OY5" firstAttribute="width" secondItem="E8F-JJ-g0J" secondAttribute="width" multiplier="1.19858" id="htP-XG-4gi"/>
+                            <constraint firstItem="xij-3G-Z8Z" firstAttribute="width" secondItem="i9F-lX-OoT" secondAttribute="width" multiplier="1.19858" id="nBJ-7W-b2t"/>
+                            <constraint firstItem="RwD-uu-4Hb" firstAttribute="top" secondItem="hGa-Em-Va6" secondAttribute="top" constant="50" id="zMo-Lx-0VI"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="bottomLeftPlanButton" destination="xij-3G-Z8Z" id="2hc-Mw-Sk8"/>
+                        <outlet property="bottomLeftPlanPrice" destination="8d1-fz-qKm" id="DTb-69-Oqz"/>
+                        <outlet property="bottomLeftPlanSubtitle" destination="0sw-Tb-bLL" id="Cof-Jb-AEe"/>
+                        <outlet property="bottomLeftPlanTitle" destination="g9S-K7-Gyk" id="q0O-r0-duB"/>
+                        <outlet property="bottomLeftStackView" destination="i9F-lX-OoT" id="sYi-Gs-Knu"/>
+                        <outlet property="bottomRightPlanButton" destination="fYo-f4-OY5" id="s0c-G0-1DJ"/>
+                        <outlet property="bottomRightPlanPrice" destination="XiI-k9-bS8" id="Zej-xm-iPa"/>
+                        <outlet property="bottomRightPlanSubtitle" destination="JT7-St-St9" id="i6Y-0T-YPM"/>
+                        <outlet property="bottomRightPlanTitle" destination="xzi-6g-nt2" id="7k2-dd-G0V"/>
+                        <outlet property="bottomRightStackView" destination="E8F-JJ-g0J" id="qP9-jH-HNO"/>
+                        <outlet property="bulletPointFirstImageView" destination="gMb-tC-21M" id="QHc-DU-d3a"/>
+                        <outlet property="bulletPointFirstLabel" destination="Qcb-st-Hpa" id="oOt-V5-3y1"/>
+                        <outlet property="bulletPointSecondImageView" destination="tWF-o0-zL5" id="ALn-zO-TH7"/>
+                        <outlet property="bulletPointSecondLabel" destination="fwh-nn-e59" id="bzj-jK-0Nu"/>
+                        <outlet property="bulletPointThirdImageView" destination="aFr-33-p0z" id="cBj-yh-Ldo"/>
+                        <outlet property="bulletPointThirdLabel" destination="su6-U9-aSr" id="xJB-9i-rwv"/>
+                        <outlet property="loadingView" destination="Xmi-1B-js0" id="Qw5-bO-5Ca"/>
+                        <outlet property="plansFailedButton" destination="VBy-RM-ucn" id="WrT-KM-L04"/>
+                        <outlet property="plansFailedLabel" destination="gU7-xF-3Kw" id="icB-q0-FE5"/>
+                        <outlet property="plansFailedStackView" destination="feZ-gh-S3y" id="2N4-lO-mEI"/>
+                        <outlet property="plansStackView" destination="smU-yR-ovL" id="jtN-VT-RQf"/>
+                        <outlet property="premiumTitleLabel" destination="Neg-EI-BKm" id="egF-2g-BW5"/>
+                        <outlet property="subtitleLabel" destination="bZB-dj-R6j" id="85S-UC-OKx"/>
+                        <outlet property="topLeftPlanButton" destination="Sok-N7-NE7" id="0yY-s2-yIS"/>
+                        <outlet property="topLeftPlanPrice" destination="3WB-i6-QyW" id="h3O-Nc-9Lb"/>
+                        <outlet property="topLeftPlanSubtitle" destination="hec-ai-CQL" id="ajn-TZ-s9L"/>
+                        <outlet property="topLeftPlanTitle" destination="GBx-vA-1zM" id="25v-8A-dZs"/>
+                        <outlet property="topLeftStackView" destination="0ef-ge-LwC" id="lLn-Dw-DSU"/>
+                        <outlet property="topRightPlanButton" destination="7hr-pH-a1O" id="Nv1-Pr-pDF"/>
+                        <outlet property="topRightPlanPrice" destination="dRd-nY-mtv" id="Aav-70-MnD"/>
+                        <outlet property="topRightPlanSubtitle" destination="fdJ-aL-1nE" id="RUj-IG-PoO"/>
+                        <outlet property="topRightPlanTitle" destination="qZr-IS-d0y" id="T9d-ca-y5X"/>
+                        <outlet property="topRightStackView" destination="gaD-Mi-14I" id="kUf-UT-w3J"/>
+                        <outlet property="upgradeToTitleLabel" destination="8oI-CZ-x49" id="8W8-yI-Rcj"/>
+                    </connections>
+                </viewController>
+                <customObject id="WXX-SK-iwH" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="72.5" y="-294"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="user_avatar" width="23" height="25"/>
+    </resources>
+</document>
