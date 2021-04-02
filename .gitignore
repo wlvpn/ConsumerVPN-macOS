@@ -1,8 +1,4 @@
-Pods
 .idea
-.vagrant
-puphpet
-Vagrantfile
 xcuserdata
 servers.json
 protocols.json
