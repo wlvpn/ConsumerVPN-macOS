@@ -20,12 +20,14 @@
  * Builds a VPNAPIManager object for various api and connection adapter settings.
  *
  * @param brandName The brand name of this client
+ * @param configName The VPN configuration name of this client
  * @param apiKey    The api key provided on WLVPN signup
  * @param suffix    The username suffix provided on WLVPN Signup
  *
  * @return An initialized VPNAPIManager ready to use
  */
 + (nonnull VPNAPIManager*) initializeAPIManagerWithBrandName:(NSString *)brandName
+                                                  configName:(NSString *)configName
 													  apiKey:(NSString *)apiKey
 												   andSuffix:(NSString *)suffix {
 
@@ -51,6 +53,7 @@
 	NSDictionary *connectionOptions = @{
 		kVPNManagerUsernameExtensionKey: suffix,
 		kVPNManagerBrandNameKey: brandName,
+        kVPNManagerConfigurationNameKey: configName,
 		kIKEv2KeychainServiceName: apiAdapter.passwordServiceName
 	};
 

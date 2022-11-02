@@ -1,16 +1,14 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "Purchases",
-        "repositoryURL": "https://github.com/RevenueCat/purchases-ios.git",
-        "state": {
-          "branch": null,
-          "revision": "bf5178ee63b67cae908c75e7c7c18c822eed246a",
-          "version": "3.10.4"
-        }
+  "pins" : [
+    {
+      "identity" : "purchases-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RevenueCat/purchases-ios.git",
+      "state" : {
+        "revision" : "bf5178ee63b67cae908c75e7c7c18c822eed246a",
+        "version" : "3.10.4"
       }
-    ]
-  },
-  "version": 1
+    }
+  ],
+  "version" : 2
 }

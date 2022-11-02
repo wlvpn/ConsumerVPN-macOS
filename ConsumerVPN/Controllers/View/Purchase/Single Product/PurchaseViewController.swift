@@ -123,18 +123,20 @@ class PurchaseViewController: BaseViewController {
 	}
 	
 	@IBAction func subscribe(_ sender: Any) {
-		purchaseCoordinator.purchaseWithCachedInfo(product: selectedPlan) { result in
+		purchaseCoordinator.purchaseWithCachedInfo(product: selectedPlan) { [weak self] result in
+            guard let strongSelf = self else { return }
 			switch result {
 			case .success(let didPurchase):
-				guard let email = self.purchaseCoordinator.cachedEmail, let password = self.purchaseCoordinator.cachedPassword else { return }
-				self.apiManager.login(withUsername: email, password: password)
+				guard let email = strongSelf.purchaseCoordinator.cachedEmail,
+                        let password = strongSelf.purchaseCoordinator.cachedPassword else { return }
+                strongSelf.apiManager.loginWithRetry(forUsername: email, password: password)
 				break
 				
 			case .failure(let error):
 				let alert = NSAlert()
 				alert.messageText = NSLocalizedString("LoginFailedGeneral", comment: "LoginFailedGeneral")
 				alert.informativeText = error.localizedDescription
-				if let window = self.view.window {
+				if let window = strongSelf.view.window {
 					alert.beginSheetModal(for: window, completionHandler: nil)
 				}
 			}

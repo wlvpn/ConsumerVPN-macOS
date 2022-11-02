@@ -55,8 +55,8 @@
 "Disconnected" = "Disconnected";
 "Disconnect" = "Disconnect";
 "ConnectionFailed" = "Connection Failed";
-"OnDemandConfirm" = "Disconnecting from the VPN will disable OnDemand settings. Do you wish to continue?";
-"OnDemandDisconnect" = "Disabling OnDemand will disconnect you from the VPN. Would you like to continue?";
+"OnDemandConfirm" = "Disconnecting from the VPN will disable On Demand. Do you wish to continue?";
+"OnDemandDisconnect" = "Disabling On Demand will disconnect you from the VPN. Would you like to continue?";
 
 
 /* Filter View Strings */

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="z0M-hU-Fo5">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="z0M-hU-Fo5">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21225"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -10,18 +10,18 @@
         <scene sceneID="Ylf-qV-bvX">
             <objects>
                 <viewController storyboardIdentifier="ServerViewController" id="UF1-q2-NkZ" customClass="ServerViewController" customModule="ConsumerVPN" customModuleProvider="target" sceneMemberID="viewController">
-                    <customView key="view" misplaced="YES" id="N81-CV-SU8" customClass="ColorView" customModule="ConsumerVPN" customModuleProvider="target">
+                    <customView key="view" appearanceType="darkAqua" misplaced="YES" id="N81-CV-SU8" customClass="ColorView" customModule="ConsumerVPN" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="420" height="346"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <subviews>
                             <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="42" horizontalPageScroll="10" verticalLineScroll="42" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" scrollerKnobStyle="dark" translatesAutoresizingMaskIntoConstraints="NO" id="Zz7-pv-BLc">
-                                <rect key="frame" x="0.0" y="0.0" width="420" height="41"/>
+                                <rect key="frame" x="0.0" y="0.0" width="415" height="242"/>
                                 <clipView key="contentView" id="Ot6-QY-4Zy">
-                                    <rect key="frame" x="0.0" y="0.0" width="420" height="41"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="415" height="242"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="40" headerView="Th2-uu-mP8" viewBased="YES" id="xOP-Ns-rXb">
-                                            <rect key="frame" x="0.0" y="0.0" width="420" height="42"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="448" height="217"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" red="0.054901960780000002" green="0.08235294118" blue="0.16078431369999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -41,11 +41,11 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="flagCell" id="hsx-eo-0o5">
-                                                            <rect key="frame" x="1" y="1" width="50" height="40"/>
+                                                            <rect key="frame" x="11" y="1" width="55" height="40"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="u2h-1r-uap">
-                                                                    <rect key="frame" x="2" y="4" width="46" height="32"/>
+                                                                    <rect key="frame" x="4" y="4" width="47" height="32"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="width" secondItem="u2h-1r-uap" secondAttribute="height" multiplier="22:15" id="f8l-o9-yOM"/>
                                                                     </constraints>
@@ -78,7 +78,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="countryCell" id="dj1-w9-y8W">
-                                                            <rect key="frame" x="54" y="1" width="150" height="40"/>
+                                                            <rect key="frame" x="69" y="1" width="150" height="40"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="uvo-lx-nGP">
@@ -114,7 +114,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="cityCell" id="uve-Q6-Qsw">
-                                                            <rect key="frame" x="207" y="1" width="210" height="40"/>
+                                                            <rect key="frame" x="222" y="1" width="214" height="40"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="HAv-b2-4K1">
@@ -155,13 +155,13 @@
                                     <rect key="frame" x="224" y="17" width="15" height="102"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
-                                <tableHeaderView key="headerView" id="Th2-uu-mP8">
-                                    <rect key="frame" x="0.0" y="0.0" width="420" height="25"/>
+                                <tableHeaderView key="headerView" wantsLayer="YES" id="Th2-uu-mP8">
+                                    <rect key="frame" x="0.0" y="0.0" width="448" height="25"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
                             <searchField wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6cR-bd-R2w">
-                                <rect key="frame" x="212" y="49" width="200" height="22"/>
+                                <rect key="frame" x="207" y="250" width="200" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="sgN-On-mfE"/>
                                 </constraints>
@@ -190,6 +190,7 @@
                         </userDefinedRuntimeAttributes>
                     </customView>
                     <connections>
+                        <outlet property="backgroundView" destination="N81-CV-SU8" id="j6i-0v-0MA"/>
                         <outlet property="searchField" destination="6cR-bd-R2w" id="44D-Rt-ktf"/>
                         <outlet property="tableView" destination="xOP-Ns-rXb" id="pwz-6a-Y08"/>
                     </connections>
@@ -202,7 +203,7 @@
         <scene sceneID="H31-83-rxl">
             <objects>
                 <windowController storyboardIdentifier="ServerWindowController" id="z0M-hU-Fo5" customClass="ServerWindowController" customModule="ConsumerVPN" customModuleProvider="target" sceneMemberID="viewController">
-                    <window key="window" title="Servers" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" titlebarAppearsTransparent="YES" id="mxg-i2-ieW">
+                    <window key="window" title="Servers" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" appearanceType="darkAqua" frameAutosaveName="" animationBehavior="default" titlebarAppearsTransparent="YES" id="mxg-i2-ieW">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" fullSizeContentView="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="294" y="313" width="420" height="400"/>

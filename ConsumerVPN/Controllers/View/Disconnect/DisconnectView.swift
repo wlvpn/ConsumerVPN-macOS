@@ -8,7 +8,7 @@
 
 import Cocoa
 
-protocol DisconnectViewDelegate: class {
+protocol DisconnectViewDelegate: AnyObject {
     func didSelectDisconnect()
 }
 
@@ -54,6 +54,15 @@ class DisconnectView: ColorView, UIViewFadeAnimation {
         animatableViews = [shieldView, connectedTitleLabel, locationImage, locationTitleLabel, locationLabel, ipAddressImage, ipAddressTitleLabel, ipAddressLabel, disconnectButton]
         
         themeView()
+        setTouchBarItems()
+    }
+    
+    func setTouchBarItems() {
+        if #available(OSX 10.12.2, *) {
+            customBarItems = [NSTouchBarItem.Identifier.flexibleSpace,
+                              NSTouchBarItem.Identifier.disconnectItem,
+                              NSTouchBarItem.Identifier.flexibleSpace]
+        }
     }
     
     //MARK: - View Styling

@@ -54,6 +54,7 @@ class AppDelegate : NSObject, NSApplicationDelegate {
 
         apiManager = SDKInitializer.initializeAPIManager(
             withBrandName: Theme.brandName,
+            configName: Theme.configurationName,
             apiKey: Theme.apiKey,
             andSuffix: Theme.usernameSuffix
         )
@@ -65,7 +66,7 @@ class AppDelegate : NSObject, NSApplicationDelegate {
         )
 		
         //Check if valid user, but password is nil, log them out.
-        if let _ = apiManager.vpnConfiguration.user , apiManager.vpnConfiguration.user.password == nil {
+        if let _ = apiManager.vpnConfiguration.user , apiManager.vpnConfiguration.user?.password == nil {
             apiManager.logout()
         }
         
@@ -96,11 +97,15 @@ class AppDelegate : NSObject, NSApplicationDelegate {
     }
     
     func applicationWillTerminate(_ notification: Notification) {
-        if let onDemandPreferenceSelection = apiManager.vpnConfiguration.getOptionForKey(kOnDemandAlwaysOnKey) as? Int {
-            if apiManager.isConnectedToVPN() == true, onDemandPreferenceSelection == 0 {
+        NotificationCenter.default.removeObserver(self,
+                                                  name: Notification.Name(rawValue: WLHideOnSystemStartup),
+                                                  object: nil)
+        
+        if let onDemandPreference = apiManager.vpnConfiguration.onDemandConfiguration {
+            if apiManager.isConnectedToVPN(), !onDemandPreference.enabled {
                 apiManager.disconnect()
             }
-        } else if apiManager.isConnectedToVPN() == true {
+        } else if apiManager.isConnectedToVPN() {
             apiManager.disconnect()
         }
         
@@ -183,9 +188,7 @@ class AppDelegate : NSObject, NSApplicationDelegate {
     //MARK: - Window Show / Close Management
     
     internal func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-		if !flag {
-			mainWindowController?.window?.makeKeyAndOrderFront(self)
-		}
+        mainWindowController?.window?.makeKeyAndOrderFront(self)
 		
         return true
     }

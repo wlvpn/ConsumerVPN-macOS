@@ -26,6 +26,8 @@ class ServerWindowController : NSWindowController {
         let serversWindowController = serversStoryboard.instantiateController(withIdentifier: "ServerWindowController") as! ServerWindowController
         let serversViewController = serversWindowController.contentViewController as! ServerViewController
         serversViewController.apiManager = apiManager
+        serversViewController.vpnConfiguration = apiManager.vpnConfiguration
+        
         return serversWindowController
     }
 }
@@ -42,18 +44,20 @@ class ServerViewController : BaseViewController {
     }
 
     //MARK: - Properties
-
+    @IBOutlet weak var backgroundView: ColorView!
 	@IBOutlet weak var searchField: NSSearchField!
 
     var presentedTableData : [City] = []
     fileprivate var originalTableData : [City] = []
-
+    
     @IBOutlet weak fileprivate var tableView: NSTableView!
     
     //MARK: - View Management
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        themeWindow()
         
         NotificationCenter.default.addObserver(for: self)
         
@@ -78,6 +82,17 @@ class ServerViewController : BaseViewController {
 		self.view.window?.makeFirstResponder(tableView)
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(for: self)
+    }
+    
+    //MARK: - Utility Methods
+    
+    /// Prepares the window properties for initial load.
+    private func themeWindow() {
+        backgroundView.backgroundColor = NSColor.primaryBackground
+    }
+    
     //MARK: - View Configuration
     
     /// Configures view properties and registers table cell view xibs.
@@ -85,7 +100,8 @@ class ServerViewController : BaseViewController {
 
         searchField.maximumRecents = 0
         searchField.sendsSearchStringImmediately = true
-
+        searchField.textColor = .searchTextColor
+        
         let headerBackgroundColor = NSColor.serverListHeader
 
         let backgroundColor = NSColor.serverListBackground
@@ -97,7 +113,7 @@ class ServerViewController : BaseViewController {
         tableView.enclosingScrollView?.backgroundColor = backgroundColor
         tableView.gridColor = NSColor.serverListRowDivider
         tableView.rowHeight = 40.0
-
+        
 		var frame = tableView.headerView!.frame
 		frame.size.height = Theme.serverListHeaderHeight
 		tableView.headerView!.frame = frame
@@ -212,8 +228,10 @@ class ServerViewController : BaseViewController {
         reloadDataOnMainThread()
     }
 
-	@IBAction func rowClicked(_ sender: Any) {
-        clickAction()
+	@IBAction func rowClicked(_ sender: NSTableView) {
+        if sender.clickedRow != -1 {
+            clickAction()
+        }
 	}
 	
 	@IBAction func rowDoubleClicked(_ sender: NSTableView) {
@@ -223,14 +241,24 @@ class ServerViewController : BaseViewController {
 	}
 
     func clickAction() {
-        if tableView.selectedRow == 0 {
-            apiManager.vpnConfiguration.country = nil
-            apiManager.vpnConfiguration.city = nil
-            apiManager.vpnConfiguration.server = nil
-        } else if tableView.selectedRow > -1 {
-            apiManager.vpnConfiguration.server = nil
-            apiManager.vpnConfiguration.setCityAndCountry(presentedTableData[safe: tableView.selectedRow-1])
+        
+        if self.tableView.selectedRow == 0 {
+            self.apiManager.vpnConfiguration.country = nil
+            self.apiManager.vpnConfiguration.city = nil
+            self.apiManager.vpnConfiguration.server = nil
+        } else if self.tableView.selectedRow > -1 {
+            self.apiManager.vpnConfiguration.server = nil
+            self.apiManager.vpnConfiguration.setCityAndCountry(self.presentedTableData[safe: self.tableView.selectedRow-1])
         }
+        
+        if let onDemandConfig = self.vpnConfiguration?.onDemandConfiguration, onDemandConfig.enabled {
+            self.apiManager.synchronizeConfiguration()
+        } else {
+            self.apiManager.connect()
+        }
+        
+        self.view.window?.close()
+        
     }
 	
 	//MARK: - Alert Dialog Management
@@ -303,6 +331,10 @@ extension ServerViewController : NSTableViewDelegate, NSTableViewDataSource {
 	}
 	
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
+        if row == -1 {
+            return false
+        }
+        
         return true
     }
     
@@ -408,5 +440,22 @@ extension ServerViewController : VPNServerStatusReporting {
 extension ServerViewController: VPNConfigurationStatusReporting {
     func statusCurrentCityDidChange(_ notification: Notification) {
         self.view.window?.close()
+    }
+}
+
+extension ServerViewController: VPNAccountStatusReporting {
+    func statusLoginServerUpdateWillBegin(_ notification: Notification) {
+        //
+    }
+    
+    func statusLoginServerUpdateSucceeded(_ notification: Notification) {
+        //Reload all data again for any changes that may have occurred to servers
+        //from the API update.
+        configureDataSource()
+        updateFilter(searchField)
+    }
+    
+    func statusLoginServerUpdateFailed(_ notification: Notification) {
+        //
     }
 }

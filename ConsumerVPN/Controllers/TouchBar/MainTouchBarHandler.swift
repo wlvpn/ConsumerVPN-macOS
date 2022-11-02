@@ -32,10 +32,12 @@ extension MainWindowController : NSTouchBarDelegate {
         case .connectItem:
             let button = NSButton(title: NSLocalizedString("Connect", comment: ""), target: self, action: #selector(connect))
             button.bezelColor = NSColor.connectButton
+            button.setAccessibilityIdentifier("Connect Button")
             customViewItem.view = button
         case .disconnectItem:
-            let button = NSButton(title: NSLocalizedString("Disconnect", comment: ""), target: self, action: #selector(connect))
-            button.bezelColor = NSColor.disconnectButton
+            let button = NSButton(title: NSLocalizedString("Disconnect", comment: ""), target: self, action: #selector(disconnect))
+            button.bezelColor = NSColor.cancelButton
+            button.setAccessibilityIdentifier("Disconnect Button")
             customViewItem.view = button
         case .preferencesItem:
             let button = NSButton(title: NSLocalizedString("Preferences", comment: ""), target: self, action: #selector(showPreferences(sender:)))
@@ -65,6 +67,10 @@ extension MainWindowController : NSTouchBarDelegate {
     
     @objc func connect() {
         didSelectConnect()
+    }
+    
+    @objc func disconnect() {
+        didSelectDisconnect()
     }
     
     @objc func showPreferences(sender:NSButton) {

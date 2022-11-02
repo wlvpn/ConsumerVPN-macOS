@@ -49,6 +49,10 @@ class LoginViewController : CredentialsViewController {
 		}
 	}
     
+    deinit {
+        NotificationCenter.default.removeObserver(for: self)
+    }
+    
     //MARK: - Signup/Login Click Handlers
 	@IBAction override func submit(_ sender: Any) {
 		let userName = usernameTextField.stringValue

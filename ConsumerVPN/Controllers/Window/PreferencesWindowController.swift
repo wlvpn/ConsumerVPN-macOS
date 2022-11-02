@@ -27,7 +27,7 @@ class PreferencesWindowController : BaseWindowController {
     @IBOutlet weak var countryDropDown: NSPopUpButton!
     
     fileprivate enum OnDemandOption : Int {
-        case notSelected
+        case notSelected = 0
         case selected
     }
     
@@ -58,6 +58,12 @@ class PreferencesWindowController : BaseWindowController {
             setTouchBarItems()
             self.touchBar = makeTouchBar()
         }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self,
+                                                  name: Notification.Name(WLOnDemandOptionChangedNotification),
+                                                  object: nil)
     }
     
     //MARK: - Radio Button Action Handler
@@ -125,25 +131,25 @@ class PreferencesWindowController : BaseWindowController {
     fileprivate func managedOnDemandSelection(isSelected : Int) {
         
         //Update the vpn configuration preference.
-        apiManager.vpnConfiguration.setOption(isSelected, forKey: kOnDemandAlwaysOnKey)
+        apiManager.vpnConfiguration.onDemandConfiguration?.enabled = (isSelected > 0)
         
         switch isSelected {
             
         case OnDemandOption.notSelected.rawValue:
             
             //We were previously connected, and this option has been unselected
-            //disconnect and install the new helper.
-            if apiManager.isConnectedToVPN() == true {
+            //disconnect and sync the config.
+            if apiManager.isConnectedToVPN() {
                 apiManager.disconnect()
             }
             
-            //Install the updated helper but do not connect.
-            apiManager.installHelperAndConnect(onInstall: false)
+            //Sync the config but do not connect.
+            apiManager.synchronizeConfiguration()
             break
             
         case OnDemandOption.selected.rawValue:
-            //Install the updated helper AND connect on helper install.
-            apiManager.installHelperAndConnect(onInstall: true)
+            //Sync the config AND it will auto-connect on sync.
+            apiManager.synchronizeConfiguration()
             break
             
         default: break
@@ -156,11 +162,11 @@ class PreferencesWindowController : BaseWindowController {
     ///
     /// - parameter notification: The notification payload that was posted.
     @objc func onDemandOptionChanged(notification : Notification) {
-        guard let onDemandOption = vpnConfiguration?.getOptionForKey(kOnDemandAlwaysOnKey) as? Int else {
+        guard let onDemandOption = vpnConfiguration?.onDemandConfiguration else {
             return
         }
-  
-        onDemand.state = NSControl.StateValue(rawValue: onDemandOption)
+        
+        onDemand.state = NSControl.StateValue(rawValue: onDemandOption.enabled ? 1 : 0)
     }
     
     //MARK: - Control State Management
@@ -186,10 +192,10 @@ class PreferencesWindowController : BaseWindowController {
         fastestServerInCountry.state = NSControl.StateValue(rawValue: UserDefaults.standard.integer(forKey: WLConnectToFastestServerInCountry))
         
         //If the on-demand option has been set, make sure the checkbox reflects this.
-        if let onDemandOption = vpnConfiguration?.getOptionForKey(kOnDemandAlwaysOnKey) as? Int {
-            onDemand.state = NSControl.StateValue(rawValue: onDemandOption)
+        if let onDemandOption = vpnConfiguration?.onDemandConfiguration {
+            onDemand.state = NSControl.StateValue(rawValue: onDemandOption.enabled ? 1: 0)
         }
-       
+        
         //Load the country selection dropdown.
         configureCountryDropdown()
     }
