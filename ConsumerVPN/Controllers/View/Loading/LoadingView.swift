@@ -8,13 +8,15 @@
 
 import Cocoa
 
-protocol LoadingViewDelegate: class {
+protocol LoadingViewDelegate: AnyObject {
     func didSelectCancelConnect()
 }
 
 class LoadingView: ColorView {
     
     @IBOutlet weak var cancelButton: CustomButton!
+    @IBOutlet weak var loadingCircle: LoadingCircle!
+    
     weak var delegate: LoadingViewDelegate?
     
     class func newInstance() -> LoadingView {
@@ -42,6 +44,9 @@ class LoadingView: ColorView {
     }
     
     @IBAction func cancelConnect(_ sender: Any) {
+        loadingCircle.label.stringValue = NSLocalizedString("Cancelling...", comment: "")
+        loadingCircle.label.lineBreakMode = .byCharWrapping
+        
         delegate?.didSelectCancelConnect()
     }
 }

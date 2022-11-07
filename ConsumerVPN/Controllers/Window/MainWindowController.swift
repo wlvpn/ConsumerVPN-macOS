@@ -41,7 +41,8 @@ class MainWindowController : BaseWindowController {
 
     fileprivate var currentView : NSView!
     fileprivate var shouldConnectAtStartUp = false
-
+    fileprivate var cancelledConnection: Bool = false
+    
     fileprivate lazy var disconnectView : DisconnectView = {
         let disconnectView = DisconnectView.newInstance()
         disconnectView.delegate = self
@@ -52,20 +53,21 @@ class MainWindowController : BaseWindowController {
         let connectView = ConnectView.newInstance()
         connectView.setTouchBarItems()
         connectView.delegate = self
+        connectView.apiManager = apiManager
         return connectView
     }()
     
     fileprivate lazy var loginViewController : LoginViewController = {
-		let loginViewController = LoginViewController.newWith(apiManager: apiManager, toggleDelegate: self)
+        let loginViewController = LoginViewController.newWith(apiManager: apiManager, toggleDelegate: self)
         loginViewController.setTouchBarItems()
         return loginViewController
     }()
-	
-	fileprivate lazy var signupViewController : SignupViewController = {
-		let signupViewController = SignupViewController.newWith(apiManager: apiManager, toggleDelegate: self, purchaseCoordinator: purchaseCoordinator)
-		signupViewController.setTouchBarItems()
-		return signupViewController
-	}()
+    
+    fileprivate lazy var signupViewController : SignupViewController = {
+        let signupViewController = SignupViewController.newWith(apiManager: apiManager, toggleDelegate: self, purchaseCoordinator: purchaseCoordinator)
+        signupViewController.setTouchBarItems()
+        return signupViewController
+    }()
     
     fileprivate lazy var serverViewController : ServerViewController = {
         let serverViewController = serverWindowController
@@ -76,14 +78,14 @@ class MainWindowController : BaseWindowController {
         let serverWindowController = ServerWindowController.newWith(apiManager: apiManager)
         return serverWindowController
     }()
-	
-	fileprivate lazy var productsViewController : ProductsViewController = {
-		return ProductsViewController.newWith(apiManager: apiManager, purchaseCoordinator: purchaseCoordinator)
-	}()
-	
-	fileprivate lazy var purchaseViewController : PurchaseViewController = {
-		return PurchaseViewController.newWith(apiManager: apiManager, purchaseCoordinator: purchaseCoordinator)
-	}()
+    
+    fileprivate lazy var productsViewController : ProductsViewController = {
+        return ProductsViewController.newWith(apiManager: apiManager, purchaseCoordinator: purchaseCoordinator)
+    }()
+    
+    fileprivate lazy var purchaseViewController : PurchaseViewController = {
+        return PurchaseViewController.newWith(apiManager: apiManager, purchaseCoordinator: purchaseCoordinator)
+    }()
     
     fileprivate lazy var loadingView : LoadingView = {
         let loadingView = LoadingView.newInstance()
@@ -92,8 +94,8 @@ class MainWindowController : BaseWindowController {
     }()
     
     var currentCities: [City] = []
-	
-	var purchaseCoordinator: PurchaseCoordinator!
+    
+    var purchaseCoordinator: PurchaseCoordinator!
     
     //MARK: - Window Management
     
@@ -104,18 +106,18 @@ class MainWindowController : BaseWindowController {
         
         themeWindow()
         
-		if let loggedUser = vpnConfiguration?.user {
-			
-			if loggedUser.accountType == 0 {
-				swapView(to: purchaseViewController.colorView)
-			} else {
-				manageConnectionViews()
-			}
+        if let loggedUser = vpnConfiguration?.user {
+            
+            if loggedUser.accountType == 0 {
+                swapView(to: purchaseViewController.colorView)
+            } else {
+                manageConnectionViews()
+            }
 
-		} else {
-			customBarItems = loginViewController.getCustomBarItems()
-			showLoginView()
-		}
+        } else {
+            customBarItems = loginViewController.getCustomBarItems()
+            showLoginView()
+        }
         
         // Set the Server Select Text
         if let assignedCity = vpnConfiguration?.city {
@@ -129,21 +131,37 @@ class MainWindowController : BaseWindowController {
         
         evaluateGeneralPreferences()
         applySelectedEncryption()
-		
-		NotificationCenter.default.addObserver(self,
-											   selector: #selector(userDidSelectPlan(notification:)),
-											   name: NSNotification.Name("Selected Plan"),
-											   object: nil)
-		
-		NotificationCenter.default.addObserver(self,
-											   selector: #selector(userDidSignup),
-											   name: NSNotification.Name("CancelPurchase"),
-											   object: nil)
-		
-		NotificationCenter.default.addObserver(self,
-											   selector: #selector(userDidSignup),
-											   name: NSNotification.Name("UserDidSignUp"),
-											   object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(userDidSelectPlan(notification:)),
+                                               name: NSNotification.Name("Selected Plan"),
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(userDidSignup),
+                                               name: NSNotification.Name("CancelPurchase"),
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(userDidSignup),
+                                               name: NSNotification.Name("UserDidSignUp"),
+                                               object: nil)
+        
+        if apiManager.isLoggedIn(), UserDefaults.standard.bool(forKey: WLHideOnSystemStartup)  {
+            if shouldConnectAtStartUp {
+                apiManager.updateServerList()
+            } else {
+                apiManager.synchronizeConfiguration()
+            }
+        }
+    }
+    
+    deinit {
+        let center = NotificationCenter.default
+        center.removeObserver(for: self)
+        center.removeObserver(self, name: NSNotification.Name("Selected Plan"), object: nil)
+        center.removeObserver(self, name: NSNotification.Name("CancelPurchase"), object: nil)
+        center.removeObserver(self, name: NSNotification.Name("UserDidSignUp"), object: nil)
     }
     
     /// Shows the appropriate view controller view based upon active VPN connection
@@ -370,8 +388,8 @@ extension MainWindowController : VPNAccountStatusReporting {
         connectView.vpnConnectButton.buttonText =  NSLocalizedString("LoggingIn", comment: "LoggingIn")
     }
     
-    /// Shows the appropriate screen after a successful login. Will show the 
-    /// dashboard or the connected screen if an OnDemand connection is 
+    /// Shows the appropriate screen after a successful login. Will show the
+    /// dashboard or the connected screen if an OnDemand connection is
     /// currently underway.
     ///
     /// - parameter notification: The vpn notification.
@@ -385,7 +403,7 @@ extension MainWindowController : VPNAccountStatusReporting {
     /// Resets the title of the header view and displays the write header view
     /// UI when the user successfully logs out.
     func statusLogoutSucceeded(_ notification: Notification) {
-		showLoginView()
+        showLoginView()
     }
 }
 
@@ -401,7 +419,7 @@ extension MainWindowController : VPNConnectionStatusReporting {
     }
     
     func statusConnectionWillBegin(_ notification: Notification) {
-        if currentView is ConnectView {
+        if !(currentView is LoadingView) {
             showLoadingView()
         }
         
@@ -410,9 +428,15 @@ extension MainWindowController : VPNConnectionStatusReporting {
     }
     
     func statusConnectionSucceeded(_ notification: Notification) {
+        guard !cancelledConnection else {
+            cancelledConnection = false
+            apiManager.disconnect()
+            return
+        }
+        
         //If we also connect from the Server List then just stay there and don't
         //swap.
-        if currentView is LoadingView {
+        if !(currentView is DisconnectView) {
             showDisconnectView()
         }
         
@@ -422,37 +446,26 @@ extension MainWindowController : VPNConnectionStatusReporting {
     }
     
     func statusConnectionDidDisconnect(_ notification: Notification) {
+        apiManager.refreshLocation()
         updateAppliedViewForDisconnectOrFailure()
         
         //connectionView
         connectView.toggleUIForEnabledState(isEnabled: true)
         connectView.vpnConnectButton.buttonText = NSLocalizedString("Connect", comment: "Connect")
     }
-}
-
-//MARK: - VPN Helper Status Reporting Conformance
-
-extension MainWindowController : VPNHelperStatusReporting {
-
-    func statusHelperShouldInstall(_ notification: Notification) {
-        if vpnConfiguration?.getSelectedProtocolName() == kVPNProtocolIKEv2 {
-            //Should install the helper silently since a password won't be required for IKEV2 helper.
-            apiManager.installHelperAndConnect(onInstall: true)
-            connectView.vpnConnectButton.isClickable = true
-        }
-    }
-
-    func statusHelperDidInstall(_ notification: Notification) {
-        //IKEV2 helper will be installed silently and should never require an
-        //explicit helper dialog from the user. OpenVPN should connect after a
-        //successful helper installation.
-        if vpnConfiguration?.getSelectedProtocolName() != kVPNProtocolIKEv2 {
-            apiManager.connect()
-        }
+    
+    //MARK: - VPN Configuration Status Reporting Conformance
+    
+    func updateConfigurationBegin(_ notification: Notification) {
+        connectView.toggleUIForEnabledState(isEnabled: false)
     }
     
-    func statusHelperInstallFailed(_ notification: Notification) {
-        connectView.vpnConnectButton.isClickable = true
+    func updateConfigurationSucceeded(_ notification: Notification) {
+        connectView.toggleUIForEnabledState(isEnabled: true)
+    }
+    
+    func updateConfigurationFailed(_ notification: Notification) {
+        connectView.toggleUIForEnabledState(isEnabled: true)
         connectView.vpnConnectButton.buttonText = NSLocalizedString("Connect", comment: "Connect")
     }
 }
@@ -467,7 +480,7 @@ extension MainWindowController : VPNConfigurationStatusReporting {
             disconnectView.ipAddressLabel.stringValue = assignedIpAddress
         } else {
             disconnectView.ipAddressLabel.stringValue = NSLocalizedString("IPAddressError", comment: "IP Address Error")
-        }        
+        }
     }
     
     func statusCurrentCityDidChange(_ notification: Notification) {
@@ -487,7 +500,7 @@ extension MainWindowController : ConnectViewDelegate {
     }
     
     func didSelectChooseLocation() {
-		serverViewController.vpnConfiguration = self.vpnConfiguration
+        serverViewController.vpnConfiguration = self.vpnConfiguration
         serverViewController.view.window?.title = NSLocalizedString("Servers", comment: "")
         serverViewController.view.window?.windowController?.showWindow(self)
     }
@@ -495,7 +508,7 @@ extension MainWindowController : ConnectViewDelegate {
 
 extension MainWindowController : LoadingViewDelegate {
     func didSelectCancelConnect() {
-        apiManager.disconnect()
+        cancelledConnection = true
     }
     
 }
@@ -512,7 +525,7 @@ extension MainWindowController : DisconnectViewDelegate {
         
         var isOnDemandEnabled = false
         
-        if let onDemandOption = vpnConfiguration?.getOptionForKey(kOnDemandAlwaysOnKey) as? Int, onDemandOption == 1 {
+        if let onDemandOption = vpnConfiguration?.onDemandConfiguration, onDemandOption.enabled {
             isOnDemandEnabled = true
         }
         
@@ -551,45 +564,79 @@ extension MainWindowController : DisconnectViewDelegate {
     /// so that the preferences window can update it's UI to reflect this preference
     /// being turned off automatically.
     fileprivate func manageOnDemandDisconnect() {
+        vpnConfiguration?.onDemandConfiguration?.enabled = false
         apiManager.disconnect()
-        vpnConfiguration?.setOption(0, forKey: kOnDemandAlwaysOnKey)
-        apiManager.installHelperAndConnect(onInstall: false)
-        NotificationCenter.default.post(name: Notification.Name(WLOnDemandOptionChangedNotification), object: nil, userInfo: nil)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.apiManager.synchronizeConfiguration { success in
+                if success {
+                    NotificationCenter.default.post(name: Notification.Name(WLOnDemandOptionChangedNotification),
+                                                             object: nil,
+                                                             userInfo: nil)
+                }
+            }
+        }
     }
 }
 
 extension MainWindowController: VPNServerStatusReporting {
     func statusServerUpdateSucceeded(_ notification: Notification) {
-        if shouldConnectAtStartUp == true {
+        if shouldConnectAtStartUp {
             evaluateInitialConnectionToServer()
         }
     }
 }
 
 extension MainWindowController : CredentialsViewToggleDelegate {
-	func switchToSignup() {
+    func switchToSignup() {
         if Theme.enableIAP {
             swapView(to: signupViewController.colorView)
         } else {
             NSWorkspace.shared.open(URL(string: Theme.signupURL)!)
         }
-	}
-	
-	func switchToLogin() {
-		swapView(to: loginViewController.colorView)
-	}
+    }
+    
+    func switchToLogin() {
+        swapView(to: loginViewController.colorView)
+    }
 }
 
 extension MainWindowController {
-	
-	@objc func userDidSignup() {
-		swapView(to: productsViewController.colorView)
-	}
+    
+    @objc func userDidSignup() {
+        swapView(to: productsViewController.colorView)
+    }
 }
 
 extension MainWindowController {
-	@objc func userDidSelectPlan(notification: Notification) {
-		purchaseViewController.selectedPlan = notification.object as? Plan
-		swapView(to: purchaseViewController.colorView)
-	}
+    @objc func userDidSelectPlan(notification: Notification) {
+        purchaseViewController.selectedPlan = notification.object as? Plan
+        swapView(to: purchaseViewController.colorView)
+    }
+}
+
+//MARK: - VPN Helper Status Reporting Conformance
+
+extension MainWindowController : VPNHelperStatusReporting {
+    
+    func statusHelperShouldInstall(_ notification: Notification) {
+        
+        //IKEV2 helper will be installed silently and should never require an
+        //explicit helper dialog from the user. OpenVPN should connect after a
+        //successful helper installation.
+        if vpnConfiguration?.getSelectedProtocolName() != kVPNProtocolIKEv2 {
+            apiManager.connect()
+        }
+        connectView.vpnConnectButton.isClickable = true
+    }
+    
+    func statusHelperInstallSuccess(_ notification: Notification) {
+        //
+        connectView.vpnConnectButton.isClickable = true
+    }
+    
+    func statusHelperInstallFailed(_ notification: Notification) {
+        //
+        connectView.toggleUIForEnabledState(isEnabled: true)
+    }
 }

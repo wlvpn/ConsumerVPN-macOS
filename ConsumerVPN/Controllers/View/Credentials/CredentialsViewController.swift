@@ -176,6 +176,12 @@ class CredentialsViewController : BaseViewController {
 			toggleLoginSignupButton.isHidden = false
 		}
 	}
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self,
+                                                  name: NSNotification.Name(rawValue: WLLoginFieldSelectionNotification),
+                                                  object: nil)
+    }
 	
 	//MARK: - Signup/Login Click Handlers
 	

@@ -32,7 +32,6 @@
 		456C13ED2441107700A65BDE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456C13E82440FB7500A65BDE /* Theme.swift */; };
 		456C13EE2441107700A65BDE /* Flags.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 456C13E92440FB7500A65BDE /* Flags.xcassets */; };
 		458003212118E22200F912FF /* CustomColorHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 450E63862118E2000071D061 /* CustomColorHeaderCell.m */; };
-		45D83D1825E4B06F00CD0C5A /* Purchases in Frameworks */ = {isa = PBXBuildFile; productRef = 45D83D1725E4B06F00CD0C5A /* Purchases */; };
 		920352DB2304857700B0D81E /* NSImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 920352DA2304857700B0D81E /* NSImageView.swift */; };
 		9273DDCB248AFBCC00AC1108 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9273DDCD248AFBCC00AC1108 /* Localizable.strings */; };
 		92B521D8249134E400ED8B14 /* MainTouchBarHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92B521D7249134E400ED8B14 /* MainTouchBarHandler.swift */; };
@@ -68,6 +67,7 @@
 		F5C16D41FB33BA74D6F37900 /* ColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C16B0393B3645B4B54BDDA /* ColorView.swift */; };
 		F5C16E957E6BEA85C9B290DE /* AboutWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F5C16124AF4F4BC8D7ECCE96 /* AboutWindowController.xib */; };
 		F5C16EC037821A8829EC84A8 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C16591845A48AD0B6FD837 /* PreferencesWindowController.swift */; };
+		F604B302288686DC000292E1 /* Purchases in Frameworks */ = {isa = PBXBuildFile; productRef = F604B301288686DC000292E1 /* Purchases */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -166,8 +166,8 @@
 				453B414125E0330200FB0581 /* VPNKit.xcframework in Frameworks */,
 				4563E08520AF572600D64D7F /* NetworkExtension.framework in Frameworks */,
 				45109E41204DDE9D0092D9F1 /* QuartzCore.framework in Frameworks */,
-				45D83D1825E4B06F00CD0C5A /* Purchases in Frameworks */,
 				453B413F25E0330200FB0581 /* VPNV3APIAdapter.xcframework in Frameworks */,
+				F604B302288686DC000292E1 /* Purchases in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -491,7 +491,7 @@
 			);
 			name = ConsumerVPN;
 			packageProductDependencies = (
-				45D83D1725E4B06F00CD0C5A /* Purchases */,
+				F604B301288686DC000292E1 /* Purchases */,
 			);
 			productName = ConsumerVPN;
 			productReference = 45109E64204DDE9D0092D9F1 /* ConsumerVPN.app */;
@@ -653,7 +653,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wlvpn.macos.consumervpn;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -689,7 +689,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wlvpn.macos.consumervpn;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -754,7 +754,7 @@
 					"$(CONFIGURATION_BUILD_DIR)",
 					"$(SRCROOT)/SDK",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -806,7 +806,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -850,7 +850,7 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		45D83D1725E4B06F00CD0C5A /* Purchases */ = {
+		F604B301288686DC000292E1 /* Purchases */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 45D83D1625E4B06F00CD0C5A /* XCRemoteSwiftPackageReference "purchases-ios" */;
 			productName = Purchases;

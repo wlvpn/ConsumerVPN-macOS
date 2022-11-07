@@ -17,13 +17,15 @@
  * Builds a VPNAPIManager object for various api and connection adapter settings.
  *
  * @param brandName The brand name of this client
+ * @param configName The VPN configuration name of this client
  * @param apiKey    The api key provided on WLVPN signup
  * @param suffix    The username suffix provided on WLVPN Signup
  *
- * @return An initialized VPNAPIManager readyh to use
+ * @return An initialized VPNAPIManager ready to use
  */
 + (nonnull VPNAPIManager*) initializeAPIManagerWithBrandName:(NSString *_Nonnull)brandName
-													  apiKey:(NSString *_Nonnull)apiKey
-												   andSuffix:(NSString *_Nonnull)suffix;
+                                                  configName:(NSString *_Nullable)configName
+                                                      apiKey:(NSString *_Nonnull)apiKey
+                                                   andSuffix:(NSString *_Nonnull)suffix;
 
 @end

@@ -11,6 +11,7 @@ import Cocoa
 class LoadingCircle: NSView {
     
     let outerCircleLayer = CAShapeLayer()
+    let label = NSTextField.init()
     
     override func layout() {
         super.layout()
@@ -60,7 +61,6 @@ class LoadingCircle: NSView {
         outerCircleLayer.lineCap = CAShapeLayerLineCap.round
         
         //Label
-        let label = NSTextField.init()
         label.isBezeled = false
         label.drawsBackground = false
         label.isEditable = false
