@@ -15,6 +15,9 @@ class PreferencesWindowController : BaseWindowController {
     @IBOutlet weak var onDemandTextField: NSTextField!
     @IBOutlet weak var onDemand: NSButton!
     
+    @IBOutlet weak var protocolTextField: NSTextField!
+    @IBOutlet weak var protocolSegmentControl: NSSegmentedControl!
+    
     @IBOutlet weak var hideOnStartupTextField: NSTextField!
     @IBOutlet weak var hideOnStartup: NSButton!
     
@@ -46,10 +49,14 @@ class PreferencesWindowController : BaseWindowController {
         connectToLastConnectedServer.title = NSLocalizedString("ConnectToLastConnected", comment: "")
         connectToFastestServer.title = NSLocalizedString("ConnectToFastest", comment: "")
         fastestServerInCountry.title = NSLocalizedString("ConnectToFastestInCountry", comment: "")
+        protocolTextField.stringValue = "\(NSLocalizedString("Protocol", comment: "")):"
         
         //Subscribe to any OnDemand changes.
         NotificationCenter.default.addObserver(self, selector: #selector(PreferencesWindowController.onDemandOptionChanged
             ), name: Notification.Name(WLOnDemandOptionChangedNotification), object: nil)
+        
+        //Subscribe to connection status changes.
+        NotificationCenter.default.addObserver(for: self)
         
         //Reads the values from user defaults and appropriately set the controls.
         configureUIForSelectedState()
@@ -64,6 +71,7 @@ class PreferencesWindowController : BaseWindowController {
         NotificationCenter.default.removeObserver(self,
                                                   name: Notification.Name(WLOnDemandOptionChangedNotification),
                                                   object: nil)
+        NotificationCenter.default.removeObserver(for: self)
     }
     
     //MARK: - Radio Button Action Handler
@@ -198,6 +206,22 @@ class PreferencesWindowController : BaseWindowController {
         
         //Load the country selection dropdown.
         configureCountryDropdown()
+        
+        guard let selectedProtocol = vpnConfiguration?.selectedProtocol else {
+            protocolSegmentControl.selectedSegment = 0
+            return
+        }
+        
+        switch selectedProtocol {
+        case .ikEv2:
+            protocolSegmentControl.selectedSegment = 1
+        case .ipSec:
+            protocolSegmentControl.selectedSegment = 2
+        default:
+            protocolSegmentControl.selectedSegment = 0
+        }
+        
+        protocolSegmentControl.isEnabled = !apiManager.isConnectedToVPN() || !apiManager.isConnectingToVPN()
     }
     
     /// Extracts the countries and loads them into the country dropdown. Performs
@@ -227,6 +251,26 @@ class PreferencesWindowController : BaseWindowController {
         }
     }
     
+    @IBAction func protocolSegmentValueChanged(_ sender: NSSegmentedControl) {
+        // Set protocol based on user selection
+        let currentValue = vpnConfiguration?.selectedProtocol;
+        
+        switch sender.selectedSegment {
+        case 0:
+            vpnConfiguration?.selectedProtocol = VPNProtocol.wireGuard
+        case 1:
+            vpnConfiguration?.selectedProtocol = VPNProtocol.ikEv2
+        case 2:
+            vpnConfiguration?.selectedProtocol = VPNProtocol.ipSec
+        default:
+            break
+        }
+        
+        if currentValue?.rawValue != sender.selectedSegment {
+            apiManager.synchronizeConfiguration()
+        }
+    }
+    
     /// Toggle the user defaults value to true/false based on the click state of
     /// the check box. Posts a client side notification for any interested observers
     /// to hide or show any application windows in response to this preference
@@ -246,3 +290,17 @@ class PreferencesWindowController : BaseWindowController {
         UserDefaults.standard.setValue(sender.title, forKey: WLSelectedCountry)
     }
  }
+
+extension PreferencesWindowController: VPNStatusReporting {
+    func statusConnectionFailed(_ notification: Notification) {
+        self.protocolSegmentControl.isEnabled = true
+    }
+    
+    func statusConnectionWillBegin(_ notification: Notification) {
+        self.protocolSegmentControl.isEnabled = false
+    }
+    
+    func statusConnectionDidDisconnect(_ notification: Notification) {
+        self.protocolSegmentControl.isEnabled = true
+    }
+}
