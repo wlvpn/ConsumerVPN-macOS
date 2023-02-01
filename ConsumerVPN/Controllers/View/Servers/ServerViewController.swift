@@ -51,6 +51,7 @@ class ServerViewController : BaseViewController {
     fileprivate var originalTableData : [City] = []
     
     @IBOutlet weak fileprivate var tableView: NSTableView!
+    weak var delegate: ConnectViewDelegate?
     
     //MARK: - View Management
     
@@ -254,7 +255,7 @@ class ServerViewController : BaseViewController {
         if let onDemandConfig = self.vpnConfiguration?.onDemandConfiguration, onDemandConfig.enabled {
             self.apiManager.synchronizeConfiguration()
         } else {
-            self.apiManager.connect()
+            self.delegate?.didSelectConnect()
         }
         
         self.view.window?.close()

@@ -42,6 +42,7 @@ class MainWindowController : BaseWindowController {
     fileprivate var currentView : NSView!
     fileprivate var shouldConnectAtStartUp = false
     fileprivate var cancelledConnection: Bool = false
+    fileprivate var extensionInstalled: Bool = false
     
     fileprivate lazy var disconnectView : DisconnectView = {
         let disconnectView = DisconnectView.newInstance()
@@ -70,8 +71,10 @@ class MainWindowController : BaseWindowController {
     }()
     
     fileprivate lazy var serverViewController : ServerViewController = {
-        let serverViewController = serverWindowController
-        return serverViewController.contentViewController as! ServerViewController
+        let serverWindowController = serverWindowController
+        let serverViewController = serverWindowController.contentViewController as! ServerViewController
+        serverViewController.delegate = self
+        return serverViewController
     }()
     
     fileprivate lazy var serverWindowController : ServerWindowController = {
@@ -360,7 +363,7 @@ class MainWindowController : BaseWindowController {
             self.apiManager.vpnConfiguration.server = nil
         }
         shouldConnectAtStartUp = false
-        self.apiManager.connect()
+        self.didSelectConnect()
     }
 }
 
@@ -496,7 +499,12 @@ extension MainWindowController : VPNConfigurationStatusReporting {
 extension MainWindowController : ConnectViewDelegate {
     func didSelectConnect() {
         connectView.vpnConnectButton.isClickable = false
-        apiManager.connect()
+        if !extensionInstalled,
+           apiManager.vpnConfiguration.selectedProtocol == .wireGuard {
+            apiManager.installSystemExtension()
+        } else {
+            apiManager.connect()
+        }
     }
     
     func didSelectChooseLocation() {
@@ -630,9 +638,19 @@ extension MainWindowController : VPNHelperStatusReporting {
         connectView.vpnConnectButton.isClickable = true
     }
     
+    func statusHelperInstallPending(_ notification: Notification) {
+        
+    }
+    
     func statusHelperInstallSuccess(_ notification: Notification) {
         //
         connectView.vpnConnectButton.isClickable = true
+        if apiManager.vpnConfiguration.selectedProtocol == .wireGuard,
+            !apiManager.isConnectedToVPN(),
+            !extensionInstalled {
+            extensionInstalled = true
+            didSelectConnect()
+        }
     }
     
     func statusHelperInstallFailed(_ notification: Notification) {
