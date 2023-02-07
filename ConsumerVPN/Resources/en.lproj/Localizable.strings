@@ -86,6 +86,7 @@
 /* Preferences */
 "OnDemand" = "On Demand";
 "OnDemandEnabled" = "Enabled";
+"Protocol" = "Protocol";
 
 "SystemStartup" = "System Startup";
 "HideOnStartup" = "Hide on startup";

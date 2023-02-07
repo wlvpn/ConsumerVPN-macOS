@@ -87,6 +87,7 @@
 /* Preferences */
 "OnDemand" = "Bajo Demanda";
 "OnDemandEnabled" = "Habilitado";
+"Protocol" = "Protocolo";
 
 "SystemStartup" = "Inicio de Sistema";
 "HideOnStartup" = "Ocultar al Inicio";
