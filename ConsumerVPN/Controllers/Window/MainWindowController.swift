@@ -397,6 +397,14 @@ extension MainWindowController : VPNAccountStatusReporting {
     ///
     /// - parameter notification: The vpn notification.
     func statusLoginSucceeded(_ notification: Notification) {
+        onLogin()
+    }
+    
+    func statusAutomaticLoginSuceeded(_ notification: Notification) {
+        onLogin()
+    }
+    
+    func onLogin() {
         if currentView is ConnectView {
             connectView.vpnConnectButton.buttonText = NSLocalizedString("Connect", comment: "Connect")
         }
@@ -405,7 +413,18 @@ extension MainWindowController : VPNAccountStatusReporting {
     
     /// Resets the title of the header view and displays the write header view
     /// UI when the user successfully logs out.
+    /// Reset the values on Logout
     func statusLogoutSucceeded(_ notification: Notification) {
+        UserDefaults.standard.set(false, forKey: WLDoNotAutomaticallyConnect)
+        UserDefaults.standard.set(false, forKey: WLConnectToLastConnectedServer)
+        UserDefaults.standard.set(false, forKey: WLConnectToFastestServer)
+        UserDefaults.standard.set(false, forKey: WLConnectToFastestServerInCountry)
+        UserDefaults.standard.set(false, forKey: WLHideOnSystemStartup)
+        UserDefaults.standard.synchronize()
+        
+        self.apiManager.vpnConfiguration.onDemandConfiguration?.enabled = false
+        self.apiManager.vpnConfiguration.selectedProtocol = .wireGuard
+       
         showLoginView()
     }
 }
@@ -479,10 +498,12 @@ extension MainWindowController : VPNConfigurationStatusReporting {
     
     func statusCurrentLocationDidChange(_ notification: Notification) {
         
-        if let assignedIpAddress = vpnConfiguration?.currentLocation?.ipAddress {
-            disconnectView.ipAddressLabel.stringValue = assignedIpAddress
+        if let assignedIpAddress = vpnConfiguration?.currentLocation?.ipAddress { disconnectView.ipAddressLabel.stringValue = assignedIpAddress
         } else {
-            disconnectView.ipAddressLabel.stringValue = NSLocalizedString("IPAddressError", comment: "IP Address Error")
+            var ipAddress = NSLocalizedString("IPAddressError", comment: "IP Address Error")
+            if let serverIpAddress = vpnConfiguration?.server?.ipAddress, apiManager.isConnectedToVPN() { ipAddress = serverIpAddress
+            }
+            disconnectView.ipAddressLabel.stringValue = ipAddress
         }
     }
     
@@ -499,12 +520,25 @@ extension MainWindowController : VPNConfigurationStatusReporting {
 extension MainWindowController : ConnectViewDelegate {
     func didSelectConnect() {
         connectView.vpnConnectButton.isClickable = false
-        if !extensionInstalled,
-           apiManager.vpnConfiguration.selectedProtocol == .wireGuard {
-            apiManager.installSystemExtension()
-        } else {
-            apiManager.connect()
+        
+        if apiManager.vpnConfiguration.selectedProtocol == .wireGuard {
+            
+            if !apiManager.systemExtensionInstalled() {
+                apiManager.installSystemExtension()
+                return
+            }
+            
+            if apiManager.systemExtensionApprovalPending() {
+                // Show alert that user has to approve system extension from Settings mac app
+                displayAlert(informativeText: NSLocalizedString("A System Extension for WireGuard® needs to be installed.To do so click on \"Open System Settings\", select \"Security & Privacy\" and then \"Allow IPVanish\"",
+                                                                comment: " System Extension blocked"),
+                             messageText: NSLocalizedString("System extension blocked",
+                                                            comment: " System Extension blocked"))
+                return
+            }
         }
+        
+        apiManager.connect()
     }
     
     func didSelectChooseLocation() {
