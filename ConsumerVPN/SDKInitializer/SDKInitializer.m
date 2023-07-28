@@ -16,7 +16,7 @@
 @implementation SDKInitializer
 
 + (NSString *)baseURL {
-    return @"https://api.wlvpn.com/v3";
+    return @"https://api.wlvpn.com/v3/";
 }
 
 #pragma mark - Init 
@@ -109,7 +109,7 @@
     wgConfig.useAPIKey = NO;
     wgConfig.uuid = uuid;
     wgConfig.extensionName = [NSString stringWithFormat:@"%@.network-extension", bundleIdentifier];
-    wgConfig.apiURL = [NSString stringWithFormat:@"%@/wireguard", [self baseURL]];
+    wgConfig.apiURL = [NSString stringWithFormat:@"%@wireguard", [self baseURL]];
     wgConfig.apiKey = apiKey;
     wgConfig.backupURL = @[];
 

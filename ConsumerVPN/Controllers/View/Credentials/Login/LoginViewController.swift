@@ -112,9 +112,17 @@ extension LoginViewController : VPNAccountStatusReporting {
 	///
 	/// - parameter notification: The vpn notification.
 	func statusLoginSucceeded(_ notification: Notification) {
-		usernameTextField.stringValue = ""
-		passwordTextField.stringValue = ""
-		submitButton.isClickable = true
-		toggleLoginSignupButton.isClickable = true
+        onLogin()
 	}
+    
+    func statusAutomaticLoginSuceeded(_ notification: Notification) {
+        onLogin()
+    }
+    
+    func onLogin() {
+        usernameTextField.stringValue = ""
+        passwordTextField.stringValue = ""
+        submitButton.isClickable = true
+        toggleLoginSignupButton.isClickable = true
+    }
 }
