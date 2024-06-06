@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="20037" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="20037"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PreferencesWindowController" customModule="ConsumerVPN" customModuleProvider="target">
             <connections>
+                <outlet property="btnKillSwitch" destination="Bto-Or-H9u" id="bB4-ot-SbC"/>
                 <outlet property="connectToFastestServer" destination="FYa-yZ-gRV" id="yc7-Sw-uHr"/>
                 <outlet property="connectToLastConnectedServer" destination="e53-oS-aL8" id="Xye-bE-mOf"/>
                 <outlet property="countryDropDown" destination="c9k-aj-CmR" id="caE-vR-2Of"/>
                 <outlet property="doNotAutomaticallyConnect" destination="JId-J8-VUI" id="ogC-F9-abn"/>
                 <outlet property="fastestServerInCountry" destination="A39-1A-IgB" id="z8p-4X-w33"/>
-                <outlet property="hideOnStartup" destination="luj-bI-gyI" id="EDp-sn-ovY"/>
-                <outlet property="hideOnStartupTextField" destination="W3F-Hp-Mxq" id="rMd-Hl-QZH"/>
+                <outlet property="hideOnStartup" destination="f5C-z7-ka7" id="u6b-N2-jgY"/>
+                <outlet property="hideOnStartupTextField" destination="v3E-Qj-i8D" id="CaE-CV-I4x"/>
+                <outlet property="killSwitchTextField" destination="AAQ-Np-v5d" id="mKQ-X3-qdl"/>
+                <outlet property="launchOnSystemStartup" destination="luj-bI-gyI" id="RIp-wh-FOu"/>
+                <outlet property="launchOnSystemStartupTextField" destination="W3F-Hp-Mxq" id="mam-hu-RRe"/>
                 <outlet property="onDemand" destination="EqV-Fk-Dcs" id="myY-6j-aKf"/>
                 <outlet property="onDemandTextField" destination="ZA6-11-2xj" id="2sx-Cj-eFW"/>
                 <outlet property="protocolSegmentControl" destination="Efz-dZ-PVT" id="tCb-R1-ad1"/>
@@ -28,16 +32,36 @@
         <window title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="F0z-JX-Cv5">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="240" width="603" height="211"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1025"/>
-            <value key="minSize" type="size" width="603" height="188"/>
-            <value key="maxSize" type="size" width="603" height="188"/>
+            <rect key="contentRect" x="196" y="240" width="630" height="418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
+            <value key="minSize" type="size" width="603" height="215"/>
+            <value key="maxSize" type="size" width="603" height="215"/>
             <view key="contentView" id="se5-gp-TjO">
-                <rect key="frame" x="0.0" y="0.0" width="603" height="211"/>
+                <rect key="frame" x="0.0" y="0.0" width="630" height="418"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AAQ-Np-v5d" userLabel="Kill Switch">
+                        <rect key="frame" x="17" y="354" width="164" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Kill Switch:" id="McB-ln-v7m">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bto-Or-H9u">
+                        <rect key="frame" x="185" y="353" width="248" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="Enabled" bezelStyle="regularSquare" imagePosition="left" inset="2" id="BqJ-E9-mOk">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="btnKillSwitchClicked:" target="-2" id="v3c-i6-AdA"/>
+                        </connections>
+                    </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W3F-Hp-Mxq">
-                        <rect key="frame" x="18" y="119" width="164" height="17"/>
+                        <rect key="frame" x="18" y="304" width="164" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="System Startup:" id="LAo-kH-no4">
                             <font key="font" metaFont="system"/>
@@ -46,18 +70,27 @@
                         </textFieldCell>
                     </textField>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="luj-bI-gyI">
-                        <rect key="frame" x="186" y="118" width="248" height="18"/>
+                        <rect key="frame" x="186" y="304" width="397" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Hide on startup" bezelStyle="regularSquare" imagePosition="left" inset="2" id="z6q-Y6-Dz5">
+                        <buttonCell key="cell" type="check" title="Launch Consumer VPN automatically following Mac login" bezelStyle="regularSquare" imagePosition="left" inset="2" id="z6q-Y6-Dz5">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="hideOnStartupHandler:" target="-2" id="Cq7-dS-aPa"/>
+                            <action selector="launchOnSystemStartupHandler:" target="-2" id="9r4-H8-1fc"/>
                         </connections>
                     </button>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="v3E-Qj-i8D">
+                        <rect key="frame" x="18" y="282" width="164" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Hide on app launch:" id="0qT-gu-j1o">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JId-J8-VUI">
-                        <rect key="frame" x="187" y="85" width="283" height="18"/>
+                        <rect key="frame" x="187" y="256" width="283" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="radio" title="Do not automatically connect" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="lQn-vf-NO3">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -68,7 +101,7 @@
                         </connections>
                     </button>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e53-oS-aL8">
-                        <rect key="frame" x="187" y="63" width="283" height="18"/>
+                        <rect key="frame" x="187" y="234" width="283" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="radio" title="Connect to last connected server" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="vCV-Sv-WY2">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -79,7 +112,7 @@
                         </connections>
                     </button>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FYa-yZ-gRV">
-                        <rect key="frame" x="187" y="41" width="283" height="18"/>
+                        <rect key="frame" x="187" y="212" width="283" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="radio" title="Connect to fastest server" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="e8l-cp-t0L">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -90,7 +123,7 @@
                         </connections>
                     </button>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A39-1A-IgB">
-                        <rect key="frame" x="187" y="19" width="247" height="18"/>
+                        <rect key="frame" x="187" y="190" width="247" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="radio" title="Connect to fastest server in country: " bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="reP-0Z-pFh">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -101,7 +134,7 @@
                         </connections>
                     </button>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c9k-aj-CmR">
-                        <rect key="frame" x="438" y="14" width="148" height="26"/>
+                        <rect key="frame" x="438" y="185" width="148" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="F4f-Ou-ruv">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -113,7 +146,7 @@
                         </connections>
                     </popUpButton>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZA6-11-2xj">
-                        <rect key="frame" x="18" y="174" width="164" height="17"/>
+                        <rect key="frame" x="18" y="329" width="164" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="On Demand:" id="eUZ-Yj-nxt">
                             <font key="font" metaFont="system"/>
@@ -122,7 +155,7 @@
                         </textFieldCell>
                     </textField>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EqV-Fk-Dcs">
-                        <rect key="frame" x="186" y="173" width="248" height="18"/>
+                        <rect key="frame" x="186" y="328" width="248" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Enabled" bezelStyle="regularSquare" imagePosition="left" inset="2" id="hWU-ca-lWi">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -133,7 +166,7 @@
                         </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bLn-Cx-oW3">
-                        <rect key="frame" x="18" y="86" width="164" height="17"/>
+                        <rect key="frame" x="18" y="257" width="164" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Startup:" id="TZ9-i9-2M7">
                             <font key="font" metaFont="system"/>
@@ -142,7 +175,7 @@
                         </textFieldCell>
                     </textField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PEe-S4-09R">
-                        <rect key="frame" x="18" y="147" width="164" height="16"/>
+                        <rect key="frame" x="17" y="379" width="164" height="16"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Protocol:" id="Y3X-Ew-vtI">
                             <font key="font" metaFont="system"/>
@@ -150,14 +183,27 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Efz-dZ-PVT">
-                        <rect key="frame" x="187" y="143" width="168" height="24"/>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="f5C-z7-ka7">
+                        <rect key="frame" x="186" y="281" width="380" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="xuW-3i-pDi">
+                        <buttonCell key="cell" type="check" title="Hide app window on app launch" bezelStyle="regularSquare" imagePosition="left" inset="2" id="cYa-gc-YeS">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="hideOnStartupHandler:" target="-2" id="jtW-c5-3gd"/>
+                        </connections>
+                    </button>
+                    <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Efz-dZ-PVT">
+                        <rect key="frame" x="185" y="375" width="399" height="24"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fillEqually" style="rounded" trackingMode="selectOne" id="xuW-3i-pDi">
                             <font key="font" metaFont="system"/>
                             <segments>
-                                <segment label="WireGuard®" width="80"/>
-                                <segment label="IKEv2" width="79" selected="YES" tag="1"/>
+                                <segment label="WireGuard®" width="94" selected="YES"/>
+                                <segment label="IKEv2" width="92" tag="1"/>
+                                <segment label="IPSec"/>
+                                <segment label="OpenVPN"/>
                             </segments>
                         </segmentedCell>
                         <connections>
@@ -169,7 +215,7 @@
             <connections>
                 <outlet property="delegate" destination="-2" id="0bl-1N-AYu"/>
             </connections>
-            <point key="canvasLocation" x="-384.5" y="60.5"/>
+            <point key="canvasLocation" x="-402" y="-37"/>
         </window>
     </objects>
 </document>

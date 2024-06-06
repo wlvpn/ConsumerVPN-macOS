@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="22155" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22155"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -29,7 +29,7 @@
                                         <userDefinedRuntimeAttribute type="boolean" keyPath="isDisconnected" value="YES"/>
                                     </userDefinedRuntimeAttributes>
                                 </customView>
-                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JBU-UV-e54">
+                                <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JBU-UV-e54">
                                     <rect key="frame" x="182" y="34" width="137" height="19"/>
                                     <textFieldCell key="cell" lineBreakMode="clipping" title="Location selected:" id="cCk-CR-6ok">
                                         <font key="font" metaFont="system" size="16"/>
@@ -37,8 +37,8 @@
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="h7A-4E-VLY">
-                                    <rect key="frame" x="187" y="0.0" width="127" height="26"/>
+                                <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="h7A-4E-VLY">
+                                    <rect key="frame" x="186" y="0.0" width="128" height="26"/>
                                     <textFieldCell key="cell" lineBreakMode="clipping" title="Server Name" id="iev-By-Smd">
                                         <font key="font" metaFont="system" size="22"/>
                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -69,10 +69,6 @@
                             <subviews>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="2Cg-Bx-Zlj" customClass="CustomButton" customModule="ConsumerVPN" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="58" width="250" height="35"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" constant="250" id="SRI-fQ-bka"/>
-                                        <constraint firstAttribute="height" constant="35" id="baN-cG-esf"/>
-                                    </constraints>
                                     <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="bWR-eL-udj">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -80,6 +76,10 @@
 DQ
 </string>
                                     </buttonCell>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="250" id="SRI-fQ-bka"/>
+                                        <constraint firstAttribute="height" constant="35" id="baN-cG-esf"/>
+                                    </constraints>
                                     <userDefinedRuntimeAttributes>
                                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
                                             <real key="value" value="8"/>
@@ -99,10 +99,6 @@ DQ
                                 </button>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="jD5-be-MXo" customClass="CustomButton" customModule="ConsumerVPN" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="0.0" width="250" height="42"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" constant="250" id="8WB-bZ-do7"/>
-                                        <constraint firstAttribute="height" constant="42" id="abQ-tg-8ka"/>
-                                    </constraints>
                                     <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="YOG-0h-f5e">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -110,6 +106,10 @@ DQ
 DQ
 </string>
                                     </buttonCell>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="250" id="8WB-bZ-do7"/>
+                                        <constraint firstAttribute="height" constant="42" id="abQ-tg-8ka"/>
+                                    </constraints>
                                     <userDefinedRuntimeAttributes>
                                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
                                             <real key="value" value="8"/>

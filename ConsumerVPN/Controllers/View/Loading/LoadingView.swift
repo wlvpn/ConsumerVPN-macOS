@@ -18,7 +18,11 @@ class LoadingView: ColorView {
     @IBOutlet weak var loadingCircle: LoadingCircle!
     
     weak var delegate: LoadingViewDelegate?
-    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        cancelButton.isHidden = true
+        loadingCircle.message = "Connecting..."
+    }
     class func newInstance() -> LoadingView {
         var loadingView:LoadingView?
         var topLevelObjects : NSArray?
@@ -31,7 +35,7 @@ class LoadingView: ColorView {
 
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
-		
+        
 		themeView()
     }
     

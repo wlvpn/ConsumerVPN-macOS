@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import VPNHelperAdapter
 
-class PreferencesWindowController : BaseWindowController {
+class PreferencesWindowController : BaseWindowController, NSWindowDelegate {
     
     //MARK: - Properties
     
@@ -18,8 +19,14 @@ class PreferencesWindowController : BaseWindowController {
     @IBOutlet weak var protocolTextField: NSTextField!
     @IBOutlet weak var protocolSegmentControl: NSSegmentedControl!
     
+    @IBOutlet weak var killSwitchTextField: NSTextField!
+    @IBOutlet weak var btnKillSwitch: NSButton!
+    
     @IBOutlet weak var hideOnStartupTextField: NSTextField!
     @IBOutlet weak var hideOnStartup: NSButton!
+    
+    @IBOutlet weak var launchOnSystemStartupTextField: NSTextField!
+    @IBOutlet weak var launchOnSystemStartup: NSButton!
     
     @IBOutlet weak var startupTextField: NSTextField!
     @IBOutlet weak var doNotAutomaticallyConnect : NSButton!
@@ -34,16 +41,22 @@ class PreferencesWindowController : BaseWindowController {
         case selected
     }
     
-    //MARK: - Window Management 
+    fileprivate var openVPNController : OpenVPNController? = nil
+    
+    //MARK: - Window Management
     
     override func windowDidLoad() {
         super.windowDidLoad()
 
         self.window?.title = NSLocalizedString("Preferences", comment: "")
         onDemandTextField.stringValue = "\(NSLocalizedString("OnDemand", comment: "")):"
-        onDemand.title = NSLocalizedString("OnDemandEnabled", comment: "")
-        hideOnStartupTextField.stringValue = "\(NSLocalizedString("SystemStartup", comment: "")):"
-        hideOnStartup.title = NSLocalizedString("HideOnStartup", comment: "")
+        onDemand.title = NSLocalizedString("Enabled", comment: "")
+        killSwitchTextField.stringValue = "\(NSLocalizedString("KillSwitch", comment: "")):"
+        btnKillSwitch.title = NSLocalizedString("Enabled", comment: "")
+        hideOnStartupTextField.stringValue = "\(NSLocalizedString("HideOnStartup", comment: "")):"
+        hideOnStartup.title = NSLocalizedString("HideOnStartupDesc", comment: "")
+        launchOnSystemStartupTextField.stringValue = "\(NSLocalizedString("SystemStartup", comment: "")):"
+        launchOnSystemStartup.title = "\(NSLocalizedString("Launch", comment: "")) \(Theme.brandName) \(NSLocalizedString("LaunchOnSystemStarup", comment: ""))"
         startupTextField.stringValue = "\(Theme.brandName) \(NSLocalizedString("Startup", comment: ""))"
         doNotAutomaticallyConnect.title = NSLocalizedString("DoNotAutomaticallyConnect", comment: "")
         connectToLastConnectedServer.title = NSLocalizedString("ConnectToLastConnected", comment: "")
@@ -65,6 +78,10 @@ class PreferencesWindowController : BaseWindowController {
             setTouchBarItems()
             self.touchBar = makeTouchBar()
         }
+    }
+    
+    func windowDidBecomeKey(_ notification: Notification) {
+        updateUIForSelectedState()
     }
     
     deinit {
@@ -93,88 +110,136 @@ class PreferencesWindowController : BaseWindowController {
             UserDefaults.standard.set(true, forKey: WLConnectToFastestServer)
         } else if sender == fastestServerInCountry {
             UserDefaults.standard.set(true, forKey: WLConnectToFastestServerInCountry)
-		} else if sender == onDemand {
+        } else if sender == onDemand {
             //If we are connected and we just unchecked the box, confirm this is
             //what the user wants to do.
-            if apiManager.isConnectedToVPN() == true, sender.state.rawValue == OnDemandOption.notSelected.rawValue {
-                confirmOnDemandDisconnect()
-            } else {
-                managedOnDemandSelection(isSelected: sender.state.rawValue)
-            }
-		}
+            sender.isEnabled = false
+            managedOnDemandSelection(isSelected: sender.state.rawValue)
+            
+        }
+    }
+    
+    //MARK: - KillSwitch Button Action Handler
+    @IBAction func btnKillSwitchClicked(_ sender: NSButton) {
+        let isKillSwitchEnabled = sender.state == .on
+        toggleKillSwitch(enabled: isKillSwitchEnabled)
+    }
+    
+    private func toggleKillSwitch(enabled: Bool) {
+        ApiManagerHelper.shared.toggleKillSwitch(enable: enabled)
+    }
+    
+    
+    private func updateUIForSelectedState() {
+        btnKillSwitch?.state = ApiManagerHelper.shared.isKillSwitchOn ? .on : .off
+        btnKillSwitch?.isEnabled = ApiManagerHelper.shared.isSafeToChangeConfiguration()
+        onDemand.isEnabled = !ApiManagerHelper.shared.isVPNConnectionInProgress()
+        protocolSegmentControl.isEnabled = ApiManagerHelper.shared.isSafeToChangeConfiguration()
     }
     
     //MARK: - OnDemand Management
     
     /// Confirms that the user wishes to uncheck the OnDemand option which will
     /// disconnect them from the VPN if they have an active VPN connection ongoing.
-    fileprivate func confirmOnDemandDisconnect() {
+    fileprivate func confirmOnDemandDisconnect(enable:Bool) {
+        
+        // Define the reconnect action
+        func reconnectAction() {
+            ApiManagerHelper.shared.setOnDemand(enable: false)
+            ApiManagerHelper.shared.disconnect()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) { [weak self] in
+                if enable {
+                    ApiManagerHelper.shared.setOnDemand(enable: true)
+                    ApiManagerHelper.shared.synchronizeConfiguration()
+                } else {
+                    ApiManagerHelper.shared.setOnDemand(enable: false)
+                    ApiManagerHelper.shared.connect()
+                }
+                guard let self = self else {return}
+                self.onDemand.isEnabled = true
+            }
+        }
+
+        // Define the disconnect action
+        func disconnectAction() {
+            ApiManagerHelper.shared.disconnect()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                ApiManagerHelper.shared.setOnDemand(enable: false)
+                ApiManagerHelper.shared.synchronizeConfiguration()
+                guard let self = self else {return}
+                self.onDemand.isEnabled = true
+            }
+        }
         
         if let unwrappedWindow = window {
             let alert = NSAlert()
-            alert.addButton(withTitle: NSLocalizedString("Disconnect", comment: "Disconnect"))
             alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "Cancel"))
+            alert.addButton(withTitle: NSLocalizedString("Reconnect", comment: "Reconnect"))
+            if !enable {
+                alert.addButton(withTitle: NSLocalizedString("Disconnect", comment: "Disconnect"))
+            }
+
             alert.informativeText = NSLocalizedString("OnDemandDisconnect", comment: "OnDemandDisconnect")
             alert.alertStyle = NSAlert.Style.informational
-            
-            alert.beginSheetModal(for: unwrappedWindow) { (selectedResponseCode) in
-                if selectedResponseCode == NSApplication.ModalResponse.alertFirstButtonReturn {
-                    self.managedOnDemandSelection(isSelected: OnDemandOption.notSelected.rawValue)
-                } else  {
-                    //The user cancled the confirmation, make sure onDemand stays checked.
+
+            alert.beginSheetModal(for: unwrappedWindow) { (response) in
+                switch response {
+                case .alertFirstButtonReturn:
+                    // Handle Cancel button click
+                    self.managedOnDemandSelection(isSelected: enable ? OnDemandOption.notSelected.rawValue : OnDemandOption.selected.rawValue)
+                case .alertSecondButtonReturn:
+                    // Handle Reconnect button click
+                    self.onDemand.isEnabled = true
+                    reconnectAction()
+                case .alertThirdButtonReturn:
+                    // Handle Disconnect button click (only if enabled)
+                    
+                    if !enable {
+                        disconnectAction()
+                    }
+                default:
+                    // The user canceled the confirmation, make sure onDemand stays checked.
                     self.onDemand.state = NSControl.StateValue(rawValue: OnDemandOption.selected.rawValue)
                 }
             }
+
+            
         }
+        
+       
+
     }
     
-    /// Evaluates the user selected option and does one of two things. If the 
+    /// Evaluates the user selected option and does one of two things. If the
     /// option is selected a new helper is installed and we attempt to connect
     /// upon successful helper installation. If the OnDemand option has been
     /// unselected we disconnect from the VPN if we were previously connected and
-    /// install a new helper but we don't connect upon helper installation. 
+    /// install a new helper but we don't connect upon helper installation.
     ///
     /// - parameter isSelected: The integer value representing the selected
     /// state of the OnDemand checkbox.
     fileprivate func managedOnDemandSelection(isSelected : Int) {
-        
-        //Update the vpn configuration preference.
-        apiManager.vpnConfiguration.onDemandConfiguration?.enabled = (isSelected > 0)
-        
-        switch isSelected {
-            
-        case OnDemandOption.notSelected.rawValue:
-            
-            //We were previously connected, and this option has been unselected
-            //disconnect and sync the config.
-            if apiManager.isConnectedToVPN() {
-                apiManager.disconnect()
-            }
-            
+        if (ApiManagerHelper.shared.isConnectedToVPN()) {
+            confirmOnDemandDisconnect(enable: (isSelected > 0))
+        } else {
+            //Update the vpn configuration preference.
+            ApiManagerHelper.shared.setOnDemand(enable:(isSelected > 0) )
             //Sync the config but do not connect.
-            apiManager.synchronizeConfiguration()
-            break
-            
-        case OnDemandOption.selected.rawValue:
-            //Sync the config AND it will auto-connect on sync.
-            apiManager.synchronizeConfiguration()
-            break
-            
-        default: break
+            ApiManagerHelper.shared.synchronizeConfiguration { [weak self] success in
+                guard let self = self else {return }
+                self.onDemand.isEnabled = true
+            }
         }
+        
     }
     
     /// Looks up the OnDemand preference selection from the VPN Configuration and
-    /// updates the checkbox button state to reflect the current value of this 
+    /// updates the checkbox button state to reflect the current value of this
     /// option.
     ///
     /// - parameter notification: The notification payload that was posted.
     @objc func onDemandOptionChanged(notification : Notification) {
-        guard let onDemandOption = vpnConfiguration?.onDemandConfiguration else {
-            return
-        }
-        
-        onDemand.state = NSControl.StateValue(rawValue: onDemandOption.enabled ? 1 : 0)
+        onDemand.state = NSControl.StateValue(rawValue:ApiManagerHelper.shared.isOnDemandEnabled ? 1 : 0)
     }
     
     //MARK: - Control State Management
@@ -191,7 +256,10 @@ class PreferencesWindowController : BaseWindowController {
     fileprivate func configureUIForSelectedState() {
         
         //Checkbox starting state
-        hideOnStartup.state = NSControl.StateValue(rawValue: UserDefaults.standard.integer(forKey: WLHideOnSystemStartup))
+        hideOnStartup.state = NSControl.StateValue(rawValue: UserDefaults.standard.integer(forKey: WLHideOnAppLaunch))
+        
+        //Checkbox initial state
+        launchOnSystemStartup.state = NSControl.StateValue(rawValue: UserDefaults.standard.integer(forKey: WLLaunchOnSystemStartup))
         
         //Radio button starting state.
         doNotAutomaticallyConnect.state = NSControl.StateValue(rawValue: UserDefaults.standard.integer(forKey: WLDoNotAutomaticallyConnect))
@@ -200,36 +268,42 @@ class PreferencesWindowController : BaseWindowController {
         fastestServerInCountry.state = NSControl.StateValue(rawValue: UserDefaults.standard.integer(forKey: WLConnectToFastestServerInCountry))
         
         //If the on-demand option has been set, make sure the checkbox reflects this.
-        if let onDemandOption = vpnConfiguration?.onDemandConfiguration {
-            onDemand.state = NSControl.StateValue(rawValue: onDemandOption.enabled ? 1: 0)
-        }
+        onDemand.state = NSControl.StateValue(rawValue:ApiManagerHelper.shared.isOnDemandEnabled ? 1 : 0)
         
         //Load the country selection dropdown.
         configureCountryDropdown()
         
-        guard let selectedProtocol = vpnConfiguration?.selectedProtocol else {
+        switch ApiManagerHelper.shared.selectedProtocol {
+        case .wireGuard:
             protocolSegmentControl.selectedSegment = 0
-            return
-        }
-        
-        switch selectedProtocol {
+            if ApiManagerHelper.shared.installedStatusForWG != .installed {
+                ApiManagerHelper.shared.installSystemExtension()
+            }
         case .ikEv2:
             protocolSegmentControl.selectedSegment = 1
         case .ipSec:
             protocolSegmentControl.selectedSegment = 2
+        case .openVPN_TCP, .openVPN_UDP:
+            protocolSegmentControl.selectedSegment = 3
+            if ApiManagerHelper.shared.installedStatusForOpenVPN == .installed {
+                self.openOpenVPNConrollerWindow()
+            } else {
+                ApiManagerHelper.shared.installPrivilegedHelper()
+            }
         default:
             protocolSegmentControl.selectedSegment = 0
         }
         
-        protocolSegmentControl.isEnabled = !apiManager.isConnectedToVPN() || !apiManager.isConnectingToVPN()
+        protocolSegmentControl.isEnabled = ApiManagerHelper.shared.isSafeToChangeConfiguration()
     }
     
     /// Extracts the countries and loads them into the country dropdown. Performs
     /// nil checks.
     fileprivate func configureCountryDropdown() {
         
-        guard let countries = apiManager.fetchAllCountries() as? [Country], countries.count > 0 else {
-            return
+        let countries = ApiManagerHelper.shared.fetchCountries()
+        if countries.isEmpty {
+            return;
         }
         
         //Load up the country dropdown ane make sure we are binding options that
@@ -253,23 +327,9 @@ class PreferencesWindowController : BaseWindowController {
     
     @IBAction func protocolSegmentValueChanged(_ sender: NSSegmentedControl) {
         // Set protocol based on user selection
-        let currentValue = vpnConfiguration?.selectedProtocol;
-        
-        switch sender.selectedSegment {
-        case 0:
-            vpnConfiguration?.selectedProtocol = VPNProtocol.wireGuard
-        case 1:
-            vpnConfiguration?.selectedProtocol = VPNProtocol.ikEv2
-        case 2:
-            vpnConfiguration?.selectedProtocol = VPNProtocol.ipSec
-        default:
-            break
-        }
-        
-        if currentValue?.rawValue != sender.selectedSegment {
-            apiManager.synchronizeConfiguration()
-        }
+        ApiManagerHelper.shared.switchProtocol(index: sender.selectedSegment)
     }
+    
     
     /// Toggle the user defaults value to true/false based on the click state of
     /// the check box. Posts a client side notification for any interested observers
@@ -278,8 +338,19 @@ class PreferencesWindowController : BaseWindowController {
     ///
     /// - parameter sender: The selected checkbox.
     @IBAction func hideOnStartupHandler(_ sender: NSButton) {
-        UserDefaults.standard.set(sender.state, forKey: WLHideOnSystemStartup)
-        NotificationCenter.default.post(name: Notification.Name(rawValue: WLHideOnSystemStartup), object: nil)
+        UserDefaults.standard.set(sender.state, forKey: WLHideOnAppLaunch)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: WLHideOnAppLaunch), object: nil)
+    }
+    
+    
+    /// Toggle the user default value to true/false based on the clicked state of
+    /// the checkbox. Posts a client side notification for any interested observers
+    /// to lauch or remove from launch items of system in response to this preference selection
+    ///
+    /// - Parameter sender: The selected checkbox
+    @IBAction func launchOnSystemStartupHandler(_ sender: NSButton) {
+        UserDefaults.standard.set(sender.state, forKey: WLLaunchOnSystemStartup)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: WLLaunchOnSystemStartup), object: nil)
     }
     
     /// Will save the selected country in User Defaults the the user picked
@@ -289,18 +360,96 @@ class PreferencesWindowController : BaseWindowController {
     @IBAction func selectedCountryHandler(_ sender: NSPopUpButton) {
         UserDefaults.standard.setValue(sender.title, forKey: WLSelectedCountry)
     }
+   
+    func openOpenVPNConrollerWindow() {
+            if openVPNController != nil {
+                openVPNController?.close()
+                self.openVPNController = nil
+            }
+            
+            self.openVPNController = OpenVPNController(windowNibName: "OpenVPNController")
+            openVPNController?.apiManager = self.apiManager
+            openVPNController?.showWindow(self)
+    }
+    
+    
+    
  }
 
-extension PreferencesWindowController: VPNStatusReporting {
+extension PreferencesWindowController : VPNHelperStatusReporting {
+    func statusHelperInstallSuccess(_ notification: Notification) {
+        if ApiManagerHelper.shared.selectedProtocol == .openVPN_TCP
+            || ApiManagerHelper.shared.selectedProtocol == .openVPN_UDP {
+            self.openOpenVPNConrollerWindow()
+        }
+    }
+}
+
+extension PreferencesWindowController: VPNConfigurationStatusReporting {
+    
+    func statusCurrentProtocolDidChange(_ notification: Notification) {
+        if (ApiManagerHelper.shared.selectedProtocol == .openVPN_TCP || ApiManagerHelper.shared.selectedProtocol == .openVPN_UDP) {
+            if ApiManagerHelper.shared.installedStatusForOpenVPN == .installed {
+                self.openOpenVPNConrollerWindow()
+            }
+        }
+    }
+    
+    func updateConfigurationBegin(_ notification: Notification) {
+        guard let window = window, let windowView = window.contentView else { return  }
+        CommonSpinnerManager.shared.showSpinner(on: windowView)
+    }
+    
+    func updateConfigurationFailed(_ notification: Notification) {
+        CommonSpinnerManager.shared.hideSpinner()
+    }
+    
+    func updateConfigurationSucceeded(_ notification: Notification) {
+        CommonSpinnerManager.shared.hideSpinner()
+    }
+    
+}
+
+extension PreferencesWindowController: VPNConnectionStatusReporting {
     func statusConnectionFailed(_ notification: Notification) {
         self.protocolSegmentControl.isEnabled = true
+        updateUIForSelectedState()
+        CommonSpinnerManager.shared.hideSpinner()
     }
     
     func statusConnectionWillBegin(_ notification: Notification) {
         self.protocolSegmentControl.isEnabled = false
+        updateUIForSelectedState()
+        guard let window = window, let windowView = window.contentView else { return  }
+        CommonSpinnerManager.shared.showSpinner(on: windowView)
     }
     
     func statusConnectionDidDisconnect(_ notification: Notification) {
         self.protocolSegmentControl.isEnabled = true
+        updateUIForSelectedState()
+        CommonSpinnerManager.shared.hideSpinner()
+    }
+    
+    func statusConnectionWillDisconnect(_ notification: Notification) {
+        self.protocolSegmentControl.isEnabled = false
+        updateUIForSelectedState()
+        guard let window = window, let windowView = window.contentView else { return  }
+        CommonSpinnerManager.shared.showSpinner(on: windowView)
+    }
+    
+    func statusConnectionSucceeded(_ notification: Notification) {
+        updateUIForSelectedState()
+        CommonSpinnerManager.shared.hideSpinner()
     }
 }
+
+
+extension PreferencesWindowController: VPNAccountStatusReporting {
+    
+    func statusLogoutWillBegin(_ notification: Notification) {
+        openVPNController?.close()
+        self.close()
+    }
+    
+}
+

@@ -16,7 +16,6 @@ protocol ConnectViewDelegate : AnyObject {
 class ConnectView: ColorView, UIViewFadeAnimation, VPNStatusReporting {
 
     @objc var apiManager : VPNAPIManager!
-    @objc var vpnConfiguration : VPNConfiguration?
 	
     @IBOutlet weak var shieldView: ShieldView!
     @IBOutlet weak var locationTitleLabel: NSTextField!
@@ -133,90 +132,6 @@ extension ConnectView : VPNServerStatusReporting {
     }
     
     func statusServerUpdateSucceeded(_ notification: Notification) {
-        toggleUIForEnabledState(isEnabled: true)
-        vpnConnectButton.buttonText = NSLocalizedString("Connect", comment: "Connect")
-    }
-    
-    func statusInitialServerUpdateWillBegin(_ notification: Notification) {
-        toggleUIForEnabledState(isEnabled: false)
-        vpnConnectButton.buttonText = NSLocalizedString("LoadingInitialServers", comment: "LoadingInitialServers")
-    }
-    
-    func statusInitialServerUpdateFailed(_ notification: Notification) {
-        vpnConnectButton.buttonText = NSLocalizedString("Connect", comment: "Connect")
-        toggleUIForEnabledState(isEnabled: true)
-    }
-    
-    func statusInitialServerUpdateSucceeded(_ notification: Notification) {
-        if let servers = notification.object as? [Server] {
-            
-            //Sorts by country name descending and by city name ascending.
-            let sortedServers = servers.sorted {
-                if $0.countryName == $1.countryName {
-                    return $0.cityName! < $1.cityName!
-                } else {
-                    return $0.countryName! > $1.countryName!
-                }
-            }
-            
-            if let selectedServer = sortedServers.filter({$0.countryName == "US"}).first {
-				self.vpnConfiguration?.setCityAndCountry(selectedServer.city)
-            } else {
-                //Couldn't find US, just set to whatever is first in the sorted servers array.
-                self.vpnConfiguration?.setCityAndCountry(sortedServers.first?.city)
-            }
-            
-            self.vpnConfiguration?.selectedProtocol = VPNProtocol.ikEv2
-            
-            self.apiManager.updateServerList()
-            
-            //Slight intentional delay here purely for UX reasons.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                self.vpnConnectButton.buttonText = NSLocalizedString("Connect", comment: "Connect")
-                self.toggleUIForEnabledState(isEnabled: true)
-            }
-        }
-    }
-}
-
-extension ConnectView: VPNAccountStatusReporting {
-    func statusLoginServerUpdateWillBegin(_ notification: Notification) {
-        toggleUIForEnabledState(isEnabled: false)
-        vpnConnectButton.buttonText = NSLocalizedString("UpdatingServers", comment: "UpdatingServers")
-    }
-    
-    func statusLoginServerUpdateSucceeded(_ notification: Notification) {
-        if let servers = notification.object as? [Server] {
-            
-            //Sorts by country name descending and by city name ascending.
-            let sortedServers = servers.sorted {
-                if $0.countryName == $1.countryName {
-                    return $0.cityName! < $1.cityName!
-                } else {
-                    return $0.countryName! > $1.countryName!
-                }
-            }
-            
-            if let selectedServer = sortedServers.filter({$0.countryName == "US"}).first {
-                self.vpnConfiguration?.setCityAndCountry(selectedServer.city)
-            } else {
-                //Couldn't find US, just set to whatever is first in the sorted servers array.
-                self.vpnConfiguration?.setCityAndCountry(sortedServers.first?.city)
-            }
-            
-            self.vpnConfiguration?.selectedProtocol = VPNProtocol.ikEv2
-            
-            self.apiManager.updateServerList()
-            
-            //Slight intentional delay here purely for UX reasons.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                self.vpnConnectButton.buttonText = NSLocalizedString("Connect", comment: "Connect")
-                self.toggleUIForEnabledState(isEnabled: true)
-            }
-        }
-    }
-    
-    func statusLoginServerUpdateFailed(_ notification: Notification) {
         toggleUIForEnabledState(isEnabled: true)
         vpnConnectButton.buttonText = NSLocalizedString("Connect", comment: "Connect")
     }

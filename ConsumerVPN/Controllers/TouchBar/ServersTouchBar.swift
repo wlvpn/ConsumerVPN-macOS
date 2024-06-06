@@ -50,9 +50,7 @@ extension ServerViewController: NSTouchBarDelegate {
     }
     
     @objc func fastestAvailable() {
-        apiManager.vpnConfiguration.country = nil
-        apiManager.vpnConfiguration.city = nil
-        apiManager.vpnConfiguration.server = nil
+        ApiManagerHelper.shared.resetServer()
         self.view.window?.close()
     }
     
@@ -69,8 +67,8 @@ extension ServerViewController: NSTouchBarDelegate {
 @available(OSX 10.12.2, *)
 extension ServerViewController: NSScrubberDelegate {
     func scrubber(_ scrubber: NSScrubber, didSelectItemAt selectedIndex: Int) {
-        apiManager.vpnConfiguration.server = nil
-        apiManager.vpnConfiguration.setCityAndCountry(presentedTableData[selectedIndex])
+        ApiManagerHelper.shared.selectServerWith(city: presentedTableData[selectedIndex])
+        
     }
 }
 

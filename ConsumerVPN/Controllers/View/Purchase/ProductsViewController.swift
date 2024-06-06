@@ -179,7 +179,6 @@ class ProductsViewController : BaseViewController {
 		let loginStoryboard = NSStoryboard(name: "Products", bundle: nil)
 		let productsViewController = loginStoryboard.instantiateController(withIdentifier: "ProductsViewController") as! ProductsViewController
 		productsViewController.apiManager = apiManager
-		productsViewController.vpnConfiguration = apiManager.vpnConfiguration
 		productsViewController.purchaseCoordinator = purchaseCoordinator
 		return productsViewController
 	}

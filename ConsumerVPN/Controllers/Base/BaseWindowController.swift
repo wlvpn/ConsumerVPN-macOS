@@ -16,7 +16,6 @@ class BaseWindowController : NSWindowController {
     //MARK: - Properties
     
     @objc internal var apiManager : VPNAPIManager!
-    @objc internal var vpnConfiguration : VPNConfiguration?
 }
 
 extension BaseWindowController: TouchBarComponents {

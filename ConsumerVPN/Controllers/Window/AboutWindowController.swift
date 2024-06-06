@@ -54,6 +54,14 @@ class AboutWindowController : BaseWindowController {
     }
 }
 
+extension AboutWindowController: VPNAccountStatusReporting {
+    
+    func statusLogoutWillBegin(_ notification: Notification) {
+        self.close()
+    }
+    
+}
+
 extension NSAttributedString {
     internal convenience init?(url: URL) {
         guard let html = try? String(contentsOf: url) else {

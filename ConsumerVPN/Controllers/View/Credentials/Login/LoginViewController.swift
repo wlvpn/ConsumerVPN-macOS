@@ -24,7 +24,6 @@ class LoginViewController : CredentialsViewController {
 		let loginStoryboard = NSStoryboard(name: "Login", bundle: nil)
 		let loginViewController = loginStoryboard.instantiateController(withIdentifier: "LoginViewController") as! LoginViewController
 		loginViewController.apiManager = apiManager
-		loginViewController.vpnConfiguration = apiManager.vpnConfiguration
 		loginViewController.toggleDelegate = toggleDelegate
 		NotificationCenter.default.addObserver(for: loginViewController)
 		
@@ -55,16 +54,20 @@ class LoginViewController : CredentialsViewController {
     
     //MARK: - Signup/Login Click Handlers
 	@IBAction override func submit(_ sender: Any) {
-		let userName = usernameTextField.stringValue
+        CommonSpinnerManager.shared.showSpinner(on: self.view)
+        
+        let userName = usernameTextField.stringValue
 		let password = passwordTextField.stringValue
 		
 		if userName.isEmpty || password.isEmpty {
+            CommonSpinnerManager.shared.hideSpinner()
 			displayAlert(informativeText: NSLocalizedString("InvalidCredentials", comment: "InvalidCredentials"),
 						 messageText: NSLocalizedString("InvalidCredentialsTitle", comment: "InvalidCredentialsTitle"))
 			
 		} else {
-			apiManager.login(withUsername: userName, password: password)
+            ApiManagerHelper.shared.loginWith(forUsername: userName, password: password)
 		}
+        
 	}
 	
 	@IBAction override func toggleLoginSignup(_ sender: Any) {
@@ -88,6 +91,7 @@ extension LoginViewController : VPNAccountStatusReporting {
 	///
 	/// - parameter notification: The vpn notification.
 	func statusLoginFailed(_ notification: Notification) {
+        CommonSpinnerManager.shared.hideSpinner()
 		displayAlert(informativeText: NSLocalizedString("LoginFailedGeneral", comment: "LoginFailedGeneral"), messageText: NSLocalizedString("LoginFailedTitle", comment: "LoginFailedTitle"))
 		submitButton.isClickable = true
 		toggleLoginSignupButton.isClickable = true
@@ -120,6 +124,7 @@ extension LoginViewController : VPNAccountStatusReporting {
     }
     
     func onLogin() {
+        CommonSpinnerManager.shared.hideSpinner()
         usernameTextField.stringValue = ""
         passwordTextField.stringValue = ""
         submitButton.isClickable = true

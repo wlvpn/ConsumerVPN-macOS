@@ -1,14 +1,24 @@
 {
+  "originHash" : "d87692f55ff911b1c163711354b28edd19891c3c9a2347d25e7a3c49c16f0f03",
   "pins" : [
+    {
+      "identity" : "launchatlogin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sindresorhus/LaunchAtLogin",
+      "state" : {
+        "branch" : "main",
+        "revision" : "f326e3d9be46aff3b68ede6061721f639e0840e0"
+      }
+    },
     {
       "identity" : "purchases-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/RevenueCat/purchases-ios.git",
       "state" : {
-        "revision" : "bf5178ee63b67cae908c75e7c7c18c822eed246a",
-        "version" : "3.10.4"
+        "revision" : "590804fc3a141fb52762b9232ba5791fce645fe7",
+        "version" : "3.14.4"
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

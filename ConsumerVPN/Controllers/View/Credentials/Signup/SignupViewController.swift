@@ -37,7 +37,6 @@ class SignupViewController : CredentialsViewController {
 		let signupStoryboard = NSStoryboard(name: "Signup", bundle: nil)
 		let signupViewController = signupStoryboard.instantiateController(withIdentifier: "SignupViewController") as! SignupViewController
 		signupViewController.apiManager = apiManager
-		signupViewController.vpnConfiguration = apiManager.vpnConfiguration
 		signupViewController.toggleDelegate = toggleDelegate
 		signupViewController.purchaseCoordinator = purchaseCoordinator
 		

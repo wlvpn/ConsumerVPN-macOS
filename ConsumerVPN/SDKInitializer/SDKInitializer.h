@@ -8,6 +8,7 @@
 
 @import Foundation;
 @import VPNKit;
+@import VPNHelperAdapter;
 
 @interface SDKInitializer : NSObject
 
@@ -20,12 +21,14 @@
  * @param configName The VPN configuration name of this client
  * @param apiKey    The api key provided on WLVPN signup
  * @param suffix    The username suffix provided on WLVPN Signup
+ * @param priviligedHelper PrivilgedHelperTool for OpenVPN.
  *
  * @return An initialized VPNAPIManager ready to use
  */
-+ (nonnull VPNAPIManager*) initializeAPIManagerWithBrandName:(NSString *_Nonnull)brandName
+- (nonnull VPNAPIManager*) initializeAPIManagerWithBrandName:(NSString *_Nonnull)brandName
                                                   configName:(NSString *_Nullable)configName
                                                       apiKey:(NSString *_Nonnull)apiKey
-                                                   andSuffix:(NSString *_Nonnull)suffix;
+                                                      suffix:(NSString *_Nonnull)suffix
+                                            priviligedHelper:(VPNPrivilegedHelperManager *_Nonnull)privilegedHelperManager;
 
 @end

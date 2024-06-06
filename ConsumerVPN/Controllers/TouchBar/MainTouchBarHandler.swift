@@ -53,10 +53,7 @@ extension MainWindowController : NSTouchBarDelegate {
             let button = NSButton(title: NSLocalizedString("Forgot Login", comment: "Starting forgot message"), target: self, action: #selector(forgotPassword))
             customViewItem.view = button
         case .serverSelectionItem:
-            var selectedCity = NSLocalizedString("FastestAvailable", comment: "")
-            if let city = vpnConfiguration?.city, let cityName = city.name {
-                selectedCity = cityName
-            }
+            var selectedCity = ApiManagerHelper.shared.getCityDisplayString()
             let button = NSButton(title: selectedCity, target: self, action: #selector(showServerList))
             customViewItem.view = button
         default:

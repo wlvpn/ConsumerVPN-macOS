@@ -14,7 +14,6 @@ class BaseViewController : NSViewController {
     //MARK: - Properties
     
     @objc internal var apiManager : VPNAPIManager!
-    @objc internal var vpnConfiguration : VPNConfiguration?
     
     internal var backgroundColor : NSColor!
     internal var colorView : ColorView {
@@ -28,8 +27,7 @@ class BaseViewController : NSViewController {
     //MARK: - Init
     init?(nibName nibNameOrNil: String?, apiManager : VPNAPIManager) {
         self.apiManager = apiManager
-        self.vpnConfiguration = apiManager.vpnConfiguration
-
+       
         super.init(nibName: nibNameOrNil.map { $0 }, bundle: nil)
     }
     
