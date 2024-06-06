@@ -86,14 +86,27 @@
 
 /* Preferences */
 "OnDemand" = "Bajo Demanda";
-"OnDemandEnabled" = "Habilitado";
+"KillSwitch" = "Interruptor de apagado";
+"Enabled" = "Habilitado";
 "Protocol" = "Protocolo";
 
 "SystemStartup" = "Inicio de Sistema";
+"Launch" = "Inicie";
+"LaunchOnSystemStarup" = "automáticamente después de iniciar sesión en Mac";
+
 "HideOnStartup" = "Ocultar al Inicio";
+"HideOnStartupDesc" = "Ocultar la ventana de la aplicación al iniciarla";
 
 "Startup" = "Inicio:";
 "DoNotAutomaticallyConnect" = "No conectar automáticamente";
 "ConnectToLastConnected" = "Conectar al último servidor conectado";
 "ConnectToFastest" = "Conectarse al servidor más rapido";
 "ConnectToFastestInCountry" = "Conectarse al mar rapido del país:";
+
+/* OpenVPN */
+"OpenVPNDriversuccess" = "OpenVPN driver has been repaired successfully!";
+"OpenVPNDriverfail" = "Failed to repair OpenVPN driver";
+"OpenVpnDriverUninstallSuccessMessage" = "OpenVPN driver has been uninstalled successfully!";
+"OpenVpnDriverUninstallFailMessage" = "Failed to uninstall OpenVPN driver";
+"OpenVpnInstallHelperWarning" = "Please install OpenVPN Helper.";
+"OpenVpnFixDnsSuccessMessage" = "OpenVPN DNS has been fixed now!";

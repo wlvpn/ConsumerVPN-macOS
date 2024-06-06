@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -30,7 +30,7 @@
                                 <constraint firstAttribute="width" constant="100" id="nAd-sF-nyl"/>
                             </constraints>
                         </customView>
-                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="w8h-eV-nad">
+                        <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="w8h-eV-nad">
                             <rect key="frame" x="193" y="225" width="114" height="21"/>
                             <textFieldCell key="cell" lineBreakMode="clipping" title="CONNECTED" id="JJs-5l-r5k">
                                 <font key="font" metaFont="systemMedium" size="18"/>
@@ -39,7 +39,7 @@
                             </textFieldCell>
                         </textField>
                         <stackView distribution="fill" orientation="horizontal" alignment="top" spacing="61" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KnX-60-xve" userLabel="Data container">
-                            <rect key="frame" x="65" y="0.0" width="370" height="189"/>
+                            <rect key="frame" x="66" y="0.0" width="369" height="189"/>
                             <subviews>
                                 <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="18" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IYP-ws-ziG">
                                     <rect key="frame" x="0.0" y="147" width="117" height="42"/>
@@ -51,7 +51,7 @@
                                         <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bov-fi-nY9">
                                             <rect key="frame" x="44" y="0.0" width="73" height="42"/>
                                             <subviews>
-                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="apu-6c-9qf">
+                                                <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="apu-6c-9qf">
                                                     <rect key="frame" x="-2" y="21" width="77" height="21"/>
                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Location:" id="xuO-NN-ngs">
                                                         <font key="font" metaFont="systemLight" size="18"/>
@@ -59,7 +59,7 @@
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3Kn-jU-McT">
+                                                <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3Kn-jU-McT">
                                                     <rect key="frame" x="-2" y="0.0" width="77" height="21"/>
                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Location:" id="Tkw-N8-q5e">
                                                         <font key="font" metaFont="systemLight" size="18"/>
@@ -88,25 +88,25 @@
                                     </customSpacing>
                                 </stackView>
                                 <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="18" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ba3-lI-kd0">
-                                    <rect key="frame" x="178" y="147" width="192" height="42"/>
+                                    <rect key="frame" x="178" y="147" width="191" height="42"/>
                                     <subviews>
                                         <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3Q4-hm-AH7" userLabel="Earth Image View">
                                             <rect key="frame" x="0.0" y="5" width="31" height="32"/>
                                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Icon Earth" id="vs4-bi-HDN"/>
                                         </imageView>
                                         <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wqn-Oj-2ir">
-                                            <rect key="frame" x="49" y="0.0" width="143" height="42"/>
+                                            <rect key="frame" x="49" y="0.0" width="142" height="42"/>
                                             <subviews>
-                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rae-P8-ccz">
-                                                    <rect key="frame" x="-2" y="21" width="147" height="21"/>
+                                                <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rae-P8-ccz">
+                                                    <rect key="frame" x="-2" y="21" width="146" height="21"/>
                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Public IP Address:" id="dEE-z5-j4j">
                                                         <font key="font" metaFont="systemLight" size="18"/>
                                                         <color key="textColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eXL-vj-1Pa">
-                                                    <rect key="frame" x="-2" y="0.0" width="147" height="21"/>
+                                                <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eXL-vj-1Pa">
+                                                    <rect key="frame" x="-2" y="0.0" width="146" height="21"/>
                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Public IP Address:" id="ahY-HP-PfZ">
                                                         <font key="font" metaFont="systemLight" size="18"/>
                                                         <color key="textColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -160,14 +160,14 @@
                 </stackView>
                 <button translatesAutoresizingMaskIntoConstraints="NO" id="D1Q-6l-IUW" customClass="CustomButton" customModule="ConsumerVPN" customModuleProvider="target">
                     <rect key="frame" x="225" y="51" width="250" height="42"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="42" id="SmZ-8q-V28"/>
-                        <constraint firstAttribute="width" constant="250" id="uxh-RA-33h"/>
-                    </constraints>
                     <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="RCB-vX-PGz">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="systemLight" size="10"/>
                     </buttonCell>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="42" id="SmZ-8q-V28"/>
+                        <constraint firstAttribute="width" constant="250" id="uxh-RA-33h"/>
+                    </constraints>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
                             <real key="value" value="8"/>

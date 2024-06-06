@@ -42,7 +42,6 @@ class MainWindowController : BaseWindowController {
     fileprivate var currentView : NSView!
     fileprivate var shouldConnectAtStartUp = false
     fileprivate var cancelledConnection: Bool = false
-    fileprivate var extensionInstalled: Bool = false
     
     fileprivate lazy var disconnectView : DisconnectView = {
         let disconnectView = DisconnectView.newInstance()
@@ -109,31 +108,21 @@ class MainWindowController : BaseWindowController {
         
         themeWindow()
         
-        if let loggedUser = vpnConfiguration?.user {
-            
-            if loggedUser.accountType == 0 {
-                swapView(to: purchaseViewController.colorView)
-            } else {
-                manageConnectionViews()
-            }
-
+        if ApiManagerHelper.shared.isUserLogin() {
+            manageConnectionViews()
         } else {
             customBarItems = loginViewController.getCustomBarItems()
             showLoginView()
         }
         
         // Set the Server Select Text
-        if let assignedCity = vpnConfiguration?.city {
-            connectView.locationNameLabel.stringValue = assignedCity.locationString()
-        } else {
-            connectView.locationNameLabel.stringValue = NSLocalizedString("FastestAvailable", comment: "Fastest Available Text")
-        }
+        connectView.locationNameLabel.stringValue = ApiManagerHelper.shared.getCityLocationString()
         
         //Starts off disabled until initial server list and server updates succeed.
         connectView.toggleUIForEnabledState(isEnabled: false)
         
         evaluateGeneralPreferences()
-        applySelectedEncryption()
+        ApiManagerHelper.shared.setDefaultEncryption()
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(userDidSelectPlan(notification:)),
@@ -150,11 +139,11 @@ class MainWindowController : BaseWindowController {
                                                name: NSNotification.Name("UserDidSignUp"),
                                                object: nil)
         
-        if apiManager.isLoggedIn(), UserDefaults.standard.bool(forKey: WLHideOnSystemStartup)  {
+        if ApiManagerHelper.shared.isUserLogin(), UserDefaults.standard.bool(forKey: WLHideOnAppLaunch)  {
             if shouldConnectAtStartUp {
-                apiManager.updateServerList()
+                ApiManagerHelper.shared.refreshServer()
             } else {
-                apiManager.synchronizeConfiguration()
+                ApiManagerHelper.shared.synchronizeConfiguration()
             }
         }
     }
@@ -170,7 +159,7 @@ class MainWindowController : BaseWindowController {
     /// Shows the appropriate view controller view based upon active VPN connection
     /// state.
     fileprivate func manageConnectionViews() {
-        if apiManager.isConnectedToVPN() == false {
+        if ApiManagerHelper.shared.isConnectedToVPN() == false {
             customBarItems = connectView.getCustomBarItems()
             showConnectView()
         } else {
@@ -233,12 +222,9 @@ class MainWindowController : BaseWindowController {
     
     /// Shows the disconnectViewController, presenting it with the correct animation.
     internal func showDisconnectView() {
-        if let cityName = vpnConfiguration?.city?.name,
-            let countryId = vpnConfiguration?.country?.countryID {
-            disconnectView.locationLabel.stringValue = "\(cityName), \(countryId)"
-            disconnectView.locationLabel.isHidden = false
-        }
-
+        
+        disconnectView.locationLabel.stringValue = ApiManagerHelper.shared.getCityDisplayString()
+        disconnectView.locationLabel.isHidden = false
         swapView(to: disconnectView)
     }
     
@@ -291,49 +277,19 @@ class MainWindowController : BaseWindowController {
         if UserDefaults.standard.bool(forKey: WLConnectToFastestServer) == true {
             //Should just load balance to the fastest server for the currently assigned
             //city on the vpn configuration.
-            vpnConfiguration?.server = nil
+            ApiManagerHelper.shared.setServer(nil)
             
         } else if UserDefaults.standard.bool(forKey: WLConnectToFastestServerInCountry) == true {
             
-            guard let countries = apiManager.fetchAllCountries() as? [Country] else {
-                return
-            }
+            let countries = ApiManagerHelper.shared.fetchCountries()
             
             guard let selectedCountryNamePreference = UserDefaults.standard.value(forKey: WLSelectedCountry) as? String else {
                 return
             }
             
             if let selectedCountryPreference = countries.filter({ $0.name?.lowercased() == selectedCountryNamePreference.lowercased() }).first {
-                vpnConfiguration?.country = selectedCountryPreference
-                vpnConfiguration?.city = nil
-                vpnConfiguration?.server = nil
+                ApiManagerHelper.shared.selectServerWith(country: selectedCountryPreference)
             }
-        }
-    }
-    
-    /// Updates the encryption preference view with the saved value of encryption
-    /// from the vpn configuration. Defaults to AES-256 if no previous option was
-    /// saved to the VPN configuration.
-    fileprivate func applySelectedEncryption() {
-        
-        if let savedEncryption = vpnConfiguration?.getOptionForKey(kIKEv2Encryption) as? String {
-            
-            switch savedEncryption {
-                
-            case kVPNEncryptionAES256:
-                break
-                
-            case kVPNEncryptionAES128:
-                break
-                
-            default: break
-            }
-            
-        } else {
-            
-            //If this is nil, it's never been set or preferences have been cleared, we should
-            //default to 256 and save this to the vpn configuration.
-            vpnConfiguration?.setOption(kVPNEncryptionAES256, forKey: kIKEv2Encryption)
         }
     }
     
@@ -351,16 +307,19 @@ class MainWindowController : BaseWindowController {
     /// If any option besides "do not automatically connect", configure and attempt connection
     ///
     fileprivate func evaluateInitialConnectionToServer() {
+        if ApiManagerHelper.shared.isConnectedToVPN() || ApiManagerHelper.shared.isVPNConnectionInProgress() {
+            return;
+        }
         if UserDefaults.standard.bool(forKey: WLConnectToFastestServerInCountry) == true {
-            if let countries = self.apiManager.fetchAllCountries() as? [Country],
-                let selectedCountryName = UserDefaults.standard.value(forKey: WLSelectedCountry) as? String,
+            let countries = ApiManagerHelper.shared.fetchCountries()
+            if let selectedCountryName = UserDefaults.standard.value(forKey: WLSelectedCountry) as? String,
                 let selectedCountry = countries.filter({$0.name == selectedCountryName}).first {
-                self.apiManager.vpnConfiguration.country = selectedCountry
-                self.apiManager.vpnConfiguration.server = nil
+                ApiManagerHelper.shared.selectServerWith(country: selectedCountry)
             }
         } else if UserDefaults.standard.bool(forKey: WLConnectToFastestServer) == true {
-            self.apiManager.vpnConfiguration.country = nil
-            self.apiManager.vpnConfiguration.server = nil
+            ApiManagerHelper.shared.setServer( nil)
+            ApiManagerHelper.shared.setCity(nil)
+            ApiManagerHelper.shared.setCoutnry(nil)
         }
         shouldConnectAtStartUp = false
         self.didSelectConnect()
@@ -405,27 +364,51 @@ extension MainWindowController : VPNAccountStatusReporting {
     }
     
     func onLogin() {
+        
+        Task { @MainActor in
+            let _ = try? await ApiManagerHelper.shared.refreshLocation()
+            let _ = await ApiManagerHelper.shared.refreshServer()
+            let success = await ApiManagerHelper.shared.synchronizeConfiguration()
+            self.connectView.vpnConnectButton.isClickable = success
+            if shouldConnectAtStartUp {
+                evaluateInitialConnectionToServer()
+            }
+
+        }
+        
+        
         if currentView is ConnectView {
             connectView.vpnConnectButton.buttonText = NSLocalizedString("Connect", comment: "Connect")
         }
+        
         manageConnectionViews()
+        
+        if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
+            appDelegate.onLogin()
+        }
+        
     }
     
     /// Resets the title of the header view and displays the write header view
     /// UI when the user successfully logs out.
     /// Reset the values on Logout
+    ///
     func statusLogoutSucceeded(_ notification: Notification) {
-        UserDefaults.standard.set(false, forKey: WLDoNotAutomaticallyConnect)
-        UserDefaults.standard.set(false, forKey: WLConnectToLastConnectedServer)
-        UserDefaults.standard.set(false, forKey: WLConnectToFastestServer)
-        UserDefaults.standard.set(false, forKey: WLConnectToFastestServerInCountry)
-        UserDefaults.standard.set(false, forKey: WLHideOnSystemStartup)
-        UserDefaults.standard.synchronize()
-        
-        self.apiManager.vpnConfiguration.onDemandConfiguration?.enabled = false
-        self.apiManager.vpnConfiguration.selectedProtocol = .wireGuard
-       
         showLoginView()
+        
+        if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
+            appDelegate.onLogout()
+        }
+        
+    }
+    
+    func statusLogoutFailed(_ notification: Notification) {
+        
+        showLoginView()
+        
+        if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
+            appDelegate.onLogout()
+        }
     }
 }
 
@@ -433,6 +416,15 @@ extension MainWindowController : VPNAccountStatusReporting {
 
 extension MainWindowController : VPNConnectionStatusReporting {
     func statusConnectionFailed(_ notification: Notification) {
+        debugPrint("[ConsumerVPN] \(#function) \(notification)")
+        if !ApiManagerHelper.shared.isNetworkReachable() {
+            displayAlert(informativeText: "Connection Failed",
+                         messageText: "Please check your internet connection.")
+        } else {
+            displayAlert(informativeText: "Connection Failed",
+                         messageText: (notification.object as? NSError)?.localizedDescription ?? "Unknown")
+        }
+        
         updateAppliedViewForDisconnectOrFailure()
         
         //connectionView
@@ -441,7 +433,9 @@ extension MainWindowController : VPNConnectionStatusReporting {
     }
     
     func statusConnectionWillBegin(_ notification: Notification) {
+        debugPrint("[ConsumerVPN] \(#function) \(notification)")
         if !(currentView is LoadingView) {
+            loadingView.loadingCircle.message = "Connecting";
             showLoadingView()
         }
         
@@ -449,10 +443,22 @@ extension MainWindowController : VPNConnectionStatusReporting {
         connectView.vpnConnectButton.buttonText = NSLocalizedString("Connecting", comment: "Connecting...")
     }
     
+    func statusConnectionWillDisconnect(_ notification: Notification) {
+        debugPrint("[ConsumerVPN] \(#function) \(notification)")
+        if !(currentView is LoadingView) {
+            loadingView.loadingCircle.message = "Disconnecting"
+            showLoadingView()
+        }
+        connectView.toggleUIForEnabledState(isEnabled: false)
+    }
+    
     func statusConnectionSucceeded(_ notification: Notification) {
+        
+        debugPrint("[ConsumerVPN] \(#function) \(notification)")
+        
         guard !cancelledConnection else {
             cancelledConnection = false
-            apiManager.disconnect()
+            ApiManagerHelper.shared.disconnect()
             return
         }
         
@@ -468,12 +474,15 @@ extension MainWindowController : VPNConnectionStatusReporting {
     }
     
     func statusConnectionDidDisconnect(_ notification: Notification) {
-        apiManager.refreshLocation()
+        debugPrint("[ConsumerVPN] \(#function) \(notification)")
         updateAppliedViewForDisconnectOrFailure()
-        
         //connectionView
         connectView.toggleUIForEnabledState(isEnabled: true)
         connectView.vpnConnectButton.buttonText = NSLocalizedString("Connect", comment: "Connect")
+        if !(currentView is ConnectView) {
+            showConnectView()
+        }
+        ApiManagerHelper.shared.refreshLocation()
     }
     
     //MARK: - VPN Configuration Status Reporting Conformance
@@ -497,52 +506,44 @@ extension MainWindowController : VPNConnectionStatusReporting {
 extension MainWindowController : VPNConfigurationStatusReporting {
     
     func statusCurrentLocationDidChange(_ notification: Notification) {
-        
-        if let assignedIpAddress = vpnConfiguration?.currentLocation?.ipAddress { disconnectView.ipAddressLabel.stringValue = assignedIpAddress
-        } else {
-            var ipAddress = NSLocalizedString("IPAddressError", comment: "IP Address Error")
-            if let serverIpAddress = vpnConfiguration?.server?.ipAddress, apiManager.isConnectedToVPN() { ipAddress = serverIpAddress
-            }
-            disconnectView.ipAddressLabel.stringValue = ipAddress
-        }
+        debugPrint("[ConsumerVPN] \(#function) \(notification)")
+        disconnectView.ipAddressLabel.stringValue = ApiManagerHelper.shared.getCurrentIPLocationString()
     }
     
     func statusCurrentCityDidChange(_ notification: Notification) {
-        if let currentCity = vpnConfiguration?.city {
-            connectView.locationNameLabel.stringValue = currentCity.locationString()
-        } else {
-            connectView.locationNameLabel.stringValue = NSLocalizedString("FastestAvailable", comment: "Fastest Available Text")
-        }
+        debugPrint("[ConsumerVPN] \(#function) \(notification)")
+        connectView.locationNameLabel.stringValue = ApiManagerHelper.shared.getCityLocationString()
         updateTouchBar()
     }
 }
 
 extension MainWindowController : ConnectViewDelegate {
+    
     func didSelectConnect() {
         connectView.vpnConnectButton.isClickable = false
         
-        if apiManager.vpnConfiguration.selectedProtocol == .wireGuard {
-            
-            if !apiManager.systemExtensionInstalled() {
-                apiManager.installSystemExtension()
-                return
+        if ApiManagerHelper.shared.selectedProtocol == .wireGuard {
+            ApiManagerHelper.shared.installWgSystemExtensionIfRequired { success in
+                if success {
+                    displayAlert(informativeText: NSLocalizedString("A System Extension for WireGuard® needs to be installed.To do so click on \"Open System Settings\", select \"Security & Privacy\" and then \"Allow IPVanish\"",
+                                                                    comment: " System Extension blocked"),
+                                 messageText: NSLocalizedString("System extension blocked",
+                                                                comment: " System Extension blocked"))
+                    return
+                }
             }
+        }
+        else if ApiManagerHelper.shared.selectedProtocol == .openVPN_TCP || ApiManagerHelper.shared.selectedProtocol == .openVPN_UDP {
             
-            if apiManager.systemExtensionApprovalPending() {
-                // Show alert that user has to approve system extension from Settings mac app
-                displayAlert(informativeText: NSLocalizedString("A System Extension for WireGuard® needs to be installed.To do so click on \"Open System Settings\", select \"Security & Privacy\" and then \"Allow IPVanish\"",
-                                                                comment: " System Extension blocked"),
-                             messageText: NSLocalizedString("System extension blocked",
-                                                            comment: " System Extension blocked"))
+            if !(ApiManagerHelper.shared.isOpenVPNHelperInstalled()) {
+                ApiManagerHelper.shared.installPrivilegedHelper()
                 return
             }
         }
-        
-        apiManager.connect()
+        ApiManagerHelper.shared.connect()
     }
     
     func didSelectChooseLocation() {
-        serverViewController.vpnConfiguration = self.vpnConfiguration
         serverViewController.view.window?.title = NSLocalizedString("Servers", comment: "")
         serverViewController.view.window?.windowController?.showWindow(self)
     }
@@ -557,28 +558,11 @@ extension MainWindowController : LoadingViewDelegate {
 
 extension MainWindowController : DisconnectViewDelegate {
     
-    //MARK: - OnDemand Management
-    
-    /// Checks the VPN Configuration to see if the On Demand option has been
-    /// enabled.
-    ///
-    /// - Returns: Returns true if the On Demand option is currently enabled.
-    fileprivate func isOnDemandOptionsEnabled() -> Bool {
-        
-        var isOnDemandEnabled = false
-        
-        if let onDemandOption = vpnConfiguration?.onDemandConfiguration, onDemandOption.enabled {
-            isOnDemandEnabled = true
-        }
-        
-        return isOnDemandEnabled
-    }
-    
     func didSelectDisconnect() {
-        if isOnDemandOptionsEnabled() == true {
+        if ApiManagerHelper.shared.isOnDemandEnabled {
             confirmVPNDisconnect()
         } else {
-            apiManager.disconnect()
+            ApiManagerHelper.shared.disconnect()
         }
     }
     
@@ -606,11 +590,11 @@ extension MainWindowController : DisconnectViewDelegate {
     /// so that the preferences window can update it's UI to reflect this preference
     /// being turned off automatically.
     fileprivate func manageOnDemandDisconnect() {
-        vpnConfiguration?.onDemandConfiguration?.enabled = false
-        apiManager.disconnect()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.apiManager.synchronizeConfiguration { success in
+        ApiManagerHelper.shared.setOnDemand(enable: false)
+        ApiManagerHelper.shared.disconnect()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            
+            ApiManagerHelper.shared.synchronizeConfiguration { success in
                 if success {
                     NotificationCenter.default.post(name: Notification.Name(WLOnDemandOptionChangedNotification),
                                                              object: nil,
@@ -623,9 +607,7 @@ extension MainWindowController : DisconnectViewDelegate {
 
 extension MainWindowController: VPNServerStatusReporting {
     func statusServerUpdateSucceeded(_ notification: Notification) {
-        if shouldConnectAtStartUp {
-            evaluateInitialConnectionToServer()
-        }
+       
     }
 }
 
@@ -662,12 +644,11 @@ extension MainWindowController {
 extension MainWindowController : VPNHelperStatusReporting {
     
     func statusHelperShouldInstall(_ notification: Notification) {
-        
         //IKEV2 helper will be installed silently and should never require an
         //explicit helper dialog from the user. OpenVPN should connect after a
         //successful helper installation.
-        if vpnConfiguration?.getSelectedProtocolName() != kVPNProtocolIKEv2 {
-            apiManager.connect()
+        if ApiManagerHelper.shared.selectedProtocol != .ikEv2 {
+            ApiManagerHelper.shared.connect()
         }
         connectView.vpnConnectButton.isClickable = true
     }
@@ -677,18 +658,10 @@ extension MainWindowController : VPNHelperStatusReporting {
     }
     
     func statusHelperInstallSuccess(_ notification: Notification) {
-        //
         connectView.vpnConnectButton.isClickable = true
-        if apiManager.vpnConfiguration.selectedProtocol == .wireGuard,
-            !apiManager.isConnectedToVPN(),
-            !extensionInstalled {
-            extensionInstalled = true
-            didSelectConnect()
-        }
     }
     
     func statusHelperInstallFailed(_ notification: Notification) {
-        //
         connectView.toggleUIForEnabledState(isEnabled: true)
     }
 }

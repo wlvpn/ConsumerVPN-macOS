@@ -211,7 +211,7 @@ class CredentialsViewController : BaseViewController {
 			displayAlert(informativeText: NSLocalizedString("InvalidCredentials", comment: "InvalidCredentials"), messageText: NSLocalizedString("InvalidCredentialsTitle", comment: "InvalidCredentialsTitle"))
 			
 		} else {
-			apiManager.login(withUsername: userName, password: password)
+            ApiManagerHelper.shared.loginWith(forUsername: userName, password: password)
 		}
 	}
 	

@@ -113,7 +113,6 @@ class PurchaseViewController: BaseViewController {
 		let loginStoryboard = NSStoryboard(name: "Purchase", bundle: nil)
 		let purchaseViewController = loginStoryboard.instantiateController(withIdentifier: "PurchaseViewController") as! PurchaseViewController
 		purchaseViewController.apiManager = apiManager
-		purchaseViewController.vpnConfiguration = apiManager.vpnConfiguration
 		purchaseViewController.purchaseCoordinator = purchaseCoordinator
 		return purchaseViewController
 	}
@@ -129,7 +128,11 @@ class PurchaseViewController: BaseViewController {
 			case .success(let didPurchase):
 				guard let email = strongSelf.purchaseCoordinator.cachedEmail,
                         let password = strongSelf.purchaseCoordinator.cachedPassword else { return }
-                strongSelf.apiManager.loginWithRetry(forUsername: email, password: password)
+                
+                ApiManagerHelper.shared.loginWithRetry(forUsername: email, password: password)
+                
+               
+                
 				break
 				
 			case .failure(let error):

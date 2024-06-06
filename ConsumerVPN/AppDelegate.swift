@@ -8,12 +8,16 @@
 
 import Foundation
 import Cocoa
+import VPNKit;
+import VPNHelperAdapter;
+import LaunchAtLogin
 
 @NSApplicationMain
 class AppDelegate : NSObject, NSApplicationDelegate {
     
     //MARK: - Properties
-    fileprivate var apiManager : VPNAPIManager!
+    
+    
     fileprivate var mainWindowController : MainWindowController!
 	
 	fileprivate var purchaseCoordinator: PurchaseCoordinator = {
@@ -24,16 +28,14 @@ class AppDelegate : NSObject, NSApplicationDelegate {
     
     fileprivate lazy var preferencesWindowController : PreferencesWindowController = {
         let preferencesWindowController = PreferencesWindowController(windowNibName: "PreferencesWindowController")
-        preferencesWindowController.apiManager = self.apiManager
-        preferencesWindowController.vpnConfiguration = apiManager.vpnConfiguration
+        preferencesWindowController.apiManager = ApiManagerHelper.shared.apiManager
         return preferencesWindowController
     }()
     
     fileprivate lazy var aboutWindowController : AboutWindowController = {
         let aboutWindowController = AboutWindowController(windowNibName: "AboutWindowController")
 
-        aboutWindowController.apiManager = self.apiManager
-        aboutWindowController.vpnConfiguration = apiManager.vpnConfiguration
+        aboutWindowController.apiManager = ApiManagerHelper.shared.apiManager
 
         return aboutWindowController
     }()
@@ -51,28 +53,27 @@ class AppDelegate : NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
 		
         UserDefaults.standard.register(defaults: ["NSApplicationCrashOnExceptions" : true])
-
-        apiManager = SDKInitializer.initializeAPIManager(
-            withBrandName: Theme.brandName,
-            configName: Theme.configurationName,
-            apiKey: Theme.apiKey,
-            andSuffix: Theme.usernameSuffix
-        )
-
+        UserDefaults.standard.register(defaults: [WLLaunchOnSystemStartup : true])
+        ApiManagerHelper.shared.setDefaultEncryption()
+        
         NotificationCenter.default.addObserver(self,
             selector: #selector(AppDelegate.hideApplicationWindowOnStartupPreferenceChanged(_:)),
-            name: Notification.Name(rawValue: WLHideOnSystemStartup),
+            name: Notification.Name(rawValue: WLHideOnAppLaunch),
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(self,
+            selector: #selector(AppDelegate.launchApplicationOnSystemStartupPreferenceChanged(_:)),
+            name: Notification.Name(rawValue: WLLaunchOnSystemStartup),
             object: nil
         )
 		
         //Check if valid user, but password is nil, log them out.
-        if let _ = apiManager.vpnConfiguration.user , apiManager.vpnConfiguration.user?.password == nil {
-            apiManager.logout()
-        }
+        ApiManagerHelper.shared.checkValidPassword()
         
         //Configure a default protocol if not already saved.
-        if apiManager.vpnConfiguration.selectedProtocol == VPNProtocol.invalid {
-            apiManager.vpnConfiguration.selectedProtocol = VPNProtocol.ikEv2
+        if ApiManagerHelper.shared.selectedProtocol == .invalid {
+            ApiManagerHelper.shared.switchProtocol(index: 1)
         }
         
         if shouldApplyDefaultStartupConnectionOption() == true {
@@ -83,13 +84,14 @@ class AppDelegate : NSObject, NSApplicationDelegate {
         setupMenuBarWithBrandName(appName: Theme.brandName)
         
         mainWindowController = MainWindowController(windowNibName: "MainWindowController")
-        mainWindowController.apiManager = apiManager
-        mainWindowController.vpnConfiguration = apiManager.vpnConfiguration
+        mainWindowController.apiManager = ApiManagerHelper.shared.apiManager
 		mainWindowController.purchaseCoordinator = purchaseCoordinator
 		
-        if UserDefaults.standard.bool(forKey: WLHideOnSystemStartup) == false {
+        if UserDefaults.standard.bool(forKey: WLHideOnAppLaunch) == false {
             mainWindowController.showWindow(nil)
         }
+        
+        LaunchAtLogin.isEnabled = UserDefaults.standard.bool(forKey: WLLaunchOnSystemStartup)
         
         if #available(OSX 10.12.2, *) {
             NSApplication.shared.isAutomaticCustomizeTouchBarMenuItemEnabled = true
@@ -98,18 +100,13 @@ class AppDelegate : NSObject, NSApplicationDelegate {
     
     func applicationWillTerminate(_ notification: Notification) {
         NotificationCenter.default.removeObserver(self,
-                                                  name: Notification.Name(rawValue: WLHideOnSystemStartup),
+                                                  name: Notification.Name(rawValue: WLHideOnAppLaunch),
+                                                  object: nil)
+        NotificationCenter.default.removeObserver(self,
+                                                  name: Notification.Name(rawValue: WLLaunchOnSystemStartup),
                                                   object: nil)
         
-        if let onDemandPreference = apiManager.vpnConfiguration.onDemandConfiguration {
-            if apiManager.isConnectedToVPN(), !onDemandPreference.enabled {
-                apiManager.disconnect()
-            }
-        } else if apiManager.isConnectedToVPN() {
-            apiManager.disconnect()
-        }
-        
-        apiManager.cleanup()
+        ApiManagerHelper.shared.disconnectOnAppTerminate()
     }
     
     /// Updates the menu bar items to use the appName from the Customization.plist
@@ -121,9 +118,15 @@ class AppDelegate : NSObject, NSApplicationDelegate {
         aboutMenuItem.title = "\(NSLocalizedString("About", comment:"About text")) \(appName)"
         hideMenuItem.title = "\(NSLocalizedString("Hide", comment:"Hide text")) \(appName)"
         quitMenuItem.title = "\(NSLocalizedString("Quit", comment:"Quit text")) \(appName)"
+        
         preferencesMenuItem.title = NSLocalizedString("Preferences", comment:"Preferences text")
+        preferencesMenuItem.isEnabled = false
+        
         updateServersMenuItem.title = NSLocalizedString("UpdateServersNow", comment:"Update Servers text")
+        updateServersMenuItem.isEnabled = false
+        
         logoutMenuItem.title = NSLocalizedString("Logout", comment:"Logout text")
+        logoutMenuItem.isEnabled = false
     }
     
     //MARK: - Logout Management
@@ -133,7 +136,8 @@ class AppDelegate : NSObject, NSApplicationDelegate {
     ///
     /// - parameter sender: The sending control.
     @IBAction func logoutMenuAction(_ sender: AnyObject) {
-        apiManager.logout()
+        CommonSpinnerManager.shared.showSpinner(on: mainWindowController.contentView)
+        ApiManagerHelper.shared.logout()
     }
     
     /// Opens the about window controller
@@ -148,11 +152,9 @@ class AppDelegate : NSObject, NSApplicationDelegate {
     /// - parameter sender: NSMenuItem
     @IBAction func preferencesClicked(_ sender: AnyObject) {
 		// Don't allow access to preferences before login
-        guard let _ = apiManager.vpnConfiguration.user else {
-            return
+        if ApiManagerHelper.shared.isUserLogin() && ApiManagerHelper.shared.isUserActive() {
+            preferencesWindowController.showWindow(nil)
         }
-        
-        preferencesWindowController.showWindow(nil)
     }
     
     /// Evalutes the previous connection radio button options in gen preferences.
@@ -182,7 +184,10 @@ class AppDelegate : NSObject, NSApplicationDelegate {
     ///
     /// - parameter sender: The selected NSMenuItem
     @IBAction func updateServers(_ sender: NSMenuItem) {
-        apiManager.updateServerList()
+        ApiManagerHelper.shared.refreshServer { success, error in
+            
+        }
+        
     }
     
     //MARK: - Window Show / Close Management
@@ -198,7 +203,7 @@ class AppDelegate : NSObject, NSApplicationDelegate {
     ///
     /// - parameter notification: The client side notification payload.
     @objc internal func hideApplicationWindowOnStartupPreferenceChanged(_ notification : Notification) {
-        if UserDefaults.standard.bool(forKey: WLHideOnSystemStartup) == true {
+        if UserDefaults.standard.bool(forKey: WLHideOnAppLaunch) == true {
             //Hide the main application window.
             mainWindowController.close()
         } else {
@@ -206,4 +211,30 @@ class AppDelegate : NSObject, NSApplicationDelegate {
             mainWindowController.showWindow(nil)
         }
     }
+    
+    /// Notification observer handler that is triggered when the general preference
+    /// for launch app on system startup has been changed in the preferences window.
+    ///
+    /// - parameter notification: The client side notification payload.
+    @objc internal func launchApplicationOnSystemStartupPreferenceChanged(_ notification : Notification) {
+        LaunchAtLogin.isEnabled = UserDefaults.standard.bool(forKey: WLLaunchOnSystemStartup)
+    }
+}
+
+
+extension AppDelegate {
+    
+    func onLogin() {
+        logoutMenuItem.isEnabled = true
+        preferencesMenuItem.isEnabled = true
+        updateServersMenuItem.isEnabled = true
+    }
+    
+    func onLogout() {
+        CommonSpinnerManager.shared.hideSpinner()
+        logoutMenuItem.isEnabled = false
+        preferencesMenuItem.isEnabled = false
+        updateServersMenuItem.isEnabled = false
+    }
+    
 }

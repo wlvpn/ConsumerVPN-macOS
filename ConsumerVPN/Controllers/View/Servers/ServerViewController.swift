@@ -26,8 +26,6 @@ class ServerWindowController : NSWindowController {
         let serversWindowController = serversStoryboard.instantiateController(withIdentifier: "ServerWindowController") as! ServerWindowController
         let serversViewController = serversWindowController.contentViewController as! ServerViewController
         serversViewController.apiManager = apiManager
-        serversViewController.vpnConfiguration = apiManager.vpnConfiguration
-        
         return serversWindowController
     }
 }
@@ -38,8 +36,6 @@ class ServerViewController : BaseViewController {
         let serversStoryboard = NSStoryboard(name: "Servers", bundle: nil)
         let serverViewController = serversStoryboard.instantiateController(withIdentifier: "ServerViewController") as! ServerViewController
         serverViewController.apiManager = apiManager
-        serverViewController.vpnConfiguration = apiManager.vpnConfiguration
-        
         return serverViewController
     }
 
@@ -67,6 +63,7 @@ class ServerViewController : BaseViewController {
     
     override func viewWillAppear() {
         super.viewWillAppear()
+        searchField.stringValue = ""
         configureDataSource()
         if #available(OSX 10.12.2, *) {
             setTouchBarItems()
@@ -148,10 +145,10 @@ class ServerViewController : BaseViewController {
     /// the table data source. Begins pinging all the cities.
     fileprivate func configureDataSource() {
         
-        guard var cities = apiManager.fetchAllCities() as? [City] , cities.count > 0 else {
+        var cities = ApiManagerHelper.shared.fetchCities()
+        if cities.isEmpty {
             return
         }
-        
         presentedTableData.removeAll()
         originalTableData.removeAll()
         
@@ -244,16 +241,13 @@ class ServerViewController : BaseViewController {
     func clickAction() {
         
         if self.tableView.selectedRow == 0 {
-            self.apiManager.vpnConfiguration.country = nil
-            self.apiManager.vpnConfiguration.city = nil
-            self.apiManager.vpnConfiguration.server = nil
+            ApiManagerHelper.shared.resetServer()
         } else if self.tableView.selectedRow > -1 {
-            self.apiManager.vpnConfiguration.server = nil
-            self.apiManager.vpnConfiguration.setCityAndCountry(self.presentedTableData[safe: self.tableView.selectedRow-1])
+            ApiManagerHelper.shared.selectServerWith(city: self.presentedTableData[safe: self.tableView.selectedRow-1])
         }
         
-        if let onDemandConfig = self.vpnConfiguration?.onDemandConfiguration, onDemandConfig.enabled {
-            self.apiManager.synchronizeConfiguration()
+        if ApiManagerHelper.shared.isOnDemandEnabled {
+            ApiManagerHelper.shared.synchronizeConfiguration()
         } else {
             self.delegate?.didSelectConnect()
         }
@@ -311,8 +305,8 @@ class ServerViewController : BaseViewController {
 		
 		var theIndex : Int = -1
 		
-		if presentedTableData.firstIndex(where: { $0 == vpnConfiguration?.city }) != nil {
-			theIndex = presentedTableData.firstIndex(where: { $0 == vpnConfiguration?.city })!
+        if presentedTableData.firstIndex(where: { $0 == ApiManagerHelper.shared.getCity() }) != nil {
+			theIndex = presentedTableData.firstIndex(where: { $0 == ApiManagerHelper.shared.getCity() })!
 		}
 		
 		let indexSet: IndexSet = [theIndex+1]
@@ -438,25 +432,33 @@ extension ServerViewController : VPNServerStatusReporting {
     }
 }
 
+//MARK: - VPNConfigurationStatusReporting
 extension ServerViewController: VPNConfigurationStatusReporting {
+    
     func statusCurrentCityDidChange(_ notification: Notification) {
         self.view.window?.close()
+    }
+    
+    func updateConfigurationBegin(_ notification: Notification) {
+        self.searchField.isEnabled = true
+        self.tableView.isEnabled = false
+    }
+    
+    func updateConfigurationFailed(_ notification: Notification) {
+        self.searchField.isEnabled = true
+        self.tableView.isEnabled = true
+    }
+    
+    func updateConfigurationSucceeded(_ notification: Notification) {
+        self.searchField.isEnabled = true
+        self.tableView.isEnabled = true
     }
 }
 
 extension ServerViewController: VPNAccountStatusReporting {
-    func statusLoginServerUpdateWillBegin(_ notification: Notification) {
-        //
+    
+    func statusLogoutWillBegin(_ notification: Notification) {
+        self.view.window?.close()
     }
     
-    func statusLoginServerUpdateSucceeded(_ notification: Notification) {
-        //Reload all data again for any changes that may have occurred to servers
-        //from the API update.
-        configureDataSource()
-        updateFilter(searchField)
-    }
-    
-    func statusLoginServerUpdateFailed(_ notification: Notification) {
-        //
-    }
 }

@@ -14,7 +14,8 @@ static NSString *kWLServerListServerTableCellViewIdentifier = @"ServerCell";
 
 #pragma mark - General Preferences Constants 
 
-static NSString *WLHideOnSystemStartup = @"HideOnStartup";
+static NSString *WLHideOnAppLaunch = @"HideOnStartup";
+static NSString *WLLaunchOnSystemStartup = @"LaunchOnSystemStartup";
 
 static NSString *WLDoNotAutomaticallyConnect = @"WLDoNotAutomaticallyConnect";
 static NSString *WLConnectToLastConnectedServer = @"ConnectToLastConnectedServer";
@@ -28,3 +29,7 @@ static NSString *WLOnDemandOptionChangedNotification = @"WLOnDemandOptionChanged
 
 #pragma mark - LoginViewController Field Selection
 static NSString *WLLoginFieldSelectionNotification = @"WLLoginFieldSelectionNotification";
+
+#pragma mark - OpenVPN Helper Service Keys
+
+static NSString *IPVOpenVPNInitialSetup   = @"IPVOpenVPNInitialSetup";

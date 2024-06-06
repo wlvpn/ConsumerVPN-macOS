@@ -9,6 +9,8 @@
 @import VPNKit;
 @import VPNV3APIAdapter;
 @import VPKWireGuardAdapter;
+@import VPNV3APIAdapter;
+@import VPNHelperAdapter;
 
 #import "AppConstants.h"
 #import "SDKInitializer.h"
@@ -19,7 +21,11 @@
     return @"https://api.wlvpn.com/v3/";
 }
 
-#pragma mark - Init 
++ (NSArray<NSString *> *)backupURLs {
+    return @[];
+}
+
+#pragma mark - Init
 
 /**
  * Builds a VPNAPIManager object for various api and connection adapter settings.
@@ -28,14 +34,16 @@
  * @param configName The VPN configuration name of this client
  * @param apiKey    The api key provided on WLVPN signup
  * @param suffix    The username suffix provided on WLVPN Signup
+ * @param priviligedHelper PrivilgedHelperTool for OpenVPN.
  *
  * @return An initialized VPNAPIManager ready to use
  */
-+ (nonnull VPNAPIManager*) initializeAPIManagerWithBrandName:(NSString *)brandName
+- (nonnull VPNAPIManager*) initializeAPIManagerWithBrandName:(NSString *)brandName
                                                   configName:(NSString *)configName
 													  apiKey:(NSString *)apiKey
-												   andSuffix:(NSString *)suffix {
-
+                                                      suffix:(NSString *)suffix
+                                            priviligedHelper:(VPNPrivilegedHelperManager *)privilegedHelperManager {
+    
 	NSString *bundleID = [[NSBundle bundleForClass:[self class]] bundleIdentifier];
 	
 	// The directory the application uses to store the Core Data store file.
@@ -48,8 +56,8 @@
 	NSURL *coreDataURL = [appSupportURL URLByAppendingPathComponent:@"DataStore.sqlite"];
     
     NSDictionary *apiAdapterOptions = @{
-        kV3BaseUrlKey:          [self baseURL],
-        kV3AlternateUrlsKey:    @[],
+        kV3BaseUrlKey:          [SDKInitializer baseURL],
+        kV3AlternateUrlsKey:    [SDKInitializer backupURLs],
         kV3ApiKey:              apiKey,
         kV3CoreDataURL:         coreDataURL,
         kV3ServiceNameKey:      brandName
@@ -57,37 +65,59 @@
     
     V3APIAdapter *apiAdapter = [[V3APIAdapter alloc] initWithOptions:apiAdapterOptions];
     
+    NSBundle *openVPNBundle = [NSBundle bundleForClass:[VPNOpenVPNConnectionAdapter class]];
+    NSString *certificatePath = [openVPNBundle pathForResource:@"wlvpn" ofType:@"crt"];
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+    NSString *applicationSupportDirectory = [paths firstObject];
+    
     NSDictionary *connectionOptions = @{
-        kVPNManagerUsernameExtensionKey: suffix,
-        kVPNManagerBrandNameKey: brandName,
-        kVPNManagerConfigurationNameKey: configName,
-        kIKEv2KeychainServiceName: apiAdapter.passwordServiceName,
-        kVPNSharedSecretKey: @"wlvpn",
+        kVPNOpenVPNCertificatePath:         certificatePath,
+        kVPNManagerUsernameExtensionKey:    suffix,
+        kVPNManagerBrandNameKey:            brandName,
+        kVPNManagerConfigurationNameKey:    configName,
+        kVPNSharedSecretKey:                @"vpn",
+        kVPNHelperDisableIPSec:             [NSNumber numberWithBool:YES],
+        kVPNApplicationSupportDirectoryKey: applicationSupportDirectory,
+        kIKEv2KeychainServiceName:          apiAdapter.passwordServiceName,
+        kIKEv2V3BaseUrlKey:                 [SDKInitializer baseURL],
+        kIKEv2V3AlternateUrlsKey:           [SDKInitializer backupURLs],
     };
     
-    NSMutableArray *adapters = [NSMutableArray arrayWithCapacity:2];
+    // Create adapters
+    VPNOpenVPNConnectionAdapter *openVpnConnectionAdapter = [[VPNOpenVPNConnectionAdapter alloc] initWithOptions:connectionOptions andPrivilegedHelperManager:privilegedHelperManager];
+    
+    VPNLegacyConnectionAdapter *legacyConnectionAdapter = [[VPNLegacyConnectionAdapter alloc] initWithOptions:connectionOptions andPrivilegedHelperManager:privilegedHelperManager];
+    
+    NEVPNManagerAdapter *neVPNAdapter = [self createNEVPNManagerAdapter:brandName
+                                                           extensionKey:suffix
+                                                                service:apiAdapter.passwordServiceName];
+    
+    NSMutableArray *adapters = [NSMutableArray arrayWithCapacity:4];
     
     NSNumber *defaultProtocol = [NSNumber numberWithInteger:VPNProtocolIKEv2];
-
+    
     // Order is important
-
-	NEVPNManagerAdapter *neVPNAdapter = [[NEVPNManagerAdapter alloc] initWithOptions:connectionOptions];;
-    
-    [adapters addObject:neVPNAdapter];
-    
     if (@available(macOS 10.13, *)) {
         WireGuardAdapter *wireGuardAdapter = [self createWireGuardAdapterWithBrandName:brandName bundleIdentifier:bundleID uuid:[apiAdapter getOption:kV3UUIDKey] apiKey:apiKey];
-        [adapters addObject:wireGuardAdapter];
-        
+        [adapters addObject: wireGuardAdapter];
         defaultProtocol = [NSNumber numberWithInteger:VPNProtocolWireGuard];
     }
     
+    [adapters addObject: openVpnConnectionAdapter];
+    
+    [adapters addObject: neVPNAdapter];
+    
+    [adapters addObject: legacyConnectionAdapter];
+    
 	// Initialize the API Manager
 	NSDictionary *apiManagerOptions = @{
-		kBundleNameKey: bundleID,
+		kBundleNameKey:         bundleID,
 		kVPNDefaultProtocolKey: defaultProtocol,
-		kCityPOPHostname: @"wlvpn.com",
-		kBundleNameKey: brandName,
+		kCityPOPHostname:       @"wlvpn.com",
+		kBundleNameKey:         brandName,
+        kV3BaseUrlKey:          [SDKInitializer baseURL],
+        kV3AlternateUrlsKey:    [SDKInitializer backupURLs],
 	};
     
     VPNAPIManager *apiManager = [[VPNAPIManager alloc]
@@ -98,7 +128,25 @@
 	return apiManager;
 }
 
-+ (WireGuardAdapter *)createWireGuardAdapterWithBrandName:(NSString *)brandName
+//MARK: - NEVPNManager Adapter
+
+-(NEVPNManagerAdapter *)createNEVPNManagerAdapter:(NSString *)brandName
+                                     extensionKey:(NSString *)extensionKey
+                                          service:(NSString *)keychainService {
+    
+    NSDictionary * connectionOptions = @{kVPNManagerUsernameExtensionKey: extensionKey,
+                                     kVPNManagerBrandNameKey: brandName,
+                                              kIKEv2Hostname: @"vpn.wlvpn.com",
+                                      kIKEv2RemoteIdentifier: @"vpn.wlvpn.com",
+                                         kVPNSharedSecretKey: @"vpn",
+                                   kIKEv2KeychainServiceName: keychainService,
+                                          kIKEv2V3BaseUrlKey: [SDKInitializer baseURL],
+                                         kIKEv2V3AlternateUrlsKey: [SDKInitializer backupURLs]};
+    
+    return [[NEVPNManagerAdapter alloc] initWithOptions:connectionOptions];
+}
+
+- (WireGuardAdapter *)createWireGuardAdapterWithBrandName:(NSString *)brandName
                                          bundleIdentifier:(NSString *)bundleIdentifier
                                                      uuid:(NSString *)uuid
                                                    apiKey:(NSString *)apiKey {
@@ -109,10 +157,15 @@
     wgConfig.useAPIKey = NO;
     wgConfig.uuid = uuid;
     wgConfig.extensionName = [NSString stringWithFormat:@"%@.network-extension", bundleIdentifier];
-    wgConfig.apiURL = [NSString stringWithFormat:@"%@wireguard", [self baseURL]];
+    wgConfig.apiURL = [NSString stringWithFormat:@"%@wireguard", [SDKInitializer baseURL]];
     wgConfig.apiKey = apiKey;
-    wgConfig.backupURL = @[];
-
+    
+    NSMutableArray *alternateURLs = [NSMutableArray new];
+    for (NSString *alternateURL in [SDKInitializer backupURLs]) {
+        [alternateURLs addObject:[NSString stringWithFormat:@"%@wireguard", alternateURL]];
+    }
+    wgConfig.backupURL = alternateURLs;
+    
     return [[WireGuardAdapter alloc] initWithConfiguration:wgConfig];
 }
 
