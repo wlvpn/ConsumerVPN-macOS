@@ -17,13 +17,6 @@
 
 @implementation SDKInitializer
 
-+ (NSString *)baseURL {
-    return @"https://api.wlvpn.com/v3/";
-}
-
-+ (NSArray<NSString *> *)backupURLs {
-    return @[];
-}
 
 #pragma mark - Init
 
@@ -56,8 +49,6 @@
 	NSURL *coreDataURL = [appSupportURL URLByAppendingPathComponent:@"DataStore.sqlite"];
     
     NSDictionary *apiAdapterOptions = @{
-        kV3BaseUrlKey:          [SDKInitializer baseURL],
-        kV3AlternateUrlsKey:    [SDKInitializer backupURLs],
         kV3ApiKey:              apiKey,
         kV3CoreDataURL:         coreDataURL,
         kV3ServiceNameKey:      brandName
@@ -80,8 +71,6 @@
         kVPNHelperDisableIPSec:             [NSNumber numberWithBool:YES],
         kVPNApplicationSupportDirectoryKey: applicationSupportDirectory,
         kIKEv2KeychainServiceName:          apiAdapter.passwordServiceName,
-        kIKEv2V3BaseUrlKey:                 [SDKInitializer baseURL],
-        kIKEv2V3AlternateUrlsKey:           [SDKInitializer backupURLs],
     };
     
     // Create adapters
@@ -116,8 +105,6 @@
 		kVPNDefaultProtocolKey: defaultProtocol,
 		kCityPOPHostname:       @"wlvpn.com",
 		kBundleNameKey:         brandName,
-        kV3BaseUrlKey:          [SDKInitializer baseURL],
-        kV3AlternateUrlsKey:    [SDKInitializer backupURLs],
 	};
     
     VPNAPIManager *apiManager = [[VPNAPIManager alloc]
@@ -139,9 +126,7 @@
                                               kIKEv2Hostname: @"vpn.wlvpn.com",
                                       kIKEv2RemoteIdentifier: @"vpn.wlvpn.com",
                                          kVPNSharedSecretKey: @"vpn",
-                                   kIKEv2KeychainServiceName: keychainService,
-                                          kIKEv2V3BaseUrlKey: [SDKInitializer baseURL],
-                                         kIKEv2V3AlternateUrlsKey: [SDKInitializer backupURLs]};
+                                   kIKEv2KeychainServiceName: keychainService};
     
     return [[NEVPNManagerAdapter alloc] initWithOptions:connectionOptions];
 }
@@ -157,15 +142,8 @@
     wgConfig.useAPIKey = NO;
     wgConfig.uuid = uuid;
     wgConfig.extensionName = [NSString stringWithFormat:@"%@.network-extension", bundleIdentifier];
-    wgConfig.apiURL = [NSString stringWithFormat:@"%@wireguard", [SDKInitializer baseURL]];
     wgConfig.apiKey = apiKey;
-    
-    NSMutableArray *alternateURLs = [NSMutableArray new];
-    for (NSString *alternateURL in [SDKInitializer backupURLs]) {
-        [alternateURLs addObject:[NSString stringWithFormat:@"%@wireguard", alternateURL]];
-    }
-    wgConfig.backupURL = alternateURLs;
-    
+
     return [[WireGuardAdapter alloc] initWithConfiguration:wgConfig];
 }
 
