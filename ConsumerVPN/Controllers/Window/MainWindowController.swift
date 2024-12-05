@@ -394,11 +394,36 @@ extension MainWindowController : VPNAccountStatusReporting {
     /// Reset the values on Logout
     ///
     func statusLogoutSucceeded(_ notification: Notification) {
-        showLoginView()
         
-        if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
-            appDelegate.onLogout()
+        if let error = notification.object as? NSError, (error.code == VPNImportError.VPNTokenExpiredError.rawValue || error.code == VPNKitLoginError.reauthenticationFailed.rawValue) {
+            let alert = NSAlert()
+            alert.addButton(withTitle: NSLocalizedString("Ok", comment: "Ok"))
+            alert.informativeText = "Session Expired"
+            alert.messageText = "Your session expired. Please log in again."
+            
+            if let window = window {
+                alert.beginSheetModal(for: window) { [weak self] (selectedResponseCode) in
+                    
+                    guard let self = self else { return }
+                    
+                    if selectedResponseCode == NSApplication.ModalResponse.alertFirstButtonReturn {
+                        self.showLoginView()
+                        
+                        if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
+                            appDelegate.onLogout()
+                        }
+                    }
+                }
+            }
         }
+        else {
+            showLoginView()
+            
+            if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
+                appDelegate.onLogout()
+            }
+        }
+        
         
     }
     
@@ -483,6 +508,11 @@ extension MainWindowController : VPNConnectionStatusReporting {
             showConnectView()
         }
         ApiManagerHelper.shared.refreshLocation()
+        
+        if let error = notification.object as? NSError {
+            displayAlert(informativeText: "Connection Failed",
+                         messageText: error.localizedDescription)
+        }
     }
     
     //MARK: - VPN Configuration Status Reporting Conformance
@@ -498,6 +528,18 @@ extension MainWindowController : VPNConnectionStatusReporting {
     func updateConfigurationFailed(_ notification: Notification) {
         connectView.toggleUIForEnabledState(isEnabled: true)
         connectView.vpnConnectButton.buttonText = NSLocalizedString("Connect", comment: "Connect")
+    }
+    
+    //MARK: - VPN Health Check
+    func statusConnectionHealthUpdate(_ notification: Notification) {
+        debugPrint("[ConsumerVPN] \(#function) \(notification)")
+        if let error = notification.object as? NSError {
+            displayAlert(informativeText: "VPN Health Check",
+                         messageText: error.localizedDescription)
+        } else {
+            displayAlert(informativeText: "VPN Health Check",
+                         messageText: "Your VPN Connection is healthy!")
+        }
     }
 }
 
@@ -592,10 +634,10 @@ extension MainWindowController : DisconnectViewDelegate {
     fileprivate func manageOnDemandDisconnect() {
         ApiManagerHelper.shared.setOnDemand(enable: false)
         ApiManagerHelper.shared.disconnect()
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            
             ApiManagerHelper.shared.synchronizeConfiguration { success in
-                if success {
+                DispatchQueue.main.async {
                     NotificationCenter.default.post(name: Notification.Name(WLOnDemandOptionChangedNotification),
                                                              object: nil,
                                                              userInfo: nil)

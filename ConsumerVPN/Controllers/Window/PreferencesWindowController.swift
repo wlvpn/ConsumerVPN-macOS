@@ -133,7 +133,7 @@ class PreferencesWindowController : BaseWindowController, NSWindowDelegate {
     private func updateUIForSelectedState() {
         btnKillSwitch?.state = ApiManagerHelper.shared.isKillSwitchOn ? .on : .off
         btnKillSwitch?.isEnabled = ApiManagerHelper.shared.isSafeToChangeConfiguration()
-        onDemand.isEnabled = !ApiManagerHelper.shared.isVPNConnectionInProgress()
+        onDemand.isEnabled = !ApiManagerHelper.shared.isVPNConnectionInProgress() && ApiManagerHelper.shared.selectedProtocol != .openVPN_TCP && ApiManagerHelper.shared.selectedProtocol != .openVPN_UDP
         protocolSegmentControl.isEnabled = ApiManagerHelper.shared.isSafeToChangeConfiguration()
     }
     
@@ -155,7 +155,7 @@ class PreferencesWindowController : BaseWindowController, NSWindowDelegate {
                     ApiManagerHelper.shared.setOnDemand(enable: false)
                     ApiManagerHelper.shared.connect()
                 }
-                guard let self = self else {return}
+                guard let self = self else { return }
                 self.onDemand.isEnabled = true
             }
         }
@@ -178,22 +178,26 @@ class PreferencesWindowController : BaseWindowController, NSWindowDelegate {
             if !enable {
                 alert.addButton(withTitle: NSLocalizedString("Disconnect", comment: "Disconnect"))
             }
-
-            alert.informativeText = NSLocalizedString("OnDemandDisconnect", comment: "OnDemandDisconnect")
+            
+            if enable {
+                alert.informativeText = NSLocalizedString("EnableOnDemandDisconnect", comment: "EnableOnDemandDisconnect")
+            } else {
+                alert.informativeText = NSLocalizedString("DisableOnDemandDisconnect", comment: "DisableOnDemandDisconnect")
+            }
+            
             alert.alertStyle = NSAlert.Style.informational
 
             alert.beginSheetModal(for: unwrappedWindow) { (response) in
                 switch response {
                 case .alertFirstButtonReturn:
                     // Handle Cancel button click
-                    self.managedOnDemandSelection(isSelected: enable ? OnDemandOption.notSelected.rawValue : OnDemandOption.selected.rawValue)
+                    self.onDemand.state = NSControl.StateValue(rawValue: enable ? OnDemandOption.notSelected.rawValue : OnDemandOption.selected.rawValue)
                 case .alertSecondButtonReturn:
                     // Handle Reconnect button click
                     self.onDemand.isEnabled = true
                     reconnectAction()
                 case .alertThirdButtonReturn:
                     // Handle Disconnect button click (only if enabled)
-                    
                     if !enable {
                         disconnectAction()
                     }
@@ -202,12 +206,9 @@ class PreferencesWindowController : BaseWindowController, NSWindowDelegate {
                     self.onDemand.state = NSControl.StateValue(rawValue: OnDemandOption.selected.rawValue)
                 }
             }
-
             
         }
         
-       
-
     }
     
     /// Evaluates the user selected option and does one of two things. If the
@@ -372,8 +373,6 @@ class PreferencesWindowController : BaseWindowController, NSWindowDelegate {
             openVPNController?.showWindow(self)
     }
     
-    
-    
  }
 
 extension PreferencesWindowController : VPNHelperStatusReporting {
@@ -393,6 +392,8 @@ extension PreferencesWindowController: VPNConfigurationStatusReporting {
                 self.openOpenVPNConrollerWindow()
             }
         }
+        
+        updateUIForSelectedState()
     }
     
     func updateConfigurationBegin(_ notification: Notification) {
@@ -411,6 +412,7 @@ extension PreferencesWindowController: VPNConfigurationStatusReporting {
 }
 
 extension PreferencesWindowController: VPNConnectionStatusReporting {
+    
     func statusConnectionFailed(_ notification: Notification) {
         self.protocolSegmentControl.isEnabled = true
         updateUIForSelectedState()
@@ -441,6 +443,7 @@ extension PreferencesWindowController: VPNConnectionStatusReporting {
         updateUIForSelectedState()
         CommonSpinnerManager.shared.hideSpinner()
     }
+    
 }
 
 
