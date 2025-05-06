@@ -52,11 +52,12 @@ extension ApiManagerHelper {
     
     func disconnectOnAppTerminate() {
         if apiManager.isConnectedToVPN() {
-            if let ondemandConfiguration = vpnConfiguration?.onDemandConfiguration {
-                if !ondemandConfiguration.enabled { apiManager.disconnect() }
-            } else {
-                apiManager.disconnect()
+            if let ondemandConfiguration = vpnConfiguration?.onDemandConfiguration,
+                ondemandConfiguration.enabled {
+                ondemandConfiguration.enabled = false
             }
+            
+            apiManager.disconnect()
         }
         
         apiManager.cleanup()
