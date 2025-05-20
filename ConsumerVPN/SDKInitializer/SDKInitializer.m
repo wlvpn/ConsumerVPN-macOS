@@ -112,6 +112,8 @@
                                  connectionAdapters:adapters
                                  andOptions:apiManagerOptions];
 
+    [apiManager.vpnConfiguration setStayConnectedOnQuit:YES];
+    
 	return apiManager;
 }
 

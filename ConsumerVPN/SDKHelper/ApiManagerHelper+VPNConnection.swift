@@ -28,7 +28,7 @@ extension ApiManagerHelper {
     }
     
     func getVPNConnectionStatus() -> VPNConnectionStatus {
-        return apiManager.status
+        return apiManager.connectionStatus
     }
     
     func connect() {
@@ -51,16 +51,18 @@ extension ApiManagerHelper {
     }
     
     func disconnectOnAppTerminate() {
-        if apiManager.isConnectedToVPN() {
-            if let ondemandConfiguration = vpnConfiguration?.onDemandConfiguration,
-                ondemandConfiguration.enabled {
-                ondemandConfiguration.enabled = false
+        if !apiManager.vpnConfiguration.stayConnectedOnQuit {
+            if apiManager.isConnectedToVPN() {
+                if let ondemandConfiguration = vpnConfiguration?.onDemandConfiguration,
+                    ondemandConfiguration.enabled {
+                    ondemandConfiguration.enabled = false
+                }
+                
+                apiManager.disconnect()
             }
             
-            apiManager.disconnect()
+            apiManager.cleanup()
         }
-        
-        apiManager.cleanup()
     }
     
 }
@@ -86,8 +88,13 @@ extension ApiManagerHelper: VPNConnectionStatusReporting {
     
     func statusConnectionFailed(_ notification: Notification) {
         debugPrint("[ConsumerVPN] \(#function): \(notification)")
-        if let error = notification.object as? Error {
-            print("Connection Failed with Error - \(error.localizedDescription)")
+        
+        if let error = notification.object as? NSError {
+            debugPrint("[ConsumerVPN] Connection Failed with Error - \(error.localizedDescription)")
+            if error.code == VPNKitConfigurationRuntimeError.systemExtensionNotInstalled.rawValue {
+                self.apiManager.installSystemExtension()
+                
+            }
         }
     }
     

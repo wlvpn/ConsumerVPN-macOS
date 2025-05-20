@@ -99,6 +99,8 @@ class MainWindowController : BaseWindowController {
     
     var purchaseCoordinator: PurchaseCoordinator!
     
+    fileprivate var alert: NSAlert?
+    
     //MARK: - Window Management
     
     override func windowDidLoad() {
@@ -193,12 +195,18 @@ class MainWindowController : BaseWindowController {
     /// - parameter informativeText: The alert informative text.
     /// - parameter messageText: The alert message text.
     fileprivate func displayAlert(informativeText : String, messageText : String) {
+        if let alert = self.alert {
+            if let sheetWindow = alert.window.sheetParent {
+                sheetWindow.endSheet(alert.window)
+            }
+        }
         
         let alert = NSAlert()
         alert.informativeText = informativeText
         alert.messageText = messageText
-        
+        alert.alertStyle = .warning
         if let window = window {
+            self.alert = alert
             alert.beginSheetModal(for: window, completionHandler: nil)
         }
     }
@@ -423,7 +431,6 @@ extension MainWindowController : VPNAccountStatusReporting {
                 appDelegate.onLogout()
             }
         }
-        
         
     }
     

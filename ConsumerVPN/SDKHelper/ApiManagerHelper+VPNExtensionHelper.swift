@@ -25,6 +25,10 @@ extension ApiManagerHelper: VPNHelperStatusReporting {
         apiManager.installPrivilegedHelper()
     }
     
+    func getCurrentHelperStatus() -> VPNConnectionStatus {
+        return self.apiManager.helperStatus
+    }
+    
     func installWgSystemExtensionIfRequired(pendingForApproval:(Bool) -> Void) {
         
         if !apiManager.systemExtensionInstalled() {
