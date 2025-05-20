@@ -26,8 +26,14 @@ extension ApiManagerHelper {
             return
         }
         
-        apiManager.synchronizeConfiguration { success in
-            completion?(success)
+        var error:NSError? = nil
+        if apiManager.canSynchronizeConfiguration(&error) {
+            apiManager.synchronizeConfiguration { success in
+                completion?(success)
+            }
+        } else  {
+            debugPrint("Failed to synchronize configuration: \(error?.localizedDescription ?? "")")
+            completion?(false)
         }
     }
     
@@ -35,8 +41,14 @@ extension ApiManagerHelper {
         guard apiManager.isActiveUser else {
             return false
         }
+        var error:NSError? = nil
+        if apiManager.canSynchronizeConfiguration(&error) {
+            return await apiManager.synchronizeConfiguration()
+        } else  {
+            debugPrint("Failed to synchronize configuration: \(error?.localizedDescription ?? "")")
+            return false
+        }
         
-        return await apiManager.synchronizeConfiguration()
     }
 
     

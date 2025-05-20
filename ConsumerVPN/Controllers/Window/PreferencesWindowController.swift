@@ -133,6 +133,7 @@ class PreferencesWindowController : BaseWindowController, NSWindowDelegate {
     private func updateUIForSelectedState() {
         btnKillSwitch?.state = ApiManagerHelper.shared.isKillSwitchOn ? .on : .off
         btnKillSwitch?.isEnabled = ApiManagerHelper.shared.isSafeToChangeConfiguration()
+        onDemand.state = NSControl.StateValue(rawValue:ApiManagerHelper.shared.isOnDemandEnabled ? 1 : 0)
         onDemand.isEnabled = !ApiManagerHelper.shared.isVPNConnectionInProgress() && ApiManagerHelper.shared.selectedProtocol != .openVPN_TCP && ApiManagerHelper.shared.selectedProtocol != .openVPN_UDP
         protocolSegmentControl.isEnabled = ApiManagerHelper.shared.isSafeToChangeConfiguration()
     }
@@ -141,7 +142,7 @@ class PreferencesWindowController : BaseWindowController, NSWindowDelegate {
     
     /// Confirms that the user wishes to uncheck the OnDemand option which will
     /// disconnect them from the VPN if they have an active VPN connection ongoing.
-    fileprivate func confirmOnDemandDisconnect(enable:Bool) {
+    fileprivate func  confirmOnDemandDisconnect(enable:Bool) {
         
         // Define the reconnect action
         func reconnectAction() {
@@ -162,12 +163,19 @@ class PreferencesWindowController : BaseWindowController, NSWindowDelegate {
 
         // Define the disconnect action
         func disconnectAction() {
+            // Disable on-demand and disconnect VPN
+            ApiManagerHelper.shared.setOnDemand(enable: false)
             ApiManagerHelper.shared.disconnect()
+
+            // Wait before synchronizing configuration
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-                ApiManagerHelper.shared.setOnDemand(enable: false)
-                ApiManagerHelper.shared.synchronizeConfiguration()
-                guard let self = self else {return}
-                self.onDemand.isEnabled = true
+                ApiManagerHelper.shared.synchronizeConfiguration { success in
+                    guard let self = self else { return }
+
+                    DispatchQueue.main.async {
+                        self.updateOnDemandUI()
+                    }
+                }
             }
         }
         
@@ -209,6 +217,11 @@ class PreferencesWindowController : BaseWindowController, NSWindowDelegate {
             
         }
         
+    }
+    
+    private func updateOnDemandUI() {
+        onDemand.isEnabled = true
+        onDemand.state = NSControl.StateValue(rawValue: ApiManagerHelper.shared.isOnDemandEnabled ? 1 : 0)
     }
     
     /// Evaluates the user selected option and does one of two things. If the
