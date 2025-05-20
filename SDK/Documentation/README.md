@@ -13,4 +13,4 @@ To get the necessary assets/SDKs for this application to run, please contact sup
 
 - You can find the VPNKit changelog.
 
-> Refer : [Changelog](../Documentation/Changelog.md)
+> Refer : [Changelog](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Changelog.md)
