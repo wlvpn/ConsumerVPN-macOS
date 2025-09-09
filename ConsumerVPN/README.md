@@ -6,7 +6,7 @@
 ![Supports ARM](https://img.shields.io/badge/ARM-arm64-informational)
 ![Supports Intel](https://img.shields.io/badge/Intel-x86_64-informational)
 ![XCFramework Included](https://img.shields.io/badge/XCFramework-included-success)
-[![VPNKit 7.1.0](https://img.shields.io/badge/VPNKit-7.1.0-brightgreen)](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/README.md)
+[![VPNKit 7.1.1](https://img.shields.io/badge/VPNKit-7.1.1-brightgreen)](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/README.md)
 
 ConsumerVPN is a ready-to-brand application built with Swift and the WLVPN VPN SDK. It provides a foundation for your own VPN app and serves as a complete guide for integrating the WLVPN VPN SDK.(VPNKit).
 
