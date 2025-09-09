@@ -111,7 +111,8 @@
                                  initWithAPIAdapter:apiAdapter
                                  connectionAdapters:adapters
                                  andOptions:apiManagerOptions];
-
+    
+    // Ensures that connections are not killed off when the app dies during an active connection
     [apiManager.vpnConfiguration setStayConnectedOnQuit:YES];
     
 	return apiManager;
