@@ -58,6 +58,8 @@
 "OnDemandConfirm" = "Disconnecting from the VPN will disable On Demand. Do you wish to continue?";
 "DisableOnDemandDisconnect" = "Disabling On Demand will disconnect you from the VPN. Would you like to continue?";
 "EnableOnDemandDisconnect" = "Enabling On Demand will temporarily disconnect you from the VPN. Would you like to continue?";
+"ErrorConnectingVpn" = "Error connecting to the VPN";
+"UnhealthyServer" = "Please try again or select a different location.\n(Code: %@)";
 
 /* Filter View Strings */
 "ResetFilters" = "Reset";
