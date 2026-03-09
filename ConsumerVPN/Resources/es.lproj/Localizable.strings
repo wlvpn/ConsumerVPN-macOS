@@ -59,6 +59,8 @@
 "OnDemandConfirm" = "Desconectarse de la VPN deshabilitará la configuración de Bajo Demanda. ¿Deseas continuar?";
 "DisableOnDemandDisconnect" = "Deshabilitar Bajo Demanda te desconectará de la VPN. ¿Te gustaria continuar?";
 "EnableOnDemandDisconnect" = "Habilitar On Demand lo desconectará temporalmente de la VPN.. ¿Te gustaria continuar?";
+"ErrorConnectingVpn" = "Error al conectar con la VPN";
+"UnhealthyServer" = "Inténtalo de nuevo o selecciona otra ubicación.\n(Código: %@)";
 
 /* Filter View Strings */
 "ResetFilters" = "Reiniciar";
