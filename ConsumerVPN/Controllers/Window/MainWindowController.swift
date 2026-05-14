@@ -144,8 +144,6 @@ class MainWindowController : BaseWindowController {
         if ApiManagerHelper.shared.isUserLogin(), UserDefaults.standard.bool(forKey: WLHideOnAppLaunch)  {
             if shouldConnectAtStartUp {
                 ApiManagerHelper.shared.refreshServer()
-            } else {
-                ApiManagerHelper.shared.synchronizeConfiguration()
             }
         }
     }
@@ -453,8 +451,16 @@ extension MainWindowController : VPNConnectionStatusReporting {
             displayAlert(informativeText: "Connection Failed",
                          messageText: "Please check your internet connection.")
         } else {
-            displayAlert(informativeText: "Connection Failed",
-                         messageText: (notification.object as? NSError)?.localizedDescription ?? "Unknown")
+            if let errorCode = (notification.object as? NSError)?.code, (errorCode == VPNKitConfigurationRuntimeError.serverUnhealthyError.rawValue || errorCode == VPNKitConfigurationRuntimeError.invalidServerError.rawValue) {
+                let title = NSLocalizedString("ErrorConnectingVpn", comment: "Connection error title")
+                let message = String(format:  NSLocalizedString("UnhealthyServer", comment: "Connection error message"), String(errorCode))
+                displayAlert(informativeText: title,
+                             messageText: message)
+            }
+            else {
+                displayAlert(informativeText: "Connection Failed",
+                             messageText: (notification.object as? NSError)?.localizedDescription ?? "Unknown")
+            }
         }
         
         updateAppliedViewForDisconnectOrFailure()
@@ -535,6 +541,14 @@ extension MainWindowController : VPNConnectionStatusReporting {
     func updateConfigurationFailed(_ notification: Notification) {
         connectView.toggleUIForEnabledState(isEnabled: true)
         connectView.vpnConnectButton.buttonText = NSLocalizedString("Connect", comment: "Connect")
+        if let error = notification.object as? NSError {
+            if (error.code == VPNKitConfigurationRuntimeError.systemExtensionNotInstalled.rawValue) {
+                ApiManagerHelper.shared.installSystemExtension()
+            } else {
+                displayAlert(informativeText: "Configuration Failed",
+                             messageText: error.localizedDescription)
+            }
+        }
     }
     
     //MARK: - VPN Health Check

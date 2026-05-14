@@ -49,3 +49,4 @@
 sudo launchctl unload /Library/LaunchDaemons/com.consumervpn.osx.vpnhelper.plist
 sudo rm /Library/LaunchDaemons/com.consumervpn.osx.vpnhelper.plist
 sudo rm /Library/PrivilegedHelperTools/com.consumervpn.osx.vpnhelper
+sudo rm "/Library/Application Support/com.consumervpn.osx.vpnhelper"
