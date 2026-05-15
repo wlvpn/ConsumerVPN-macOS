@@ -1179,6 +1179,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = J6DC9F6B59;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = J6DC9F6B59;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1210,6 +1211,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "WLVPN Mac Production";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "WLVPN macOS Prod";
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OBJC_BRIDGING_HEADER = "ConsumerVPN/Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(PROJECT_NAME)-Swift.h";
@@ -1265,7 +1267,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "WLVPN Mac Production";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "WLVPN Mac Production";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "WLVPN macOS Prod";
 				SWIFT_OBJC_BRIDGING_HEADER = "ConsumerVPN/Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(PROJECT_NAME)-Swift.h";
 				SWIFT_VERSION = 5.0;
@@ -1445,7 +1447,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wlvpn.macos.consumervpn.network-extension";
 				PRODUCT_NAME = "$(inherited)";
 				PROVISIONING_PROFILE_SPECIFIER = "WLVPN macOS Network Extension Prod";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "WLVPN macOS Network Extension Prod";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "WLVPN macOS WG NE";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1504,7 +1506,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wlvpn.macos.consumervpn.network-extension";
 				PRODUCT_NAME = "$(inherited)";
 				PROVISIONING_PROFILE_SPECIFIER = "WLVPN macOS Network Extension Prod";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "WLVPN macOS Network Extension Prod";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "WLVPN macOS WG NE";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

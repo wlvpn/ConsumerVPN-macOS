@@ -144,8 +144,6 @@ class MainWindowController : BaseWindowController {
         if ApiManagerHelper.shared.isUserLogin(), UserDefaults.standard.bool(forKey: WLHideOnAppLaunch)  {
             if shouldConnectAtStartUp {
                 ApiManagerHelper.shared.refreshServer()
-            } else {
-                ApiManagerHelper.shared.synchronizeConfiguration()
             }
         }
     }
@@ -544,8 +542,12 @@ extension MainWindowController : VPNConnectionStatusReporting {
         connectView.toggleUIForEnabledState(isEnabled: true)
         connectView.vpnConnectButton.buttonText = NSLocalizedString("Connect", comment: "Connect")
         if let error = notification.object as? NSError {
-            displayAlert(informativeText: "Configuration Failed",
-                         messageText: error.localizedDescription)
+            if (error.code == VPNKitConfigurationRuntimeError.systemExtensionNotInstalled.rawValue) {
+                ApiManagerHelper.shared.installSystemExtension()
+            } else {
+                displayAlert(informativeText: "Configuration Failed",
+                             messageText: error.localizedDescription)
+            }
         }
     }
     
