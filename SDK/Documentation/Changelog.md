@@ -1,17 +1,71 @@
 # VPNKit Changelog
 
+## VPNKit 7.2.0
+
+### New Items
+- Added `VPNOpenVPNSettings` class which holds port, protocol types, etc under `VPNConfiguration`. Refer to [VPNOpenVPNSettings](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/VPNOpenVPNSettings.md).
+- Added OpenVPN support for iOS using Network Extension. Refer to [OpenVPN+NE Implementation](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/OpenVPN+NE%20Implementation.md).
+- Added OpenVPN support for macOS using Network Extension. Refer to [OpenVPN+NE Implementation](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/OpenVPN+NE%20Implementation.md).
+- Implemented OpenVPN handshake update functionality. Refer to [Handshake Update Implementation](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Handshake%20Update%20Implementation.md).
+- Added a `quantumResistanceEnabled` flag to `WireGuardAdapterConfiguration` to toggle the quantum-resistant transition. Default is true, meaning quantum resistance is enabled.
+- Added an `allowDisconnectOnQuantumResistanceFailure` flag to `WireGuardAdapterConfiguration` to control whether the VPN disconnects if the post-connect quantum-resistant transition fails. Default is false, which preserves the existing classical WireGuard session. This flag has only effect when `quantumResistanceEnabled` is set to true.
+- Updated OpenVPN from v2.4 to v2.6.
+- Added the `OSSystemExtensionsWorkspaceObserver` for OpenVPN and WireGuard support on macOS 15.1 and later.
+- Added a `clientManagesSystemExtension` flag to `OpenVPNAdapterConfiguration` indicating that OpenVPN system extension installation is managed by the macOS client application using Apple APIs.
+- Added new `disconnect()` method at `OVPacketTunnelProvider` to terminate the VPN connection. (Intended to use on macOS only)
+- Added new `bypassAllTraffic()` method at `OVPacketTunnelProvider` to bypass all traffic from the VPN connection.
+- Added new `tunnelCancelled(reason) (3005)` handshake error (OpenVPN TCP only). Raised after the SDK invokes `cancelTunnelWithError(...)` because the tunnel was stopped externally (OS, another VPN being activated, system termination, etc.). The `reason` associated value carries the raw log line for diagnostics. This notification is informational and intended for logging or user notification purposes only. When Connect-On-Demand is enabled, the VPN will reconnect automatically once internet connectivity is restored. When Connect-On-Demand is disabled, this cancellation is expected and the VPN will remain disconnected. Refer to [Handshake Update Implementation](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Handshake%20Update%20Implementation.md).
+- Added new `captivePortalLikely (3006)` handshake error for WireGuard and OpenVPN. Surfaced once per episode when repeated handshake failures within the post-roam window strongly suggest the current network requires HTTP sign-in (captive portal). OpenVPN additionally pauses its internal reconnect loop while suspected; both protocols clear the classification on a successful handshake or a fresh network path change. When `isKillSwitchEnabled` is `true`, the manager's `includeAllNetworks` flag must be cleared so iOS can present its captive sheet - on macOS by calling `self.disconnect(...)` from inside `vpnHandshakeUpdateDetected(_:)`, on iOS / tvOS by signaling the app target and having the app call its own disconnect API. Refer to [Handshake Update Implementation](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Handshake%20Update%20Implementation.md).
+- Added new `isKillSwitchEnabled` property on `OVPacketTunnelProvider` and `WGPacketTunnelProvider` reflecting the active `includeAllNetworks` value from the tunnel protocol configuration. Intended to be read from `vpnHandshakeUpdateDetected(_:)` to decide whether `captivePortalLikely` recovery requires clearing the kill switch (via `self.disconnect(...)` on macOS, or via an app-side disconnect call on iOS / tvOS).
+- Added new `notifyRoamingOnce: Bool` property on `OVPacketTunnelProvider` and `WGPacketTunnelProvider` to control `.roaming` event delivery. Defaults to `true` (the SDK emits at most one `.roaming` notification per roam episode - episode boundary = successful handshake, fresh network path change, or tunnel start/stop). Set to `false` to receive a `.roaming` event on every handshake retry inside the post-roam window (diagnostics, telemetry, or aggressive recovery UI).
+- Enabled OpenVPN UDP **session floating** (link rebinding) by default. Network path changes that previously required a full TLS / key renegotiation are now recovered by rebinding the existing session to the new socket. It dramatically reducing recovery latency on Wi-Fi to cellular swaps and eliminating the visible "tunnel restarts on every path change" UX.
+- Added `VPNQuantumResistenceFailedNotification` and `statusQuantumResistenceFailed` for WireGuard quantum resistance failures. The notification includes an `NSError` with `VPNKitQuantumResistanceError` codes in the 6000 range and failure detail keys for city, hostname, timestamp, and reason.
+- Added `systemExtensionStatus` to `VPNAPIManager` and `VPNConnectionAdapterProtocol` to report the current adapter's system extension state on macOS 15.1 and later.
+- Added `VPNSystemExtensionDisabled` to `Errors.h` to report an error when the client attempts to connect while the system extension is disabled.
+
+### Removed Items
+- Removed `VPNProtocolOpenVPN_UDP` and `VPNProtocolOpenVPN_TCP` VPNProtocols.
+- Removed legacy code related to OpenVPN Command Line Tool.
+- Removed the unused AES-256-CBC cipher from the OpenVPN client configuration.
+
+### Improvements
+- Changed URLSession cache policy to disable cache writes
+- Improved unexpected API response handling on login endpoint to return an error and prevent false positives.
+- Fix OpenVPN doublehop connection issue.
+- Fix OpenVPN crash issue on macOS during migration to Network Extension support.
+- OpenVPN connection will be failed when user account isn't active.
+- Fixed IPSec connection issue.
+- Fixed `loginWithAccessToken:refreshToken:` (token-based login) no longer reports success when the underlying network request fails.
+- Fixed no internet available after connect to OpenVPN with 8080 port.
+- Updated SDK APIs from v3.5 to v3.6.
+- Fixed repeated VPN profile re-approval when multiple macOS users shared the same VPN account.
+- Fixed OpenVPN connection not updating status change.
+- Fixed `VPNUpdateConfigurationFailedNotification` on OpenVPN profile installation failure.
+- Improved WireGuard and OpenVPN handshake failure classification - `HandshakeError` now distinguishes `roaming` (3002), `staleSession` (3003), and `handshakeTimeout` (3004). Refer to [Handshake Update Implementation](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Handshake%20Update%20Implementation.md).
+- Made `isInternetAvailable` on `OVPacketTunnelProvider` and `WGPacketTunnelProvider` reflect the live `NWPath.Status` directly instead of a log-driven cached flag. Fixes a race where a handshake failure arriving before the next path update would classify against stale state, causing real outages to be mis-classified as `.handshakeTimeout` or `.roaming` instead of `.internetUnreachable`. The property is now strictly `true` only when the active path status is `.satisfied`; `.requiresConnection` and `.unsatisfied` both read as `false`. The classifier inside `vpnHandshakeUpdateDetected(_:)` uses the same live source of truth.
+- MTU set based on the OpenVPN network tunnel overhead instead device compatibility.
+- Fixed issue of Objective-C class name collision originating from Bucket, Usage and Plan and renamed them to VPNV3Bucket, VPNV3Usage, VPNV3Plan inside VPNV3APIAdapter.framework.
+- Improve OpenVPN TCP LINK management.
+- Improve error handling for WireGuard API response.
+
+### Breaking Changes
+- `VPNProtocolOpenVPN_UDP` and `VPNProtocolOpenVPN_TCP` replaced with `VPNProtocolOpenVPN`.
+- Removed legacy code related to OpenVPN Command Line Tool.
+- Removed `kV3UUIDKey` setup from WireGuard and OpenVPN adapter configuration examples.
+- `WireGuardAdapterConfiguration.validate()` now returns a typed enum.
+- Some API methods now include an optional `httpStatusCode` parameter in completion/error handling.
+
 ## VPNKit 7.1.3
 
 ### Improvements
 - Enhanced `IKEv2` error handling to gracefully manage `VPNServerUnhealthyError` and `VPNInvalidServerError`
-- When connecting to a VPN server, if the connection fails with `VPNServerUnhealthyError` or `VPNInvalidServerError`, that server is now automatically removed to prevent future connection attempts to unhealthy or invalid servers. See [Fetch](../Documentation/Fetch.md#refetching-updated-data) for details on refetching updated data.
+- When connecting to a VPN server, if the connection fails with `VPNServerUnhealthyError` or `VPNInvalidServerError`, that server is now automatically removed to prevent future connection attempts to unhealthy or invalid servers. See [Fetch](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Fetch.md#refetching-updated-data) for details on refetching updated data.
 - Fixed an issue where the SDK was unable to retrieve stored keychain values when the iOS device was locked.
 - Fixed crash occurring during retrieval of stored keychain values.
 - Rename coredata model version files without whitespaces.
 - Updated all APIs version from v3.4 to v3.5. Also refactored refresh token code.
 - Retrieve and send the exact account status when synchronizeConfiguration() fails due to invalid account.
 - Reset last server update date on user logout to ensure fresh server sync on next login.
-- Changed URLSession cache policy to disable cache writes
 
 ### New Items
 - Added a `clientManagesSystemExtension` flag to `WireGuardAdapterConfiguration` indicating that WireGuard system extension installation is managed by the macOS client application using Apple APIs.
@@ -33,19 +87,16 @@
 ## VPNKit 7.1.0
 
 ### New Items
-- Added new `availableFeatures` property at `Server` model to retrieve available features on a server. For more details, see [Server Features](https://github.com/wlvpn/ConsumerVPN-iOS/blob/main/SDK/Documentation/ServerFeatures.md).
+- Added new `availableFeatures` property at `Server` model to retrieve available features on a server. For more details, see [Server Features](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/ServerFeatures.md).
 - Added a new `selectedFeatures` property to `VPNConfiguration`, allowing the option to filter servers based on selected features when connecting to the optimal location.
-
-### Improvements
-- If `isVirtualServersSkipped` is true, virtual servers are skipped only when a physical server is available.
 
 ## VPNKit 7.0.1
 
 ### New Items
-- Added new `vpnHandshakeUpdateDetected(_ error: Error?)` method at `WGPacketTunnelProvider`. Refer at [Handshake Update Implementation](https://github.com/wlvpn/ConsumerVPN-iOS/blob/main/SDK/Documentation/Handshake%20Update%20Implementation.md)
+- Added new `vpnHandshakeUpdateDetected(_ error: Error?)` method at `WGPacketTunnelProvider`. Refer at [Handshake Update Implementation](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Handshake%20Update%20Implementation.md)
 - Added new properties to `WGPacketTunnelProvider`:
     - `lastHandshakeDate`   : `Date?` which indicates date timestamp of the last successful handshake.
-    - `isInternetAvaialble` : `Bool` which indicates the current network status. 
+    - `isInternetAvailable` : `Bool` which indicates the current network status. 
 
 ### Removed Items
 - Removed `vpnHandshakeFailureDetected()` method from `WGPacketTunnelProvider`.
@@ -62,7 +113,7 @@
 
 ### Breaking Changes
 - Replaced `vpnHandshakeFailureDetected()` with `vpnHandshakeUpdateDetected(_ error: Error?)` optional method at `WGPacketTunnelProvider`.
-- Replaced `getLastHandshake()` method with new `lastHandshakeDate` and `isInternetAvaialble` properties at `WGPacketTunnelProvider`.
+- Replaced `getLastHandshake()` method with new `lastHandshakeDate` and `isInternetAvailable` properties at `WGPacketTunnelProvider`.
 
 ## VPNKit 7.0.0
 

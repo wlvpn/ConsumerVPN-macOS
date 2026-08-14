@@ -8,7 +8,8 @@
 
 @import Foundation;
 @import VPNKit;
-@import VPNHelperAdapter;
+@import VPKWireGuardAdapter;
+@import VPKOpenVPNAdapter;
 
 @interface SDKInitializer : NSObject
 
@@ -28,7 +29,6 @@
 - (nonnull VPNAPIManager*) initializeAPIManagerWithBrandName:(NSString *_Nonnull)brandName
                                                   configName:(NSString *_Nullable)configName
                                                       apiKey:(NSString *_Nonnull)apiKey
-                                                      suffix:(NSString *_Nonnull)suffix
-                                            priviligedHelper:(VPNPrivilegedHelperManager *_Nonnull)privilegedHelperManager;
+                                                      suffix:(NSString *_Nonnull)suffix;
 
 @end

@@ -69,6 +69,7 @@ Check the example code below to see how to initialize the **`iOS`** app with the
 @import VPNV3APIAdapter;
 @import VPKWireGuardExtension;
 @import VPKWireGuardAdapter;
+@import VPKOpenVPNAdapter;
 #import "SDKInitializer.h"
 
 @implementation SDKInitializer
@@ -128,9 +129,13 @@ Check the example code below to see how to initialize the **`iOS`** app with the
     id <VPNConnectionAdapterProtocol> connectionAdapter = [[NEVPNManagerAdapter alloc] initWithOptions:connectionOptions];
     [adapters addObject:connectionAdapter];
     WireGuardAdapter *wireGuardAdapter = [self createWireGuardAdapterWithBrandName:brandName
-                                                                            apiKey:apiKey
-                                                                              uuid:[apiAdapter getOption:kV3UUIDKey]];
+                                                                            apiKey:apiKey];
     [adapters addObject:wireGuardAdapter];
+    
+    OpenVPNAdapter *openVPNAdapter = [self createOpenVPNAdapterWithBrandName:brandName
+                                                                      apiKey:apiKey];
+    [adapters addObject:openVPNAdapter];
+    
     defaultProtocol = [NSNumber numberWithInt:VPNProtocolWireGuard];
 #endif
     
@@ -153,8 +158,7 @@ Check the example code below to see how to initialize the **`iOS`** app with the
 
 #if !TARGET_OS_SIMULATOR
 + (WireGuardAdapter *)createWireGuardAdapterWithBrandName:(NSString *)brandName
-                                                   apiKey:(NSString *)apiKey
-                                                     uuid:(NSString *)uuid {
+                                                   apiKey:(NSString *)apiKey {
     
     NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
     NSString *bundleID = [infoDict objectForKey:@"CFBundleIdentifier"];
@@ -163,11 +167,27 @@ Check the example code below to see how to initialize the **`iOS`** app with the
     
     wgConfig.brandName = brandName;
     wgConfig.useAPIKey = NO;
-    wgConfig.uuid = uuid; //[apiAdapter getOption:kV3UUIDKey];
     wgConfig.apiKey = apiKey;
     wgConfig.extensionName = [bundleID stringByAppendingString:@".network-extension"];
     
     return [[WireGuardAdapter alloc] initWithConfiguration:wgConfig];
+}
+
++ (OpenVPNAdapter *)createOpenVPNAdapterWithBrandName:(NSString *)brandName
+                                               apiKey:(NSString *)apiKey {
+    
+    NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
+    NSString *bundleID = [infoDict objectForKey:@"CFBundleIdentifier"];
+    
+    OpenVPNAdapterConfiguration *openVPNConfig = [[OpenVPNAdapterConfiguration alloc] init];
+    
+    openVPNConfig.brandName = brandName;
+    openVPNConfig.useAPIKey = NO;
+    openVPNConfig.apiKey = apiKey;
+    openVPNConfig.useSystemExtension = YES;
+    openVPNConfig.extensionName = [bundleID stringByAppendingString:@".openvpnextension"];
+    
+    return [[OpenVPNAdapter alloc] initWithConfiguration:openVPNConfig];
 }
 #endif
 
@@ -182,8 +202,7 @@ Check the example code below to see how to initialize the **`macOS`** app with t
 @import VPNKit;
 @import VPNV3APIAdapter;
 @import VPKWireGuardAdapter;
-@import VPNV3APIAdapter;
-@import VPNHelperAdapter;
+@import VPKOpenVPNAdapter;
 
 @implementation SDKInitializer
 
@@ -194,18 +213,12 @@ Check the example code below to see how to initialize the **`macOS`** app with t
  * @param configName The VPN configuration name of this client
  * @param apiKey    The api key provided on WLVPN signup
  * @param suffix    The username suffix provided on WLVPN Signup
- * @param priviligedHelper PrivilgedHelperTool for OpenVPN.
- *
  * @return An initialized VPNAPIManager ready to use
  */
 - (nonnull VPNAPIManager*) initializeAPIManagerWithBrandName:(NSString *)brandName
                                                   configName:(NSString *)configName
                                                       apiKey:(NSString *)apiKey
                                                       suffix:(NSString *)suffix {
-    VPNPrivilegedHelperManager *privilegedHelperManager = [VPNPrivilegedHelperManager alloc]
-             initWithHelperName: //openVPNToolBundleId 
-                   andBrandName: //Theme.brandName;]];
-     
     NSString *bundleID = [[NSBundle bundleForClass:[self class]] bundleIdentifier];
     
     // The directory the application uses to store the Core Data store file.
@@ -225,28 +238,6 @@ Check the example code below to see how to initialize the **`macOS`** app with t
     
     V3APIAdapter *apiAdapter = [[V3APIAdapter alloc] initWithOptions:apiAdapterOptions];
     
-    NSBundle *openVPNBundle = [NSBundle bundleForClass:[VPNOpenVPNConnectionAdapter class]];
-    NSString *certificatePath = [openVPNBundle pathForResource:@"wlvpn" ofType:@"crt"];
-    
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-    NSString *applicationSupportDirectory = [paths firstObject];
-    
-    NSDictionary *connectionOptions = @{
-        kVPNOpenVPNCertificatePath:         certificatePath,
-        kVPNManagerUsernameExtensionKey:    suffix,
-        kVPNManagerBrandNameKey:            brandName,
-        kVPNManagerConfigurationNameKey:    configName,
-        kVPNSharedSecretKey:                @"vpn",
-        kVPNHelperDisableIPSec:             [NSNumber numberWithBool:YES],
-        kVPNApplicationSupportDirectoryKey: applicationSupportDirectory,
-        kIKEv2KeychainServiceName:          apiAdapter.passwordServiceName,
-    };
-    
-    // Create adapters
-    VPNOpenVPNConnectionAdapter *openVpnConnectionAdapter = [[VPNOpenVPNConnectionAdapter alloc] initWithOptions:connectionOptions andPrivilegedHelperManager:privilegedHelperManager];
-    
-    VPNLegacyConnectionAdapter *legacyConnectionAdapter = [[VPNLegacyConnectionAdapter alloc] initWithOptions:connectionOptions andPrivilegedHelperManager:privilegedHelperManager];
-    
     NEVPNManagerAdapter *neVPNAdapter = [self createNEVPNManagerAdapter:brandName
                                                            extensionKey:suffix
                                                                 service:apiAdapter.passwordServiceName];
@@ -257,16 +248,17 @@ Check the example code below to see how to initialize the **`macOS`** app with t
     
     // Order is important
     if (@available(macOS 10.13, *)) {
-        WireGuardAdapter *wireGuardAdapter = [self createWireGuardAdapterWithBrandName:brandName bundleIdentifier:bundleID uuid:[apiAdapter getOption:kV3UUIDKey] apiKey:apiKey];
+        WireGuardAdapter *wireGuardAdapter = [self createWireGuardAdapterWithBrandName:brandName bundleIdentifier:bundleID apiKey:apiKey];
         [adapters addObject: wireGuardAdapter];
         defaultProtocol = [NSNumber numberWithInteger:VPNProtocolWireGuard];
     }
     
-    [adapters addObject: openVpnConnectionAdapter];
+    if (@available(macOS 12.0, *)) {
+        OpenVPNAdapter *openVPNAdapter = [self createOpenVPNAdapterWithBrandName:brandName bundleIdentifier:bundleID apiKey:apiKey];
+        [adapters addObject:openVPNAdapter];
+    }
     
     [adapters addObject: neVPNAdapter];
-    
-    [adapters addObject: legacyConnectionAdapter];
     
     // Initialize the API Manager
     NSDictionary *apiManagerOptions = @{
@@ -302,18 +294,31 @@ Check the example code below to see how to initialize the **`macOS`** app with t
 
 - (WireGuardAdapter *)createWireGuardAdapterWithBrandName:(NSString *)brandName
                                          bundleIdentifier:(NSString *)bundleIdentifier
-                                                     uuid:(NSString *)uuid
                                                    apiKey:(NSString *)apiKey {
     
     WireGuardAdapterConfiguration *wgConfig = [[WireGuardAdapterConfiguration alloc] init];
 
     wgConfig.brandName = brandName;
     wgConfig.useAPIKey = NO;
-    wgConfig.uuid = uuid;
     wgConfig.extensionName = [NSString stringWithFormat:@"%@.network-extension", bundleIdentifier];
     wgConfig.apiKey = apiKey;
 
     return [[WireGuardAdapter alloc] initWithConfiguration:wgConfig];
+}
+
+- (OpenVPNAdapter *)createOpenVPNAdapterWithBrandName:(NSString *)brandName
+                                     bundleIdentifier:(NSString *)bundleIdentifier
+                                               apiKey:(NSString *)apiKey {
+    
+    OpenVPNAdapterConfiguration *openVPNConfig = [[OpenVPNAdapterConfiguration alloc] init];
+
+    openVPNConfig.brandName = brandName;
+    openVPNConfig.useAPIKey = NO;
+    openVPNConfig.extensionName = [NSString stringWithFormat:@"%@.openvpnextension", bundleIdentifier];
+    openVPNConfig.apiKey = apiKey;
+    openVPNConfig.useSystemExtension = YES;
+
+    return [[OpenVPNAdapter alloc] initWithConfiguration:openVPNConfig];
 }
 
 @end

@@ -18,7 +18,7 @@ A Connection Adapter is used to connect to specific VPN protocols. The main adap
         DES and 3DES are not used by the SDK under any conditions.
         All default settings are compliant with Apple’s IKEv2 security requirements as of iOS 26 and macOS 15.
         
-    Refer to: [Initializers](https://github.com/wlvpn/ConsumerVPN-iOS/blob/main/SDK/Documentation/Initializers.md)
+    Refer to: [Initializers](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Initializers.md)
 
 ## Properties
  1. `connectedDate`: NSDate - Set when the VPN is connected else nil.

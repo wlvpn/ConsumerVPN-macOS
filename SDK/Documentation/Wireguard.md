@@ -2,27 +2,27 @@
 
 ## Table of contents
 
-1. [Project Setup](#project-setup)
-    1. [Add the required permissions for the app](#add-the-required-permissions-for-the-app)
-    2. [Integrate WireGuard Network Extension](#integrate-wireguard-network-extension)
-        1. [Set Up the Network Extension Target](#set-up-the-network-extension-target)
-        2. [Create the Packet Tunnel Provider Class](#create-the-packet-tunnel-provider-class)
-        3. [Set Up Main Entry Point](#set-up-main-entry-point)
-        4. [Configure Info.plist](#configure-infoplist)
-        5. [Configure Entitlements](#configure-entitlements)
-2. [Initialize the app](#initialize-the-app)
-3. [Connection](#connection)
-4. [Notifications](#notifications)
-5. [Error handling](#error-handling)
-6. [Limitations, Features, and Compatibility](#limitations-features-and-compatibility)
-7. [Handshake Update Implementation](#handshake-update-implementation)
+1. [Project Setup](#1-project-setup)
+    1. [Add the required permissions for the app](#11-add-the-required-permissions-for-the-app)
+    2. [Integrate WireGuard Network Extension](#12-integrate-wireguard-network-extension)
+        1. [Set Up the Network Extension Target](#121-set-up-the-network-extension-target)
+        2. [Create the Packet Tunnel Provider Class](#122-create-the-packet-tunnel-provider-class)
+        3. [Set Up Main Entry Point](#123-set-up-main-entry-point)
+        4. [Configure Info.plist](#124-configure-infoplist)
+        5. [Configure Entitlements](#125-configure-entitlements)
+2. [Initialize the app](#2-initialize-the-app)
+3. [Connection](#3-connection)
+4. [Notifications](#4-notifications)
+5. [Error handling](#5-error-handling)
+6. [Limitations, Features, and Compatibility](#6-limitations-features-and-compatibility)
+7. [Handshake Update Implementation](#7-handshake-update-implementation)
 
 ## 1. Project Setup
 
 ### 1.1 Add the required permissions for the app
 
 Add the required permissions for the app in the ***project file*** and initialize the app using the Primary Objects.
-> Refer to: [VPNKit iOS Guide](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/VPNKit%20iOS%20Guide.md) 
+> Refer to: [VPNKit iOS Guide](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/VPNKit%20iOS%20Guide.md)  
 > Refer to: [VPNKit macOS Guide](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/VPNKit%20macOS%20Guide.md)
 
 ### 1.2 Integrate WireGuard Network Extension
@@ -43,7 +43,7 @@ Add the required permissions for the app in the ***project file*** and initializ
 ##### Key Points:
 - **Initialization:** In the initializer, you can configure settings for traffic monitoring (optional).
 - **Traffic Monitoring:** Override `vpnDidReceiveTrafficDataCounter` to handle and debug traffic data if traffic monitoring is enabled.
-- **Handshake Timestamp:** Call `getLastHandshake()` to retrieve the timestamp of the last successful handshake and updated network status.
+- **Handshake Timestamp:** Use `lastHandshakeDate` to inspect the last successful handshake timestamp and `isInternetAvailable` to inspect network availability.
 - **Disconnect VPN:** Call `disconnect()` method () to terminate the VPN connection.
 - **Bypass Traffic:** Call `bypassAllTraffic()` to bypass all traffic from the VPN connection.
 - **Handshake Update Monitoring:** Implemented a new `vpnHandshakeUpdateDetected(error: Error?)` method in `WGPacketTunnelProvider`. Subclasses can now override this method to receive notifications and handle VPN handshake updates according to their specific requirements.
@@ -80,7 +80,7 @@ class PacketTunnelProvider: WGPacketTunnelProvider {
    // optional
    public override func vpnHandshakeUpdateDetected(_ error: Error?) {
     
-        NSLog("[VPNKIT-NE] Internet Status: \(self.isInternetAvaialble) Last Handshake Date: \(self.lastHandshakeDate)")
+        NSLog("[VPNKIT-NE] Internet Status: \(self.isInternetAvailable) Last Handshake Date: \(String(describing: self.lastHandshakeDate))")
     
         guard let error else {
             NSLog("[VPNKIT-NE] All good!!!")
@@ -284,7 +284,8 @@ macOS entitlements example:
  > Refer to: [Initializers](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Initializers.md)
 
  ### Primary Objects
- > Refer to: [README macOS](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/README%20MacOS.md)
+ > Refer to: [README macOS](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/README%20MacOS.md)  
+ > Refer to: [VPNKit iOS Guide](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/VPNKit%20iOS%20Guide.md)
 
 
  ## **3. Connection**
@@ -305,7 +306,7 @@ macOS entitlements example:
  #### `- (BOOL)systemExtensionApprovalPending`
 
  **Returns:**  
- `YES` if the WireGuard system extension is awaiting user approval, otherwise `NO`.CFBundleDisplayName
+ `YES` if the WireGuard system extension is awaiting user approval, otherwise `NO`.
  **Discussion:**  
  System extensions may require user approval after installation for security reasons. This method checks if such an approval is pending. Applications may need to prompt users to approve the extension in system settings.
 
@@ -340,7 +341,7 @@ macOS entitlements example:
 
  The API throws an error code and error message. These values are listed in the **Error documentation**.
 
- > Refer to: [Errors](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Errors.md)
+ > Refer: [Errors](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Errors.md)
 
 
  ## **6. Limitations, Features, and Compatibility**
@@ -359,7 +360,8 @@ macOS entitlements example:
  - Supports features like **Threat Protection, Multihop, KillSwitch, Connect On demand, Split Tunneling**.
 
  > For more details:  
- > Refer to: [README macOS](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/README%20MacOS.md)
+ > Refer to: [README macOS](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/README%20MacOS.md)
+ > Refer to: [VPNKit iOS Guide](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/VPNKit%20iOS%20Guide.md)
 
  ### c. Compatibility
 
@@ -370,4 +372,4 @@ macOS entitlements example:
 ## **7. Handshake Update Implementation**
 Handshake update implementation to detect VPN connection stability.
 
-> Refer to: [Handshake Update Implementation](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Handshake%20Update%20Implemention.md)
+> Refer to: [Handshake Update Implementation](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Handshake%20Update%20Implementation.md)

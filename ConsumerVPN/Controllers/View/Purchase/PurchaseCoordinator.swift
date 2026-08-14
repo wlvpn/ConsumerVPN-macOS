@@ -62,8 +62,10 @@ class RevenueCatCoordinator : NSObject {
 		self.debug = debug
 		self.productIdentifiers = productIdentifiers
 		
-		Purchases.configure(withAPIKey: apiKey)
-		Purchases.debugLogsEnabled = debug
+        if Theme.enableIAP {
+            Purchases.configure(withAPIKey: apiKey)
+            Purchases.debugLogsEnabled = debug
+        }
 	}
 }
 

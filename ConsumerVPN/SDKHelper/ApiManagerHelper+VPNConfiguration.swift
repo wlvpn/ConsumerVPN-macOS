@@ -8,7 +8,6 @@
 
 import Foundation
 import VPNKit
-import VPNHelperAdapter
 
 //MARK: VPN Configuration Update
 
@@ -71,7 +70,7 @@ extension ApiManagerHelper {
                 vpnConfiguration.selectedProtocol = VPNProtocol.ipSec
                 break
             case 3:
-                vpnConfiguration.selectedProtocol = VPNProtocol.openVPN_TCP
+                vpnConfiguration.selectedProtocol = VPNProtocol.openVPN
                 break
             default:
                 break
@@ -86,8 +85,7 @@ extension ApiManagerHelper {
         guard let vpnConfiguration = vpnConfiguration else { return }
         if isSafeToChangeConfiguration() {
             vpnConfiguration.isKillSwitchEnabled = enable
-            if vpnConfiguration.selectedProtocol == .openVPN_TCP
-                || vpnConfiguration.selectedProtocol == .openVPN_UDP {
+            if vpnConfiguration.selectedProtocol == .openVPN {
                 self.synchronizeConfiguration()
             }
         } else {
@@ -218,58 +216,46 @@ extension ApiManagerHelper {
     
     //MARK: OpenVPN configuration setup
     
-    func setOpenVPNPort(_ port: String?) {
-        vpnConfiguration?.setOption(port, forKey: kOpenVPNPort)
-    }
-    
     func getOpenVPNPort() -> String {
-        return (vpnConfiguration?.getOptionForKey(kOpenVPNPort) as? String) ?? "443"
+        return vpnConfiguration?.openVPNSettings.port.description ?? "443"
+    }
+
+    func updateOpenVPNPort(_ port: UInt) {
+        vpnConfiguration?.openVPNSettings.port = port
     }
     
     func setOpenVPNType(_ type: String?) {
         guard let vpnConfiguration = vpnConfiguration else {return}
         switch type {
         case "UDP":
-            vpnConfiguration.selectedProtocol = .openVPN_UDP
-            vpnConfiguration.setOption("udp", forKey: kOpenVPNProtocol)
+            vpnConfiguration.openVPNSettings.protocol = .UDP
         case "TCP":
-            vpnConfiguration.selectedProtocol = .openVPN_TCP
-            vpnConfiguration.setOption("tcp", forKey: kOpenVPNProtocol)
+            vpnConfiguration.openVPNSettings.protocol = .TCP
         default:
             break
         }
+        vpnConfiguration.selectedProtocol = .openVPN
         self.synchronizeConfiguration()
     }
     
     func getOpenVPNType() -> String {
-        return (vpnConfiguration?.getOptionForKey(kOpenVPNProtocol) as? String) ?? "udp"
+        return (vpnConfiguration?.openVPNSettings.protocol == .UDP) ? "udp" : "tcp"
     }
     
     func getOpenVPNScrambled() -> Int {
-        return (vpnConfiguration?.getOptionForKey(kOpenVPNScrambleEnabled) as? Int) ?? 0
+        vpnConfiguration?.openVPNSettings.scramble == true ? 1 : 0
     }
     
     func setOpenVPNScrambled(_ scramble: Int?) {
-        vpnConfiguration?.setOption(scramble, forKey: kOpenVPNScrambleEnabled)
-        self.synchronizeConfiguration()
+        vpnConfiguration?.openVPNSettings.scramble = scramble ?? 0 == 1
     }
     
-    func getOpenVPNIPLeackPrototection() -> Int {
-        return (vpnConfiguration?.getOptionForKey(kVPNHelperIPV6LeakProtection) as? Int) ?? 0
-        
+    func getOpenVPNIPLeakProtection() -> Int {
+        vpnConfiguration?.openVPNSettings.ipv6LeakProtection == true ? 1 : 0
     }
     
-    func setOpenVPNIPLeackPrototection(_ enabled: Int?) {
-        vpnConfiguration?.setOption(enabled, forKey: kVPNHelperIPV6LeakProtection)
-        self.synchronizeConfiguration()
-    }
-    
-    func resetDns() {
-        ApiManagerHelper.shared.privilegedHelperManager?.resetOpenVPNDNS(with: vpnConfiguration)
-    }
-    
-    func isOpenVPNHelperInstalled() -> Bool {
-        return privilegedHelperManager?.isHelperInstalled() ?? false
+    func setOpenVPNIPLeakProtection(_ enabled: Int?) {
+        vpnConfiguration?.openVPNSettings.ipv6LeakProtection = enabled ?? 0 == 1
     }
     
     func fetchCities() -> [City] {
@@ -294,13 +280,35 @@ extension ApiManagerHelper: VPNConfigurationStatusReporting {
         debugPrint("[ConsumerVPN] \(#function) \(notification)")
         self.synchronizeConfiguration  { [weak self] success in
             guard let self = self else {return}
-            if self.selectedProtocol == .wireGuard &&  installedStatusForWG != .installed {
-                installSystemExtension()
-            } else if (self.selectedProtocol == .openVPN_TCP || self.selectedProtocol == .openVPN_UDP) &&  self.installedStatusForOpenVPN != .installed{
-                installPrivilegedHelper()
+            if self.selectedProtocol == .wireGuard ||  self.selectedProtocol == .openVPN {
+                if #available(macOS 15.1, *) {
+                    let status = systemExtensionStatus()
+
+                    // If not installed or failed, try to install
+                    if status == .uninstalled || status == .failed || status == .unknown {
+                        ApiManagerHelper.shared.installSystemExtension()
+                        return
+                    }
+
+                   
+                } else {
+                    // Fallback for earlier macOS versions
+                    if !systemExtensionInstalled() {
+                        installSystemExtension()
+                        return
+                    }
+                }
             }
         }
         
+    }
+
+    func isOpenVPNHelperInstalled() -> Bool {
+        if #available(macOS 15.1, *) {
+            return systemExtensionStatus() == .installed
+        } else {
+            return systemExtensionInstalled()
+        }
     }
     
     func updateConfigurationBegin(_ notification: Notification) {

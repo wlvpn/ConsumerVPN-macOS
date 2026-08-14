@@ -5,7 +5,7 @@ The framework provides APIs to login, fetch servers, backup data in a database, 
 
 ## Table of contents
 
-1. [Integrating VPNKit framework](#integrating-vpnKit-framework)
+1. [Integrating VPNKit framework](#integrating-vpnkit-framework)
 2. [Project Settings](#project-settings)
     1. [Signing](#signing)
     2. [Capabilities](#capabilities)
@@ -15,7 +15,7 @@ The framework provides APIs to login, fetch servers, backup data in a database, 
     2. [Fetching the servers](#fetching-the-servers)
     3. [Fetching the location](#fetching-the-location)
     4. [Selecting a protocol](#selecting-a-protocol)
-    5. [Synchronize the configuration](synchronize-the-configuration)
+    5. [Synchronize the configuration](#synchronize-the-configuration)
     6. [Perform a VPN connection](#perform-a-vpn-connection)
     7. [Error handling](#error-handling)
     8. [Notification handling](#notification-handling)
@@ -29,9 +29,9 @@ The framework provides APIs to login, fetch servers, backup data in a database, 
 
 
 # `Integrating VPNKit framework`
-1. Copy the VPNKit SDKs (VPNKit, VPNV3APIAdapter) from iOS_Fat (for simulator/development) or iOS_ARM (for production releases) or XCFrameworks to the SDK folder of the project.
+1. Copy the VPNKit SDKs (`VPNKit`, `VPNV3APIAdapter`) from iOS_Fat (for simulator/development), iOS_ARM (for production releases), or XCFrameworks to the SDK folder of the project.
     
-2. Copy the VPNKitNetworkExtensionAdapters SDKs (VPKWireGuardAdapter, VPKWireGuardExtension) from iOS_ARM (for production releases) or macOS to the SDK folder of the project.
+2. Copy the VPNKit Network Extension adapter SDKs (`VPKWireGuardAdapter`, `VPKWireGuardExtension`, `VPKOpenVPNAdapter`, `VPKOpenVPNNetworkExtension`) from iOS_ARM (for production releases) or XCFrameworks to the SDK folder of the project.
 
 - You can find the VPNKit changelog in its subfolder.
         
@@ -134,7 +134,7 @@ fetchedCities = apiManager.fetchAllCities()
 
 - Fetch the current location model from the `vpnConfiguration` object.
 
-> Refer: [Fetch](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Fetch.md)
+> Refer: [Notifications](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Notifications.md)
 
 
 ### 4. Selecting a protocol
@@ -148,6 +148,8 @@ apiManager.vpnConfiguration.selectedProtocol = VPNProtocol.wireGuard
 apiManager.vpnConfiguration.selectedProtocol = VPNProtocol.ikEv2
 // If IPSec selected
 apiManager.vpnConfiguration.selectedProtocol = VPNProtocol.ipSec
+// If OpenVPN selected
+apiManager.vpnConfiguration.selectedProtocol = VPNProtocol.openVPN
 ```
 
 
@@ -172,9 +174,8 @@ apiManager.vpnConfiguration.selectedProtocol = VPNProtocol.ipSec
 The user can connect and disconnect using the API.
 - You can select the vpn server by setting the VPN configuration either by country, city or server from the available server list.
 - If all the server properties (country, city, and server) are left nil, then the api manager would choose the optimal location for connection.
-- If selected protocol is Wireguard, check **WireGuard System Extension** is installed or not.
+- If selected protocol is WireGuard or OpenVPN, check the corresponding Network Extension target is configured.
 - Before connecting, you can check for the validity of the user by `apiManager.activeUser`
-
 ```swift
     if apiManager.activeUser {
         apiManager.vpnConfiguration.country = nil

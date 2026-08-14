@@ -6,7 +6,7 @@
 ![Supports ARM](https://img.shields.io/badge/ARM-arm64-informational)
 ![Supports Intel](https://img.shields.io/badge/Intel-x86_64-informational)
 ![XCFramework Included](https://img.shields.io/badge/XCFramework-included-success)
-[![VPNKit 7.1.3](https://img.shields.io/badge/VPNKit-7.1.3-brightgreen)](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/README.md)
+[![VPNKit 7.2.0](https://img.shields.io/badge/VPNKit-7.2.0-brightgreen)](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/README.md)
 
 ConsumerVPN is a ready-to-brand application built with Swift and the WLVPN VPN SDK. It provides a foundation for your own VPN app and serves as a complete guide for integrating the WLVPN VPN SDK.(VPNKit).
 
@@ -42,8 +42,7 @@ To build this app, you’ll need below account-specific details and the VPNKit S
 
 - Account Name  
 - Auth Suffix  
-- API Key  
-- openVPNToolBundleId
+- API Key
 
 ### Tools Required
 
@@ -78,7 +77,7 @@ This project uses a "Theme" submodule to control the look and feel of your app (
 
 ## 3. Adding the WLVPN SDK (VPNKit)
 
-For macOS app, you will need both the `.xcframework` files found inside the `VPNKit/XCFramework` subfolder, and the `VPNHelperAdapter.framework` located within the `VPNKit/macOS` subfolder.
+For the macOS app, you will need the `.xcframework` files found inside the `VPNKit/XCFramework` subfolder, including VPNKit, VPNV3APIAdapter, WireGuard, and OpenVPN adapter frameworks.
 
 ### How to Add Them to Your Project:
 
@@ -86,24 +85,25 @@ For macOS app, you will need both the `.xcframework` files found inside the `VPN
 2.  **Drag and Drop Essential Files:**
     * Locate the `VPNKit` folder you received from your WLVPN account manager.
     * **Drag** all the `.xcframework` files from the `VPNKit/XCFramework` subfolder directly into the folder named **`SDK`** (or a similar grouping folder) visible in your Xcode Project Navigator (the left-hand panel in Xcode).
-    * **Drag** the `VPNHelperAdapter.framework` file from the `VPNKit/macOS` subfolder directly into the same **`SDK`** (or similar) folder in your Xcode Project Navigator.
     * When a prompt appears for each drag-and-drop operation, ensure you check **"Copy items if needed"** and select your app target. This ensures the files are copied into your project.
 3.  **Configure in Xcode:**
     * In Xcode, select your main app project in the Project Navigator (the very top item in the left panel).
     * Go to the **"General"** tab.
     * Scroll down to the section called **"Frameworks, Libraries, and Embedded Content."**
-    * You should now see all the `.xcframework` files and `VPNHelperAdapter.framework` listed here. If any are missing, click the **"+" button** and add them manually.
+    * You should now see all required `.xcframework` files listed here. If any are missing, click the **"+" button** and add them manually.
     * For each of the listed frameworks, adjust the "Embed" setting as shown in the table below (assuming they should be "Embed & Sign" or "Do Not Embed" based on your project's needs, but for most frameworks that are not extensions, "Embed & Sign" is typical).
 
     | Framework or Extension                              | Embed Setting          |    
     |-----------------------------------------------------|------------------------|
     | com.wlvpn.macos.consumervpn.network-extension       | Embed Without Signing  |
+    | com.wlvpn.macos.consumervpn.openvpnextension        | Embed Without Signing  |
     | NetworkExtension.framework                          | Do Not Embed           |
     | Security.framework                                  | Do Not Embed           |
     | ServiceManagement.framework                         | Do Not Embed           |
+    | VPKOpenVPNAdapter.xcframework                       | Embed & Sign           |
+    | VPKOpenVPNNetworkExtension.xcframework              | Embed & Sign           |
     | VPKWireGuardAdapter.xcframework                     | Embed & Sign           |
     | VPKWireGuardExtension.xcframework                   | Embed & Sign           |
-    | VPNHelperAdapter.framework                          | Embed & Sign           |
     | VPNKit.xcframework                                  | Embed & Sign           |
     | VPNV3APIAdapter.xcframework                         | Embed & Sign           |
 
@@ -115,7 +115,7 @@ The **`Info.plist`** file is like an ID card for your app. It holds important se
     • CFBundleShortVersionString and CFBundleVersion – Read from $(MARKETING_VERSION) and $(CURRENT_PROJECT_VERSION) to define the app’s version and build number.
     • LSMinimumSystemVersion – Uses $(MACOSX_DEPLOYMENT_TARGET) to specify the minimum macOS version supported by the app.
     • NSAppTransportSecurity – Enables arbitrary loads and sets exceptions (e.g., wlvpn.com) to allow insecure HTTP requests or legacy TLS, primarily for compatibility during development.
-    • SMPrivilegedExecutables – Grants OpenVPN Command Line Helper tools elevated privileges using secure code-signing requirements; required for VPN extensions or privileged daemons.
+    • SMPrivilegedExecutables – Required only for legacy privileged helper integrations. OpenVPN Network Extension integrations use the system extension target and entitlements instead.
     • CFBundlePackageType – Typically set to APPL to indicate this is a standard macOS application bundle.
     • NSPrincipalClass – Declares NSApplication as the app’s entry point.
     • NSMainNibFile – Points to the main interface file (e.g., MainMenu) used in traditional AppKit apps.
@@ -221,10 +221,10 @@ Refer: [WireGuard Integration](https://github.com/wlvpn/ConsumerVPN-macOS/blob/m
 
 ## 9. OpenVPN Integration
 
-OpenVPN integration on macOS is achieved through a privileged helper tool. This helper tool has a unique identifier, openVPNToolBundleId, which your main application uses to both initiate secure communication and to whitelist the helper for installation.
-This architecture allows your main application to leverage a separate, elevated Command Line Tool to perform system-level VPN operations that require special permissions. It involves the VPNHelperAdapter.framework for secure communication between your app and the helper, and the vpnhelper XCFramework for the core OpenVPN logic within the helper. Secure installation and communication are primarily handled via Apple's SMJobBless mechanism and XPC services.
+OpenVPN integration on macOS is achieved through Apple's **Network Extension framework**, specifically by deploying a **Packet Tunnel Provider System Extension**. 
+This setup uses `VPKOpenVPNAdapter.xcframework` in the app target and `VPKOpenVPNNetworkExtension.xcframework` in a dedicated Network Extension target. Proper configuration of its `Info.plist` (including `NSSystemExtensionUsageDescription`) and specific macOS entitlements (like `com.apple.developer.networking.networkextension` for System Extensions and optional App Groups) are essential to manage secure, system-level VPN connections.
 
-Refer: [OpenVPN Integration](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/OpenVPN%20Implementation.md)
+Refer: [OpenVPN Integration](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/OpenVPN+NE%20Implementation.md)
 
 ## 10. Key Files
 
@@ -233,7 +233,7 @@ Import these in your bridging headers or module map:
 ```swift
 @import VPNKit;
 @import VPNV3APIAdapter;
-@import VPNHelperAdapter;
+@import VPKOpenVPNAdapter;
 ```
 
 ## 11. Customizing Your App's Look (Theme Integration)

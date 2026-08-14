@@ -18,22 +18,22 @@ As soon as method is called `VPNConnectionStatusReporting` Notifications are fir
 As soon as the method is called `VPNConnectionStatusReporting` Notifications are fired
 
 
-# Install WireGuard system extension.(macOS only)
-* Before using the `connect()` method check whether **WireGuard system extension** is installed or not. 
+# Install OpenVPN or WireGuard system extension (macOS only)
+* Before using the `connect()` method with OpenVPN or WireGuard, check whether the selected protocol's **system extension** is installed or not. 
 * The installation status will be reported as a notification. `VPNHelperInstallSuccessNotification` for a Successful installation or in the event of an error `VPNHelperInstallFailedNotification`.
 
 Methods:
 
-Check if the WireGuard system extension is installed or not.
+Check if the selected protocol's system extension is installed or not.
 - `(BOOL)systemExtensionInstalled;`
 
-Check if the WireGuard system extension is pending for user approval.
+Check if the selected protocol's system extension is pending for user approval.
 - `(BOOL)systemExtensionApprovalPending;`
 
-Installs WireGuard system extension.
+Installs the selected protocol's system extension.
 - `(void)installSystemExtension;`
 
-Uninstalls WireGuard system extension.
+Uninstalls the selected protocol's system extension.
 - `(void)uninstallSystemExtension;`
 
 

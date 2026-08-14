@@ -45,8 +45,26 @@
 
 # This uninstalls everything installed by the sample.  It's useful when testing to ensure that 
 # you start from scratch.
+#
+# This script must be run with root privileges. In the app, it is executed through
+# AppleScript's "do shell script ... with administrator privileges" flow.
 
-sudo launchctl unload /Library/LaunchDaemons/com.consumervpn.osx.vpnhelper.plist
-sudo rm /Library/LaunchDaemons/com.consumervpn.osx.vpnhelper.plist
-sudo rm /Library/PrivilegedHelperTools/com.consumervpn.osx.vpnhelper
-sudo rm "/Library/Application Support/com.consumervpn.osx.vpnhelper"
+LAUNCH_DAEMON_PLIST="/Library/LaunchDaemons/com.consumervpn.osx.vpnhelper.plist"
+HELPER_TOOL="/Library/PrivilegedHelperTools/com.consumervpn.osx.vpnhelper"
+APP_SUPPORT_DIR="/Library/Application Support/com.consumervpn.osx.vpnhelper"
+
+# Unload the launch daemon if it exists
+if [ -f "${LAUNCH_DAEMON_PLIST}" ]; then
+    launchctl unload "${LAUNCH_DAEMON_PLIST}" 2>/dev/null || true
+fi
+
+# Remove launch daemon plist
+rm -f "${LAUNCH_DAEMON_PLIST}"
+
+# Remove helper tool
+rm -f "${HELPER_TOOL}"
+
+# Remove application support directory
+rm -rf "${APP_SUPPORT_DIR}"
+
+exit 0

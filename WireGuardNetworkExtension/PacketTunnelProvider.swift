@@ -28,11 +28,16 @@ class PacketTunnelProvider: WGPacketTunnelProvider {
          // Set the time interval in minutes; invoke vpnDidReceiveTrafficDataCounter every interval if the given threshold matches
          self.readPacketTimeInterval = 2  // Value in minutes
          */
-
     }
     
     override func vpnDidReceiveTrafficDataCounter(_ counter: TrafficCounter) {
         debugPrint("\(#function) Read: \(counter.read) and Write:\(counter.write)")
+    }
+    
+    public override func vpnHandshakeUpdateDetected(_ error: Error?) {
+        debugPrint("[Wireguard-NE] \(#function): \(error?.localizedDescription ?? "no error")")
+        debugPrint("[Wireguard-NE] Internet Status: \(self.isInternetAvailable) Last Handshake Date: \(self.lastHandshakeDate)")
+        debugPrint("[Wireguard-NE] isKillSwitchEnabled: \(self.isKillSwitchEnabled) isOnDemandEnabled:\(self.isOnDemandEnabled)")
     }
     
 }

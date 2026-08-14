@@ -543,6 +543,7 @@ extension MainWindowController : VPNConnectionStatusReporting {
         connectView.vpnConnectButton.buttonText = NSLocalizedString("Connect", comment: "Connect")
         if let error = notification.object as? NSError {
             if (error.code == VPNKitConfigurationRuntimeError.systemExtensionNotInstalled.rawValue) {
+                debugPrint("[ConsumerVPN] \(#function): \(notification)")
                 ApiManagerHelper.shared.installSystemExtension()
             } else {
                 displayAlert(informativeText: "Configuration Failed",
@@ -585,25 +586,58 @@ extension MainWindowController : ConnectViewDelegate {
     func didSelectConnect() {
         connectView.vpnConnectButton.isClickable = false
         
-        if ApiManagerHelper.shared.selectedProtocol == .wireGuard {
-            ApiManagerHelper.shared.installWgSystemExtensionIfRequired { success in
-                if success {
-                    displayAlert(informativeText: NSLocalizedString("A System Extension for WireGuard® needs to be installed.To do so click on \"Open System Settings\", select \"Security & Privacy\" and then \"Allow IPVanish\"",
+        if ApiManagerHelper.shared.selectedProtocol == .wireGuard || ApiManagerHelper.shared.selectedProtocol == .openVPN  {
+            
+            if #available(macOS 15.1, *) {
+                let status = ApiManagerHelper.shared.systemExtensionStatus()
+                
+                // If not installed or failed, try to install
+                if status == .uninstalled || status == .failed || status == .unknown {
+                    ApiManagerHelper.shared.installSystemExtension()
+                    // Installation attempt made, connect will happen after success notification
+                    return
+                }
+                
+                // If approval is pending or disabled, show alert
+                if status == .pending || status == .disabled {
+                    let message = ApiManagerHelper.shared.selectedProtocol == .wireGuard ? "A System Extension for WireGuard® needs to be installed.To do so click on \"Open System Settings\", select \"Security & Privacy\" and then \"Allow IPVanish\"" : "A System Extension for OpenVPN needs to be installed.To do so click on \"Open System Settings\", select \"Security & Privacy\" and then \"Allow IPVanish\""
+                    displayAlert(informativeText: NSLocalizedString(message,
                                                                     comment: " System Extension blocked"),
                                  messageText: NSLocalizedString("System extension blocked",
                                                                 comment: " System Extension blocked"))
+                    connectView.vpnConnectButton.isClickable = true
                     return
                 }
+                
+                // If installed or unknown, proceed to connect
+                ApiManagerHelper.shared.connect()
+            } else {
+                // Fallback for earlier macOS versions
+                if !ApiManagerHelper.shared.systemExtensionInstalled() {
+                    ApiManagerHelper.shared.installSystemExtension()
+                    // Installation attempt made, connect will happen after success notification
+                    return
+                }
+                
+                if ApiManagerHelper.shared.systemExtensionApprovalPending() {
+                    
+                    let message = ApiManagerHelper.shared.selectedProtocol == .wireGuard ? "A System Extension for WireGuard® needs to be installed.To do so click on \"Open System Settings\", select \"Security & Privacy\" and then \"Allow IPVanish\"" : "A System Extension for OpenVPN needs to be installed.To do so click on \"Open System Settings\", select \"Security & Privacy\" and then \"Allow IPVanish\""
+                    
+                    displayAlert(informativeText: NSLocalizedString(message,
+                                                                    comment: " System Extension blocked"),
+                                 messageText: NSLocalizedString("System extension blocked",
+                                                                comment: " System Extension blocked"))
+                    connectView.vpnConnectButton.isClickable = true
+                    return
+                }
+                
+                // Extension is installed, proceed to connect
+                ApiManagerHelper.shared.connect()
             }
         }
-        else if ApiManagerHelper.shared.selectedProtocol == .openVPN_TCP || ApiManagerHelper.shared.selectedProtocol == .openVPN_UDP {
-            
-            if !(ApiManagerHelper.shared.isOpenVPNHelperInstalled()) {
-                ApiManagerHelper.shared.installPrivilegedHelper()
-                return
-            }
+        else {
+            ApiManagerHelper.shared.connect()
         }
-        ApiManagerHelper.shared.connect()
     }
     
     func didSelectChooseLocation() {
@@ -717,14 +751,16 @@ extension MainWindowController : VPNHelperStatusReporting {
     }
     
     func statusHelperInstallPending(_ notification: Notification) {
-        
+        debugPrint("[ConsumerVPN] \(#function): \(notification)")
     }
     
     func statusHelperInstallSuccess(_ notification: Notification) {
+        debugPrint("[ConsumerVPN] \(#function): \(notification)")
         connectView.vpnConnectButton.isClickable = true
     }
     
     func statusHelperInstallFailed(_ notification: Notification) {
+        debugPrint("[ConsumerVPN] \(#function): \(notification)")
         connectView.toggleUIForEnabledState(isEnabled: true)
     }
 }

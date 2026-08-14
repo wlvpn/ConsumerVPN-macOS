@@ -9,8 +9,8 @@
 import Foundation
 import Cocoa
 import VPNKit;
-import VPNHelperAdapter;
 import LaunchAtLogin
+import os.log
 
 @NSApplicationMain
 class AppDelegate : NSObject, NSApplicationDelegate {
@@ -19,7 +19,7 @@ class AppDelegate : NSObject, NSApplicationDelegate {
     
     
     fileprivate var mainWindowController : MainWindowController!
-	
+    
 	fileprivate var purchaseCoordinator: PurchaseCoordinator = {
 		return RevenueCatCoordinator(apiKey: Theme.revenueCatAPIKey,
 									 debug: true,
@@ -55,6 +55,8 @@ class AppDelegate : NSObject, NSApplicationDelegate {
         UserDefaults.standard.register(defaults: ["NSApplicationCrashOnExceptions" : true])
         UserDefaults.standard.register(defaults: [WLLaunchOnSystemStartup : true])
         ApiManagerHelper.shared.setDefaultEncryption()
+
+        performOpenVPNHelperCleanupIfNeeded()
         
         NotificationCenter.default.addObserver(self,
             selector: #selector(AppDelegate.hideApplicationWindowOnStartupPreferenceChanged(_:)),
@@ -98,6 +100,121 @@ class AppDelegate : NSObject, NSApplicationDelegate {
         }
     }
     
+    /// Remove old installed OpenVPN Launch Daemon.
+    ///
+    /// - Important: To remove the installed OpenVPN XPC daemon, ensure that `Theme.openVPNToolBundleId` holds the correct value.
+    @MainActor private func performOpenVPNHelperCleanupIfNeeded() {
+        
+        let launchDaemonPath = "/Library/LaunchDaemons/\(Theme.openVPNToolBundleId).plist"
+        
+        guard FileManager.default.fileExists(atPath: launchDaemonPath) else { return }
+        if self.runUninstallHelperScript() {
+            debugPrint("Successfully uninstalled the helper")
+        } else {
+            debugPrint("Failed to uninstall the helper via shell script, trying AppleScript fallback")
+            if self.runAppleScriptWithAdminPrivileges(scriptName: "RemoveOpenVPNHelper") {
+                debugPrint("Successfully uninstalled the helper via AppleScript")
+            } else {
+                debugPrint("Failed to uninstall the helper via AppleScript")
+            }
+        }
+    }
+    
+    private func runUninstallHelperScript() -> Bool {
+        guard let scriptPath = Bundle.main.path(forResource: "Uninstall", ofType: "sh") else {
+            debugPrint("Unable to locate Uninstall.sh in app bundle")
+            return false
+        }
+
+        // Copy script to temporary location to avoid "Operation not permitted" error
+        // when trying to chmod files inside signed app bundle in /Applications
+        let tempDir = NSTemporaryDirectory()
+        let tempScriptPath = (tempDir as NSString).appendingPathComponent("Uninstall-\(UUID().uuidString).sh")
+
+        do {
+            try FileManager.default.copyItem(atPath: scriptPath, toPath: tempScriptPath)
+        } catch {
+            return false
+        }
+
+        let escapedScriptPath = tempScriptPath
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "\"", with: "\\\"")
+        let appleScriptSource = """
+        set scriptPath to "\(escapedScriptPath)"
+        try
+            set scriptOutput to do shell script "/bin/chmod +x " & quoted form of scriptPath & " && " & quoted form of scriptPath & " && /bin/rm -f " & quoted form of scriptPath with administrator privileges
+            return "success:" & scriptOutput
+        on error errText number errNum
+            do shell script "/bin/rm -f " & quoted form of scriptPath without altering line endings
+            return "error:" & errNum & ":" & errText
+        end try
+        """
+
+        var errorDictionary: NSDictionary?
+        guard let uninstallScript = NSAppleScript(source: appleScriptSource) else {
+            debugPrint("Unable to create AppleScript to run uninstall.sh")
+            return false
+        }
+
+        let result = uninstallScript.executeAndReturnError(&errorDictionary)
+        if let error = errorDictionary {
+            debugPrint("Error running uninstall script: ", error)
+            return false
+        }
+
+        if let output = result.stringValue, output.hasPrefix("error:") {
+            debugPrint("Error running uninstall script: ", output)
+            return false
+        }
+
+        return true
+    }
+
+    /// Executes a compiled AppleScript file (.scpt) from the app bundle with administrator privileges.
+    ///
+    /// - parameter scriptName: The resource name of the `.scpt` file (without extension).
+    /// - returns: `true` if the script ran without error, `false` otherwise.
+    private func runAppleScriptWithAdminPrivileges(scriptName: String) -> Bool {
+        guard let scriptURL = Bundle.main.url(forResource: scriptName, withExtension: "scpt") else {
+            debugPrint("Unable to locate \(scriptName).scpt in app bundle")
+            return false
+        }
+
+        let escapedPath = scriptURL.path
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "\"", with: "\\\"")
+
+        let appleScriptSource = """
+        try
+            set scriptPath to "\(escapedPath)"
+            do shell script "osascript " & quoted form of scriptPath with administrator privileges
+            return "success"
+        on error errText number errNum
+            return "error:" & errNum & ":" & errText
+        end try
+        """
+
+        var errorDictionary: NSDictionary?
+        guard let script = NSAppleScript(source: appleScriptSource) else {
+            debugPrint("Unable to create AppleScript wrapper for \(scriptName).scpt")
+            return false
+        }
+
+        let result = script.executeAndReturnError(&errorDictionary)
+        if let error = errorDictionary {
+            debugPrint("Error running \(scriptName).scpt: ", error)
+            return false
+        }
+
+        if let output = result.stringValue, output.hasPrefix("error:") {
+            debugPrint("Error running \(scriptName).scpt: ", output)
+            return false
+        }
+
+        return true
+    }
+
     func applicationWillTerminate(_ notification: Notification) {
         NotificationCenter.default.removeObserver(self,
                                                   name: Notification.Name(rawValue: WLHideOnAppLaunch),

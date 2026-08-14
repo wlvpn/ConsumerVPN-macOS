@@ -91,7 +91,7 @@ extension ApiManagerHelper: VPNConnectionStatusReporting {
         
         if let error = notification.object as? NSError {
             debugPrint("[ConsumerVPN] Connection Failed with Error - \(error.localizedDescription)")
-            if error.code == VPNKitConfigurationRuntimeError.systemExtensionNotInstalled.rawValue {
+            if error.code == VPNKitConfigurationRuntimeError.permissionDeniedError.rawValue {
                 self.apiManager.installSystemExtension()
                 
             }

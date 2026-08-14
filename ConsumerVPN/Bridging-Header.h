@@ -11,4 +11,4 @@
 
 @import VPNKit;
 @import VPNV3APIAdapter;
-@import VPNHelperAdapter;
+@import VPKOpenVPNAdapter;

@@ -5,7 +5,8 @@
 - **`isActiveUser`**            : `Bool` - Indicates whether the user is active or not.
 - **`vpnConfiguration`**        : `VPNConfiguration` object - Manages the state of the VPN configuration and API state for the app. Allows setting/getting the current user, account,                                         country,  city, server, etc. Also allows setting VPN connection options such as on-demand.
 - **`connectionStatus`**        : `VPNConnectionStatus` object - Shows the current VPN connection status.
-- **`helperStatus`**            : `VPNConnectionStatus` object – Indicates the current status of the VPN helper installation, used only for OpenVPN and WireGuard. This helps track whether the VPN helper was successfully installed, is pending, or failed. (macOS only).
+- **`helperStatus`**            : `VPNConnectionStatus` object - Indicates the current helper/system extension installation status for VPN protocols that require one. (macOS only).
+- **`systemExtensionStatus`**   : `VPNSystemExtensionStatus` object - Indicates the current OpenVPN or WireGuard system extension status. (macOS only).
 - **`networkIsReachable`**      : `Bool` - Indicates if the internet is currently reachable by the device or not.
 - **`reachableViaWWAN`**        : `Bool` - Indicates if the network is currently reachable via WWAN or not.
 - **`reachableViaWiFi`**        : `Bool` - Indicates if the network is currently reachable via WiFi or not.
@@ -261,25 +262,25 @@ class ApiManagerHelper: NSObject {
 ```objc
   - (BOOL)systemExtensionInstalled;
 ```
-  Checks if the WireGuard system extension is installed or not. If it is then the WireGuard protocol can connect; otherwise, call the **installSystemExtension** function.
+  Checks if the selected OpenVPN or WireGuard system extension is installed. If it is installed, the selected protocol can connect; otherwise, call the **installSystemExtension** function.
 
 - **`systemExtensionApprovalPending`**
 ```objc
   - (BOOL)systemExtensionApprovalPending;
 ```
-  Checks if the WireGuard system extension is pending for user approval. If true, the WireGuard protocol cannot connect then you should show alert to notify user.
+  Checks if the selected OpenVPN or WireGuard system extension is pending user approval. If true, the selected protocol cannot connect and the app should notify the user.
 
 - **`installSystemExtension`**
 ```objc
   - (void)installSystemExtension;
 ```
-  **installSystemExtension()** function installs the WireGuard system extension. The installation status will be reported as a notification (`VPNHelperInstallSuccessNotification` or `VPNHelperInstallFailedNotification` with an error as the notification object).
+  **installSystemExtension()** installs the selected OpenVPN or WireGuard system extension. The installation status will be reported as a notification (`VPNHelperInstallSuccessNotification` or `VPNHelperInstallFailedNotification` with an error as the notification object).
 
 - **`uninstallSystemExtension`**
 ```objc
   - (void)uninstallSystemExtension;
 ```
-  Uninstalls the WireGuard system extension.
+  Uninstalls the selected OpenVPN or WireGuard system extension.
 
 For example:
 
@@ -288,7 +289,7 @@ class ViewController : NSWindowController {
         /// The instance of `VPNAPIManager` used to perform API operations.
         var apiManager: VPNAPIManager
         
-        func canWireGuardConnect() {
+        func canSystemExtensionProtocolConnect() {
             guard apiManager.systemExtensionInstalled() else {
                 apiManager.installSystemExtension()
                 return false
@@ -306,80 +307,34 @@ class ViewController : NSWindowController {
 extension ViewController: VPNHelperStatusReporting {
     func statusHelperInstallSuccess(_ notification: Notification) {
         guard let vpnConfiguration = vpnConfiguration else {return}
-        if vpnConfiguration.selectedProtocol == .wireGuard  {
-            // WireGuard System Extention installed successfully and available to connect.
+        if vpnConfiguration.selectedProtocol == .wireGuard || vpnConfiguration.selectedProtocol == .openVPN {
+            // System Extension installed successfully and available to connect.
         }
     }
     
     func statusHelperInstallPending(_ notification: Notification) {
         guard let vpnConfiguration = vpnConfiguration else {return}
-        if vpnConfiguration.selectedProtocol == .wireGuard  {
-            // WireGuard System Extention installation pending so cannot connect.
+        if vpnConfiguration.selectedProtocol == .wireGuard || vpnConfiguration.selectedProtocol == .openVPN {
+            // System Extension installation pending so cannot connect.
         }
     }
     
     func statusHelperInstallFailed(_ notification: Notification) {
         guard let vpnConfiguration = vpnConfiguration else {return}
-        if vpnConfiguration.selectedProtocol == .wireGuard  {
-            // WireGuard System Extention installation failed so cannot connect.
+        if vpnConfiguration.selectedProtocol == .wireGuard || vpnConfiguration.selectedProtocol == .openVPN {
+            // System Extension installation failed so cannot connect.
         }
     }
 }
 ```
 
-## Privileged Helper (macOS only)
+## Implementation notes
 
- - **`isHelperInstalled`**
-  This function drives helper installation. It can, synchronously or asynchronously, determine if the helper is installed. Once your adapter determines if the helper is installed, it should call the completion handler. This function is used by multiple methods in the VPNAPIManager. Each function that calls it may provide a different completion handler.
-```objc
-- (BOOL)isHelperInstalled;
-```
- - **`installPrivilegedHelper()`**
-  Installs the **OpenVPN** privileged helper. The installation status will be reported as a notification (`VPNHelperInstallSuccessNotification` or `VPNHelperInstallFailedNotification` with an error as the notification). On connecting without the helper installation, a `VPNHelperInstallPendingNotification` notification will be sent.
+Implementation regarding VPN configuration can be found:
+> Refer: [VPNConfiguration](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/VPNConfiguration.md)
 
-For example:
+OpenVPN Network Extension setup can be found:
+> Refer: [OpenVPN+NE Implementation](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/OpenVPN+NE%20Implementation.md)
 
-```swift
-class ViewController : NSWindowController {
-    /// The instance of `VPNAPIManager` used to perform API operations.
-    var apiManager: VPNAPIManager
-    
-    // Initialized privileged helper manager with the provided helper tool name
-    var privilegedHelperManager: VPNPrivilegedHelperManager?
-    
-    func canOpenVPNConnect() {
-        if !(privilegedHelperManager?.isHelperInstalled()) {
-            apiManager.installPrivilegedHelper()
-            return false
-        }
-        
-        return true
-    }
-}
-
-extension ViewController: VPNHelperStatusReporting {
-    func statusHelperInstallSuccess(_ notification: Notification) {
-        guard let vpnConfiguration = apiManager.vpnConfiguration else {return}
-        if vpnConfiguration.selectedProtocol == .openVPN_TCP
-            || vpnConfiguration.selectedProtocol == .openVPN_UDP {
-            // OpneVPN Helper installed successfully and available to connect.
-        }
-    }
-    
-    func statusHelperInstallPending(_ notification: Notification) {
-        guard let vpnConfiguration = apiManager.vpnConfiguration else {return}
-        if vpnConfiguration.selectedProtocol == .openVPN_TCP
-            || vpnConfiguration.selectedProtocol == .openVPN_UDP {
-            // OpneVPN Helper installation pending so cannot connect.
-        }
-    }
-    
-    func statusHelperInstallFailed(_ notification: Notification) {
-        guard let vpnConfiguration = apiManager.vpnConfiguration else {return}
-        if vpnConfiguration.selectedProtocol == .openVPN_TCP
-            || vpnConfiguration.selectedProtocol == .openVPN_UDP {
-            // OpneVPN Helper installation failed so cannot connect.
-        }
-    }
-}
-```
+WireGuard Network Extension setup can be found:
+> Refer: [WireGuard](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Wireguard.md)

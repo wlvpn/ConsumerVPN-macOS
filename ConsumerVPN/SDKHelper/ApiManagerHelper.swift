@@ -8,13 +8,12 @@
 
 import Foundation
 import VPNKit
-import VPNHelperAdapter
 
 /// `ApiManagerHelper` is a singleton class responsible for managing VPN API operations such as login, checking network reachability, refreshing location, handling VPN disconnection, and setting encryption.
 class ApiManagerHelper: NSObject {
     
-    var installedStatusForOpenVPN: OpenVPNHelperInstallStatus = .unknown
-    var installedStatusForWG: OpenVPNHelperInstallStatus = .unknown
+    var installedStatusForOpenVPN: SystemExtensionStatus = .unknown
+    var installedStatusForWG: SystemExtensionStatus = .unknown
     
     /// The instance of `VPNAPIManager` used to perform API operations.
     var apiManager: VPNAPIManager
@@ -23,21 +22,19 @@ class ApiManagerHelper: NSObject {
     
     /// The shared singleton instance of `ApiManagerHelper`.
     static let shared = ApiManagerHelper()
-    let privilegedHelperManager = VPNPrivilegedHelperManager(helperName: Theme.openVPNToolBundleId, andBrandName: Theme.brandName)
+    
     /// Private initializer to ensure the singleton pattern.
     private override init() {
         self.apiManager =  SDKInitializer().initializeAPIManager(
             withBrandName: Theme.brandName,
             configName: Theme.configurationName,
             apiKey: Theme.apiKey,
-            suffix: Theme.usernameSuffix,
-            priviligedHelper: privilegedHelperManager!
+            suffix: Theme.usernameSuffix
         )
         self.vpnConfiguration = self.apiManager.vpnConfiguration
         super.init()
         NotificationCenter.default.addObserver(for: self)
-    }
-    
+    }    
     /// Sets the default encryption to 256-bit AES if no encryption is already set.
     func setDefaultEncryption() {
         if vpnConfiguration?.hasOption(forKey: kIKEv2Encryption) == false {
@@ -145,5 +142,67 @@ class ApiManagerHelper: NSObject {
         UserDefaults.standard.set(false, forKey: WLConnectToFastestServerInCountry)
         UserDefaults.standard.set(false, forKey: WLHideOnAppLaunch)
         UserDefaults.standard.synchronize()
+    }
+    
+    private func setOpenVPNOptionValue(isEnabled: Bool, forKey key: String) {
+        guard let vpnConfiguration = vpnConfiguration else { return }
+        vpnConfiguration.setOption(isEnabled ? 1 : 0, forKey: key)
+    }
+    
+    func updateOpenVPNScramble(_ enabled: Bool) {
+        setOpenVPNOptionValue(isEnabled: enabled, forKey: kOpenVPNScrambleEnabled)
+        apiManager.synchronizeConfiguration()
+    }
+
+    func updateOpenVPNIPV6LeakProtection(_ enabled: Bool) {
+        setOpenVPNOptionValue(isEnabled: enabled, forKey: kVPNIPV6LeakProtection)
+        apiManager.synchronizeConfiguration()
+    }
+    
+    func installSystemExtension() {
+        apiManager.installSystemExtension()
+    }
+    
+    func uninstallSystemExtension() {
+        apiManager.uninstallSystemExtension()
+    }
+    
+    func systemExtensionInstalled() -> Bool {
+        return apiManager.systemExtensionInstalled()
+    }
+    
+    func systemExtensionApprovalPending() -> Bool {
+        return apiManager.systemExtensionApprovalPending()
+    }
+    
+    @available(macOS 15.1, *)
+    func systemExtensionStatus() -> SystemExtensionStatus {
+        let status = apiManager.systemExtensionStatus()
+        switch status {
+        case .installed:
+            return .installed
+        case .notInstalled:
+            return .uninstalled
+        case .disable:
+            return .disabled
+        case .pendingApproval:
+            return .pending
+        @unknown default:
+            return .unknown
+        }
+    }
+    
+    func getCurrentNetworkType() -> VPNNetworkType? {
+        return apiManager.networkType
+    }
+    
+    func setThreatProtection(enabled: Bool) {
+        guard let vpnConfiguration = vpnConfiguration else { return }
+        vpnConfiguration.isThreatProtectionEnabled = enabled
+    }
+    
+    func setKillSwitch(enabled: Bool) {
+        guard let vpnConfiguration = vpnConfiguration else { return }
+        vpnConfiguration.isKillSwitchEnabled = enabled
     }
 }

@@ -7,12 +7,12 @@
 //
 
 import Foundation
-import VPNHelperAdapter
 
-enum OpenVPNHelperInstallStatus {
+enum SystemExtensionStatus {
     case unknown
-    case installing
     case installed
+    case pending
+    case disabled
     case uninstalled
     case failed
 }
@@ -23,14 +23,10 @@ class OpenVPNController : BaseWindowController, VPNStatusReporting {
     @IBOutlet weak var dropDownProtocol: NSPopUpButton!
     @IBOutlet weak var btnScramble: NSButton?
     @IBOutlet weak var btnIPV6Leakprotect: NSButton?
-    @IBOutlet weak var btnUninstall: NSButton?
-    @IBOutlet weak var btnRepair: NSButton?
-    @IBOutlet weak var btnFixOpenVPN: NSButton?
-
+    
     var openVpnPort : String = ""
     var vpnProtocol: VPNProtocol? = nil
-    var installedStatusForOpenVpn: OpenVPNHelperInstallStatus = .unknown
-    var privilegedHelperManager: VPNPrivilegedHelperManager?
+    var installedStatusForOpenVpn: SystemExtensionStatus = .unknown
    
     override func windowDidLoad() {
         super.windowDidLoad()
@@ -46,9 +42,14 @@ class OpenVPNController : BaseWindowController, VPNStatusReporting {
         
         self.dropDownPort.autoenablesItems = false
         self.dropDownProtocol.autoenablesItems = false
-        
-        dropDownPort?.addItem(withTitle: "443")
-        dropDownPort?.addItem(withTitle: "1194")
+
+        // Get available ports from SDK instead of hard-coding
+        if let availablePorts = ApiManagerHelper.shared.vpnConfiguration?.openVPNSettings.availablePorts() {
+            for port in availablePorts {
+                dropDownPort?.addItem(withTitle: port.stringValue)
+            }
+        }
+
         dropDownProtocol?.addItem(withTitle: "TCP")
         dropDownProtocol?.addItem(withTitle: "UDP")
         
@@ -56,7 +57,7 @@ class OpenVPNController : BaseWindowController, VPNStatusReporting {
         dropDownPort.title = ApiManagerHelper.shared.getOpenVPNPort()
         dropDownProtocol.title = ApiManagerHelper.shared.getOpenVPNType().uppercased()
         btnScramble?.state = NSControl.StateValue(ApiManagerHelper.shared.getOpenVPNScrambled())
-        btnIPV6Leakprotect?.state = NSControl.StateValue(ApiManagerHelper.shared.getOpenVPNIPLeackPrototection())
+        btnIPV6Leakprotect?.state = NSControl.StateValue(ApiManagerHelper.shared.getOpenVPNIPLeakProtection())
         
         UserDefaults.standard.synchronize()
     }
@@ -64,8 +65,11 @@ class OpenVPNController : BaseWindowController, VPNStatusReporting {
     //MARK: IBAction methods
     
     @IBAction func btnPortClicked(_ sender: NSPopUpButton) {
-        ApiManagerHelper.shared.setOpenVPNPort(sender.selectedItem?.title)
-        ApiManagerHelper.shared.synchronizeConfiguration()
+        if let portString = sender.selectedItem?.title,
+           let portValue = UInt(portString) {
+            ApiManagerHelper.shared.updateOpenVPNPort(portValue)
+            ApiManagerHelper.shared.synchronizeConfiguration()
+        }
     }
     
     @IBAction func btnProtocolClicked(_ sender: NSPopUpButton) {
@@ -74,33 +78,16 @@ class OpenVPNController : BaseWindowController, VPNStatusReporting {
     
     @IBAction func btnScrambleClicked(_ sender: NSButton) {
         ApiManagerHelper.shared.setOpenVPNScrambled(sender.state.rawValue)
+        dropDownPort.removeAllItems()
+        if let availablePorts = ApiManagerHelper.shared.vpnConfiguration?.openVPNSettings.availablePorts() {
+            for port in availablePorts {
+                dropDownPort.addItem(withTitle: port.stringValue)
+            }
+        }
     }
     
     @IBAction func btnIPV6LeakProtectionClicked(_ sender: NSButton) {
-        ApiManagerHelper.shared.setOpenVPNIPLeackPrototection(sender.state.rawValue)
-    }
-    
-    @IBAction func btnFixOpenVPNDNSClicked(_ sender: NSButton) {
-        ApiManagerHelper.shared.resetDns()
-        self.showAlert(message: NSLocalizedString("OpenVpnFixDnsSuccessMessage", comment: ""))
-    }
-    
-    @IBAction func btnRepairClicked(_ sender: NSButton) {
-        self.repairOpenVpnDrivers {
-            let msg = ApiManagerHelper.shared.isOpenVPNHelperInstalled() ? NSLocalizedString("OpenVPNDriversuccess", comment: "") : NSLocalizedString("OpenVPNDriverfail", comment: "")
-            self.showAlert(message: msg)
-        }
-        self.loadSettings()
-    }
-    
-    @IBAction func btnUninstallClicked(_ sender: NSButton) {
-        self.callRunscriptForUninstallOpenVPNDriver { result in
-            self.installedStatusForOpenVpn = .uninstalled
-            self.loadSettings()
-            let msg = result ?
-            NSLocalizedString("OpenVpnDriverUninstallSuccessMessage", comment: "") : NSLocalizedString("OpenVpnDriverUninstallFailMessage", comment: "")
-            self.showAlert(message: msg)
-        }
+        ApiManagerHelper.shared.setOpenVPNIPLeakProtection(sender.state.rawValue)
     }
     
     //MARK: User defined Functions
@@ -111,52 +98,6 @@ class OpenVPNController : BaseWindowController, VPNStatusReporting {
             alert.beginSheetModal(for: window, completionHandler: nil)
         }
     }
-    
-    func repairOpenVpnDrivers(completion: @escaping ()->()) {
-        if self.runUninstallHelperScript() {
-            ApiManagerHelper.shared.installPrivilegedHelper()
-        } else {
-            debugPrint("Failed to uninstall the helper")
-        }
-        completion()
-    }
-    
-    func callRunscriptForUninstallOpenVPNDriver(completion: ((Bool)->())) {
-        if self.runUninstallHelperScript() {
-            completion(true)
-            debugPrint("Successfully uninstalled the helper")
-        } else {
-            completion(false)
-            debugPrint("Failed to uninstall the helper")
-        }
-    }
-    
-    private func runUninstallHelperScript() -> Bool {
-        var uninstallSucceeded = true
-        var errorDictionary: NSDictionary?
-        
-        if let scriptPath = Bundle.main.path(forResource: "RemoveOpenVPNHelper", ofType: "scpt"),
-           let uninstallScript = NSAppleScript(contentsOf: URL(fileURLWithPath: scriptPath), error: &errorDictionary) {
-            if let error = errorDictionary {
-                uninstallSucceeded = false
-                debugPrint("Error running uninstall script: ", error)
-            } else {
-                uninstallScript.executeAndReturnError(&errorDictionary)
-                if let error = errorDictionary {
-                    uninstallSucceeded = false
-                    debugPrint("Error running uninstall script: ", error)
-                }
-            }
-        }
-        
-        return uninstallSucceeded
-    }
-    
-    func loadSettings() {
-        self.btnUninstall?.isEnabled = ApiManagerHelper.shared.isOpenVPNHelperInstalled()
-        self.btnRepair?.isEnabled = ApiManagerHelper.shared.isOpenVPNHelperInstalled()
-    }
-    
     
     deinit {
         print("Deinit \(#function)")

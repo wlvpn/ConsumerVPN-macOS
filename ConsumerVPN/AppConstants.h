@@ -6,12 +6,6 @@
 //  Copyright © 2016 WLVPN. All rights reserved.
 //
 
-#pragma mark - Server List Constants 
-
-static CGFloat   kWLServerListRowHeight = 57;
-static NSString *kWLServerListCityTableCellViewIdentifier = @"CityCell";
-static NSString *kWLServerListServerTableCellViewIdentifier = @"ServerCell";
-
 #pragma mark - General Preferences Constants 
 
 static NSString *WLHideOnAppLaunch = @"HideOnStartup";
@@ -30,6 +24,13 @@ static NSString *WLOnDemandOptionChangedNotification = @"WLOnDemandOptionChanged
 #pragma mark - LoginViewController Field Selection
 static NSString *WLLoginFieldSelectionNotification = @"WLLoginFieldSelectionNotification";
 
-#pragma mark - OpenVPN Helper Service Keys
+#pragma mark - OpenVPN Constants
 
-static NSString *IPVOpenVPNInitialSetup   = @"IPVOpenVPNInitialSetup";
+typedef NS_ENUM(NSInteger, OpenVPNProtocol) {
+    udp,
+    tcp
+};
+
+static NSString *kOpenVPNPort = @"kOpenVPNPort";
+static NSString *kOpenVPNScrambleEnabled = @"kOpenVPNScrambleEnabled";
+static NSString *kVPNIPV6LeakProtection = @"kVPNIPV6LeakProtection";

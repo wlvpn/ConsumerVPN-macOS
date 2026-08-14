@@ -8,7 +8,7 @@ VPNKit is the API and connection SDK for the WLVPN platform.
 3. [Project Setup](#project-setup)
     1. [Add the required permissions for the app](#add-the-required-permissions-for-the-app)
 4. [Initialize the app](#initialize-the-app)
-    1. [VPNConfiguration](#vpnConfiguration)
+    1. [VPNConfiguration](#vpnconfiguration)
     2. [VPNAPIManager](#vpnapimanager)
     3. [Adapters](#adapters)
 5. [Notifications](#notifications)
@@ -73,7 +73,7 @@ The `VPNAPIManager` is the primary object you will use to interact with VPNKit. 
 ##### Adapters
 There are two types of adapters in VPNKit: `Connection Adapters` and `API Adapters`.
 An API Adapter is used to connect to an API. The only adapter you will need to worry about is the V3APIAdapter. This connects to the current version of the VPN backend and will handle retrieval of API resources. 
-A Connection Adapter is used to connect to specific VPN protocols. The main adapter usable on iOS, macOS and tvOS is the `NEVPNManagerAdapter`. This adapter interfaces with the Apple provided NEVPNManager interface, to provide system supported VPN connections. It supports IKEv2 and IPSec based connections. Due to limitations with iOS, this is the only adapter we support on iOS. The simulator for iOS does not support VPN connections. On the simulator, we simulate connections with the VPNConnectionTestAdapter. This can also be used to support UI tests in the iOS simulator. On macOS, we support OpenVPN but this require a privileged helper tool and will require specific assistance from us.
+A Connection Adapter is used to connect to specific VPN protocols. The main adapter usable on iOS, macOS and tvOS is the `NEVPNManagerAdapter`. This adapter interfaces with the Apple provided NEVPNManager interface to provide system-supported VPN connections. It supports IKEv2 and IPSec based connections. OpenVPN and WireGuard use Network Extension adapters on supported platforms.
  
 > Refer: [Adapters](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Adapters.md)
 

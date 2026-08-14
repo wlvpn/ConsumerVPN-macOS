@@ -25,9 +25,9 @@
 
 # To get started
 
- 1. Copy the VPNKit SDKs (VPNKit, VPNV3APIAdapter) shared by WLVPN representative and paste into the application targets.
+ 1. Copy the VPNKit SDKs (`VPNKit`, `VPNV3APIAdapter`) shared by your WLVPN representative and paste them into the application targets.
     
- 2. Copy the VPNKitNetworkExtensionAdapters SDKs (VPKWireGuardAdapter, VPKWireGuardExtension) shared by WLVPN representative and paste into the application targets.
+ 2. Copy the VPNKit Network Extension adapter SDKs (`VPKWireGuardAdapter`, `VPKWireGuardExtension`, `VPKOpenVPNAdapter`, `VPKOpenVPNNetworkExtension`) shared by your WLVPN representative and paste them into the application targets.
  
  3. Follow the [VPNKit iOS Guide](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/VPNKit%20iOS%20Guide.md) or [VPNKit macOS Guide](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/VPNKit%20macOS%20Guide.md)
 

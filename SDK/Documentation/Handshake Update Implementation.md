@@ -1,12 +1,12 @@
-# Handling WireGuard Handshake Updates
+# Handling WireGuard/OpenVPN Handshake Updates
 
 ## Overview
 
-This document provides guidance of how to manage the health of a WireGuard VPN connection. Its primary focus is on using the handshake update mechanism to detect underlying problems that may not be visible at the system level.
+This document provides guidance of how to manage the health of a WireGuard/OpenVPN VPN connection. Its primary focus is on using the handshake update mechanism to detect underlying problems that may not be visible at the system level.
 
 ## `vpnHandshakeUpdateDetected(_ error: Error?)`
 
-The `vpnHandshakeUpdateDetected(error: Error?)` method is a callback within the `WGPacketTunnelProvider` class. It is automatically invoked when the WireGuard tunnel fails or recover to complete a handshake, even though the VPN status may still appear as "connected." This function helps identify and address underlying connectivity problems in real time.
+The `vpnHandshakeUpdateDetected(error: Error?)` method is a callback within the `WGPacketTunnelProvider` class. It is automatically invoked when the WireGuard/OpenVPN tunnel fails or recover to complete a handshake, even though the VPN status may still appear as "connected." This function helps identify and address underlying connectivity problems in real time.
 
 ### Declaration
 
@@ -44,7 +44,7 @@ public override func vpnHandshakeUpdateDetected(_ error: Error?) {
          // All good, tunnel is having active connection
         NSLog("[VPNKIT-NE] All good!!!")
         return
-    }
+     }
     
     NSLog("[VPNKIT-NE] HandshakeError: \(error)")
     
@@ -77,7 +77,7 @@ public override func vpnHandshakeUpdateDetected(_ error: Error?) {
 For robust error handling, consider using the following related methods:
 
 #### `lastHandshakeDate` property
-The date timestamp of the last successful WireGuard handshake.
+The date timestamp of the last successful WireGuard/OpenVPN handshake.
 
 #### `isInternetAvaialble` property
 The current internet connectivity status (as a boolean).

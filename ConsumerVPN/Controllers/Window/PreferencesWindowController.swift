@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import VPNHelperAdapter
 
 class PreferencesWindowController : BaseWindowController, NSWindowDelegate {
     
@@ -134,7 +133,7 @@ class PreferencesWindowController : BaseWindowController, NSWindowDelegate {
         btnKillSwitch?.state = ApiManagerHelper.shared.isKillSwitchOn ? .on : .off
         btnKillSwitch?.isEnabled = ApiManagerHelper.shared.isSafeToChangeConfiguration()
         onDemand.state = NSControl.StateValue(rawValue:ApiManagerHelper.shared.isOnDemandEnabled ? 1 : 0)
-        onDemand.isEnabled = !ApiManagerHelper.shared.isVPNConnectionInProgress() && ApiManagerHelper.shared.selectedProtocol != .openVPN_TCP && ApiManagerHelper.shared.selectedProtocol != .openVPN_UDP
+        onDemand.isEnabled = !ApiManagerHelper.shared.isVPNConnectionInProgress()
         protocolSegmentControl.isEnabled = ApiManagerHelper.shared.isSafeToChangeConfiguration()
     }
     
@@ -291,18 +290,20 @@ class PreferencesWindowController : BaseWindowController, NSWindowDelegate {
         case .wireGuard:
             protocolSegmentControl.selectedSegment = 0
             if ApiManagerHelper.shared.installedStatusForWG != .installed {
+                debugPrint("[ConsumerVPN] \(#function) installSystemExtension")
                 ApiManagerHelper.shared.installSystemExtension()
             }
         case .ikEv2:
             protocolSegmentControl.selectedSegment = 1
         case .ipSec:
             protocolSegmentControl.selectedSegment = 2
-        case .openVPN_TCP, .openVPN_UDP:
+        case .openVPN:
             protocolSegmentControl.selectedSegment = 3
-            if ApiManagerHelper.shared.installedStatusForOpenVPN == .installed {
-                self.openOpenVPNConrollerWindow()
+            if ApiManagerHelper.shared.installedStatusForOpenVPN != .installed {
+                debugPrint("[ConsumerVPN] \(#function) installSystemExtension")
+                ApiManagerHelper.shared.installSystemExtension()
             } else {
-                ApiManagerHelper.shared.installPrivilegedHelper()
+                self.openOpenVPNConrollerWindow()
             }
         default:
             protocolSegmentControl.selectedSegment = 0
@@ -390,8 +391,7 @@ class PreferencesWindowController : BaseWindowController, NSWindowDelegate {
 
 extension PreferencesWindowController : VPNHelperStatusReporting {
     func statusHelperInstallSuccess(_ notification: Notification) {
-        if ApiManagerHelper.shared.selectedProtocol == .openVPN_TCP
-            || ApiManagerHelper.shared.selectedProtocol == .openVPN_UDP {
+        if ApiManagerHelper.shared.selectedProtocol == .openVPN {
             self.openOpenVPNConrollerWindow()
         }
     }
@@ -400,7 +400,7 @@ extension PreferencesWindowController : VPNHelperStatusReporting {
 extension PreferencesWindowController: VPNConfigurationStatusReporting {
     
     func statusCurrentProtocolDidChange(_ notification: Notification) {
-        if (ApiManagerHelper.shared.selectedProtocol == .openVPN_TCP || ApiManagerHelper.shared.selectedProtocol == .openVPN_UDP) {
+        if (ApiManagerHelper.shared.selectedProtocol == .openVPN) {
             if ApiManagerHelper.shared.installedStatusForOpenVPN == .installed {
                 self.openOpenVPNConrollerWindow()
             }

@@ -8,73 +8,56 @@
 
 import Foundation
 import VPNKit
-import VPNHelperAdapter
 
 //MARK: VPN Helper status Reporting
 extension ApiManagerHelper: VPNHelperStatusReporting {
     
-    func uninstallSystemExtension() {
-        apiManager.uninstallSystemExtension()
-    }
-    
-    func installSystemExtension() {
-        apiManager.installSystemExtension()
-    }
-    
-    func installPrivilegedHelper() {
-        apiManager.installPrivilegedHelper()
-    }
-    
     func getCurrentHelperStatus() -> VPNConnectionStatus {
-        return self.apiManager.helperStatus
+        return self.apiManager.connectionStatus
     }
-    
-    func installWgSystemExtensionIfRequired(pendingForApproval:(Bool) -> Void) {
-        
-        if !apiManager.systemExtensionInstalled() {
-            installSystemExtension()
-            pendingForApproval(false)
-            return
-        }
-        
-        if apiManager.systemExtensionApprovalPending() {
-            // Show alert that user has to approve system extension from Settings mac app
-            pendingForApproval(true)
-            return
-        }
-        
-        pendingForApproval(false)
-    }
-    
-    
-    
+
     func statusHelperInstallSuccess(_ notification: Notification) {
         debugPrint("[ConsumerVPN] \(#function) \(notification)")
         // Note: Success handled at ConnectionManager
-        guard let vpnConfiguration = vpnConfiguration else {return}
         
-        if vpnConfiguration.selectedProtocol == .openVPN_TCP
-            || vpnConfiguration.selectedProtocol == .openVPN_UDP {
-            self.installedStatusForOpenVPN = .installed
+        
+        
+        apiManager.synchronizeConfiguration() { [weak self] success in
+            guard let strongSelf = self else { return }
+            DispatchQueue.main.async { [weak strongSelf] in
+                
+                guard let strongSelf = strongSelf, let vpnConfiguration =  strongSelf.vpnConfiguration else {
+                    return
+                }
+               
+                switch vpnConfiguration.selectedProtocol {
+                case .wireGuard:
+                    strongSelf.installedStatusForWG = .installed
+                    
+                case .openVPN:
+                    strongSelf.installedStatusForOpenVPN = .installed
+                    
+                default: break
+                }
+            }
+            
         }
         
-        if vpnConfiguration.selectedProtocol == .wireGuard {
-            self.installedStatusForWG = .installed
-        }
+        
+        
     }
     
     func statusHelperInstallPending(_ notification: Notification) {
         debugPrint("[ConsumerVPN] \(#function) \(notification)")
         guard let vpnConfiguration = vpnConfiguration else {return}
         
-        if vpnConfiguration.selectedProtocol == .openVPN_TCP
-            || vpnConfiguration.selectedProtocol == .openVPN_UDP {
-            self.installedStatusForOpenVPN = .installing
+        if vpnConfiguration.selectedProtocol == .openVPN {
+            self.installedStatusForOpenVPN = .pending
             
         }
         
         if vpnConfiguration.selectedProtocol == .wireGuard {
-            self.installedStatusForWG = .installing
+            self.installedStatusForWG = .pending
         }
     }
     
@@ -82,8 +65,7 @@ extension ApiManagerHelper: VPNHelperStatusReporting {
         debugPrint("[ConsumerVPN] \(#function) \(notification)")
         guard let vpnConfiguration = vpnConfiguration else {return}
         
-        if vpnConfiguration.selectedProtocol == .openVPN_TCP
-            || vpnConfiguration.selectedProtocol == .openVPN_UDP {
+        if vpnConfiguration.selectedProtocol == .openVPN {
             self.installedStatusForOpenVPN = .failed
         }
         
