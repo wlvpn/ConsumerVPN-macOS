@@ -43,4 +43,9 @@
  */
 @property NSFontWeight fontWeight;
 
+/**
+ * Controls whether the sort indicator arrow is drawn.
+ */
+@property BOOL showsSortIndicator;
+
 @end

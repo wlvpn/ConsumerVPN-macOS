@@ -10,6 +10,32 @@
 
 @implementation CustomColorHeaderCell
 
+- (BOOL)isSortedColumnForFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    if (![controlView isKindOfClass:[NSTableHeaderView class]]) {
+        return NO;
+    }
+
+    NSTableHeaderView *headerView = (NSTableHeaderView *)controlView;
+    NSTableView *tableView = headerView.tableView;
+    if (!tableView || tableView.sortDescriptors.count == 0) {
+        return NO;
+    }
+
+    NSInteger columnIndex = [headerView columnAtPoint:NSMakePoint(NSMidX(cellFrame), NSMidY(cellFrame))];
+    if (columnIndex < 0 || columnIndex >= tableView.tableColumns.count) {
+        return NO;
+    }
+
+    NSTableColumn *column = tableView.tableColumns[columnIndex];
+    NSSortDescriptor *activeSortDescriptor = tableView.sortDescriptors.firstObject;
+
+    if (column.sortDescriptorPrototype.key && activeSortDescriptor.key) {
+        return [column.sortDescriptorPrototype.key isEqualToString:activeSortDescriptor.key];
+    }
+
+    return NO;
+}
+
 - (instancetype)initTextCell:(NSString *)string {
 	self = [super initTextCell:string];
 
@@ -20,6 +46,7 @@
 		_fontColor      = [NSColor whiteColor];
         _fontSize       = 15.0;
         _fontWeight     = NSFontWeightBold;
+        _showsSortIndicator = YES;
 	}
 
 	return self;
@@ -29,6 +56,11 @@
 	NSRectFillUsingOperation(cellFrame, NSCompositeSourceOver);
 
 	[self drawInteriorWithFrame:cellFrame inView:controlView];
+
+    // Keep sort indicator visible even before a sort descriptor is active.
+    if (self.showsSortIndicator && self.stringValue.length > 0 && ![self isSortedColumnForFrame:cellFrame inView:controlView]) {
+        [self drawSortIndicatorWithFrame:cellFrame inView:controlView ascending:YES priority:0];
+    }
 
 	NSBezierPath *path = [NSBezierPath bezierPath];
 
@@ -63,6 +95,9 @@
 }
 
 - (void)drawSortIndicatorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView ascending:(BOOL)ascending priority:(NSInteger)priority {
+    if (!self.showsSortIndicator) {
+        return;
+    }
 
 	CGFloat startX = NSMaxX(cellFrame) - 28;
 	CGFloat midX = NSMaxX(cellFrame) - 24;

@@ -79,7 +79,6 @@
     
     if (openVPNAdapter) {
         [adapters addObject:openVPNAdapter];
-        defaultProtocol = [NSNumber numberWithInteger:VPNProtocolOpenVPN];
     }
     
 	// Initialize the API Manager
@@ -98,6 +97,8 @@
     // Ensures that connections are not killed off when the app dies during an active connection
     [apiManager.vpnConfiguration setStayConnectedOnQuit:YES];
     
+    // Post Quantum resistance for WireGuard
+    [apiManager.vpnConfiguration.postQuantumResistanceSettings setQuantumResistanceEnabled:NO];
     
 	return apiManager;
 }
@@ -152,10 +153,6 @@
     wgConfig.useAPIKey = NO;
     wgConfig.extensionName = [NSString stringWithFormat:@"%@.network-extension", bundleIdentifier];
     wgConfig.apiKey = apiKey;
-    
-    // Quantum Resistence
-    wgConfig.quantumResistanceEnabled = NO;
-    wgConfig.allowDisconnectOnQuantumResistanceFailure = YES;
     
 #if TARGET_OS_OSX
     wgConfig.clientManagesSystemExtension = NO;

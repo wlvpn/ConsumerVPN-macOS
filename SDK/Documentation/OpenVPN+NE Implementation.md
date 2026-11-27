@@ -1,29 +1,21 @@
 # Integrating OpenVPN+NE
 
-## Minimum OS Support
-
-Ensure your app targets the following minimum OS versions to use OpenVPN with Network Extension:
-
-- **iOS**: 15.0 or later  
-- **macOS**: 12.0 or later  
-- **tvOS**: 18.0 or later  
-
 ## Table of contents
 
-1. [Project Setup](#1-project-setup)
-    1. [Add the required permissions for the app](#11-add-the-required-permissions-for-the-app)
-    2. [Integrate OpenVPN Network Extension](#12-integrate-openvpn-network-extension)
-        1. [Set Up the Network Extension Target](#121-set-up-the-network-extension-target)
-        2. [Create the Packet Tunnel Provider Class](#122-create-the-packet-tunnel-provider-class)
-        3. [Set Up Main Entry Point](#123-set-up-main-entry-point)
-        4. [Configure Info.plist](#124-configure-infoplist)
-        5. [Configure Entitlements](#125-configure-entitlements)
-2. [Initialize the app](#2-initialize-the-app)
-3. [Connection](#3-connection)
-4. [Notifications](#4-notifications)
-5. [Error handling](#5-error-handling)
-6. [Limitations, Features, and Compatibility](#6-limitations-features-and-compatibility)
-7. [Handshake Update Implementation](#7-handshake-update-implementation)
+1. [Project Setup](#project-setup)
+    1. [Add the required permissions for the app](#add-the-required-permissions-for-the-app)
+    2. [Integrate OpenVPN Network Extension](#integrate-openvpn-network-extension)
+        1. [Set Up the Network Extension Target](#set-up-the-network-extension-target)
+        2. [Create the Packet Tunnel Provider Class](#create-the-packet-tunnel-provider-class)
+        3. [Set Up Main Entry Point](#set-up-main-entry-point)
+        4. [Configure Info.plist](#configure-infoplist)
+        5. [Configure Entitlements](#configure-entitlements)
+2. [Initialize the app](#initialize-the-app)
+3. [Connection](#connection)
+4. [Notifications](#notifications)
+5. [Error handling](#error-handling)
+6. [Limitations, Features, and Compatibility](#limitations-features-and-compatibility)
+7. [Handshake Update Implementation](#handshake-update-implementation)
 
 
 ## 1. Project Setup
@@ -31,8 +23,8 @@ Ensure your app targets the following minimum OS versions to use OpenVPN with Ne
 ### 1.1 Add the required permissions for the app
 
 Add the required permissions for the app in the ***project file*** and initialize the app using the Primary Objects.
-> Refer to: [VPNKit macOS Guide](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/VPNKit%20macOS%20Guide.md)  
-> Refer to: [VPNKit iOS Guide](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/VPNKit%20iOS%20Guide.md) 
+> Refer to: [VPNKit macOS Guide](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/VPNKit%20macOS%20Guide.md) 
+> Refer to: [VPNKit iOS Guide](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/VPNKit%20iOSGuide.md)
 
 ### 1.2 Integrate OpenVPN Network Extension
 
@@ -52,53 +44,95 @@ Add the required permissions for the app in the ***project file*** and initializ
 ##### Key Points:
 - **Initialization:** In the initializer, you can configure settings for traffic monitoring (optional).
 - **Traffic Monitoring:** Override `vpnDidReceiveTrafficDataCounter` to handle and debug traffic data if traffic monitoring is enabled.
-- **Handshake Timestamp:** Use `lastHandshakeDate` to inspect the last successful handshake timestamp and `isInternetAvailable` to inspect network availability.
-- **Disconnect VPN:** Call `disconnect()` to terminate the VPN connection from the provider.
-- **Bypass Traffic:** Call `bypassAllTraffic()` to bypass all traffic from the VPN connection.
-- **State Flags:** Use `isOnDemandEnabled`, `isKillSwitchEnabled`, and `notifyRoamingOnce` to inspect or control tunnel behavior.
-- **UDP Session Floating:** OpenVPN UDP session floating is enabled by default.
-- **Handshake Update Monitoring:** Override `vpnHandshakeUpdateDetected(_:)` to receive handshake update events.
+- **Handshake Timestamp:** Read the `lastHandshakeDate` property to retrieve the timestamp of the last successful handshake.
+- **Disconnect VPN:** Call `disconnect()` to terminate the VPN connection. The SDK clears `isOnDemandEnabled` and `includeAllNetworks` on the underlying `NETunnelProviderManager` so iOS does not re-spawn the extension.
+- **Bypass Traffic:** Set `allowBypassAllTraffic = true` to bypass all traffic from the VPN connection. Set it back to `false` to restore the OpenVPN tunnel routes and DNS settings. Direct calls to `bypassAllTraffic()` are deprecated for OpenVPN clients.
+- **Connect-On-Demand status:** Read the `isOnDemandEnabled` property to check whether Connect-On-Demand is currently enabled on the provider.
+- **Kill switch status:** Read the `isKillSwitchEnabled` property to check whether the kill switch (`includeAllNetworks`) is enabled. Use this from `vpnHandshakeUpdateDetected(_:)` to decide whether a `captivePortalLikely` recovery requires an explicit `disconnect()` call (kill switch on) or whether the SDK will auto-recover once the user signs in (kill switch off).
+- **Roaming event verbosity:** `notifyRoamingOnce` (default `true`) debounces `.roaming` to one notification per roam episode. Set to `false` for verbose mode if you want a `.roaming` event on every handshake retry inside the post-roam window — useful for telemetry / diagnostics.
+- **Live internet status:** `isInternetAvailable` is computed from the live `NWPath.Status` (no cache), so it is always safe to use as the authoritative reachability signal — including from inside `vpnHandshakeUpdateDetected(_:)`.
+- **Session floating (default on):** `allowSessionFloating` on `OVPacketTunnelProvider` defaults to `true`. With floating on, Wi-Fi ↔ cellular swaps recover by rebinding the existing OpenVPN session to the new socket rather than doing a full TLS / key renegotiation — much faster, no visible "reconnecting" episode. Set `self.allowSessionFloating = false` in your `PacketTunnelProvider` subclass `init()` if you need to revert to the historical full-handshake-per-path-change behaviour.
+- **Handshake Update Monitoring:** Override `vpnHandshakeUpdateDetected(_ error: Error?)` to receive structured notifications about handshake health. The SDK classifies failures into `HandshakeError` cases — including `roaming`, `staleSession`, `handshakeTimeout`, `tunnelCancelled(reason:)`, and `captivePortalLikely`. For `captivePortalLikely` the SDK additionally pauses its internal reconnect loop so the extension stops burning cycles against an unreachable server; reconnects auto-resume on the next satisfiable path update when the kill switch is off, or after the app calls `disconnect()` when the kill switch is on.
 
 ```swift
 import NetworkExtension
 import VPKOpenVPNNetworkExtension
 
 class PacketTunnelProvider: OVPacketTunnelProvider {
-   
+
    override init() {
        super.init()
        /*
         Uncomment the following code block to enable traffic monitoring:
-        
+
         // Enable reading packets, must override vpnDidReceiveTrafficDataCounter method if it is enabled.
-        self.allowReadPackets = true
-        
+        self.allowDataUsageMetering = true
+
         // Set the threshold for monitoring downloaded bytes during each interval
         self.readThreshold = UInt64(6_000_000)  // Value in bytes
-        
+
         // Set the threshold for monitoring uploaded bytes during each interval
         self.writeThreshold = UInt64(3_000_000)  // Value in bytes
-        
+
         // Set the time interval in seconds; invoke vpnDidReceiveTrafficDataCounter every interval if the given threshold matches
         self.readPacketTimeInterval = 2 * 60  // Value in seconds
+        
+        // Optout for session floating on network path change
+        self.allowSessionFloating = false
         */
    }
-   
+
    override func vpnDidReceiveTrafficDataCounter(_ counter: TrafficCounter) {
        debugPrint("\(#function) Read: \(counter.read) and Write:\(counter.write)")
    }
-   
+
+   // optional
    public override func vpnHandshakeUpdateDetected(_ error: Error?) {
-       NSLog("[VPNKIT-NE] Internet Status: \(self.isInternetAvailable) Last Handshake Date: \(String(describing: self.lastHandshakeDate))")
-       
-       guard let error else {
-           NSLog("[VPNKIT-NE] Handshake healthy")
-           return
-       }
-       
-       NSLog("[VPNKIT-NE] HandshakeError: \(error)")
-   }
-   
+
+        NSLog("[VPNKIT-NE] Internet Status: \(self.isInternetAvailable) Last Handshake Date: \(String(describing: self.lastHandshakeDate))")
+
+        guard let nsError = error as NSError?,
+              let handshakeError = HandshakeError.fromNSError(nsError) else {
+            // All good, tunnel is having active connection.
+            NSLog("[VPNKIT-NE] All good!!!")
+            return
+        }
+
+        NSLog("[VPNKIT-NE] HandshakeError: \(handshakeError)")
+
+        switch handshakeError {
+        case .failure, .internetUnreachable, .roaming, .staleSession, .handshakeTimeout:
+            // Transient or informational classifications. The SDK / OS will
+            // typically recover on their own. Surface to the UI as needed.
+            break
+        case .tunnelCancelled(let reason):
+            // The tunnel was cancelled externally — the SDK has already invoked
+            // `cancelTunnelWithError(...)`. This notification is informational
+            // and intended for logging or user notification purposes only.
+            // For OpenVPN TCP connections, when Connect-On-Demand is enabled,
+            // the VPN will reconnect automatically once internet connectivity
+            // is restored. When Connect-On-Demand is disabled, this cancellation
+            // is expected and the VPN will remain disconnected.
+            NSLog("[VPNKIT-NE] tunnelCancelled reason: \(reason)")
+        case .captivePortalLikely:
+            // Repeated handshake failures after a network path change while the
+            // OS still reports connectivity — the current network most likely
+            // requires HTTP sign-in (captive portal). With the kill switch on,
+            // iOS's captive sign-in sheet is blocked; call `disconnect()` so
+            // the SDK clears `includeAllNetworks` and lets iOS present it. With
+            // the kill switch off, no app action is required — the SDK auto-
+            // resumes reconnects on the next satisfiable path update.
+            if self.isKillSwitchEnabled {
+                #if os(macOS)
+                self.disconnect { error in
+                    // Optional: surface error / log
+                }
+                #elseif os(iOS) || os (tvOS)
+                // App target needs to call `apiManager.disconnect()`
+                #endif
+            }
+        }
+    }
 }
 ```
 
@@ -262,8 +296,9 @@ macOS entitlements example:
  > Refer to: [Initializers](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Initializers.md)
 
  ### Primary Objects
- > Refer to: [README macOS](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/README%20MacOS.md) 
- 
+ > Refer to: [README macOS](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/README%20MacOS.md) 
+ > Refer to: [README iOS](https://github.com/wlvpn/ConsumerVPN-iOS/blob/main/SDK/README%20iOS.md)
+
 
  ## **3. Connection**
 
@@ -283,7 +318,7 @@ macOS entitlements example:
  #### `- (BOOL)systemExtensionApprovalPending`
 
  **Returns:**  
- `YES` if the OpenVPN system extension is awaiting user approval, otherwise `NO`.
+ `YES` if the OpenVPN system extension is awaiting user approval, otherwise `NO`.CFBundleDisplayName
  **Discussion:**  
  System extensions may require user approval after installation for security reasons. This method checks if such an approval is pending. Applications may need to prompt users to approve the extension in system settings.
 
@@ -311,7 +346,7 @@ macOS entitlements example:
 
  Installation success or failure is reported via system notifications, allowing the app to asynchronously handle the result. You call a framework function and it will perform asynchronous actions. At various points during the action, a notification will be sent out that allows you to respond to the event.
 
-  > Refer to: [Notifications](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Notifications.md)
+ > Refer to: [Notifications](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Notifications.md)
  
  
  ## **5. Error handling**
@@ -324,7 +359,6 @@ macOS entitlements example:
  ## **6. Limitations, Features, and Compatibility**
 
  ### a. Limitations
-
  - **Network Extension Entitlements:** macOS apps require special entitlements to use Network Extensions. Ensure you have the necessary permissions from Apple.
  - **Background Execution:** Packet Tunnel Providers may have limited background execution time.
  - **Performance Considerations:** Slower than some newer protocols like WireGuard due to heavier encryption and more complex code. TCP mode can be particularly slow due to double encapsulation (TCP over TCP)
@@ -332,26 +366,23 @@ macOS entitlements example:
  - **No Native OS Integration:** Not built into most operating systems like `IKEv2` or `L2TP`/`IPsec`.
 
  ### b. Features
-
  - **Strong Security:** OpenVPN uses OpenSSL for encryption (supports AES, Blowfish, etc.). Offers authentication with certificates, username/password, and/or pre-shared keys. Supports TLS for secure key exchange.
  - **Open Source:** Transparent, regularly audited, and improved by the community. No backdoors; security-focused.
  - **Stability and Reliability:** Maintains stable connections even over unstable networks. Capable of reconnecting and resuming sessions after brief drops.
  - Supports features like **Threat Protection, Multihop, KillSwitch, Connect On demand, Split Tunneling**.
 
- For more details:  
-> Refer to: [README macOS](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/README%20MacOS.md) 
-
  ### c. Compatibility
-
  - **Device Compatibility:** OpenVPN is compatible with both Intel and Apple Silicon Macs and iOS devices.
  - **Minimum Deployment Target:**
     - **iOS**   : 15.0 and above
     - **macOS** : 12.0 and above
-    - **tvOS**  : 18.0 and above
-    
+    - **tvOS**  : 17.0 and above
+
+ > For more details:  
+ > Refer to: [README MacOS](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/README%20MacOS.md)
+ > Refer to: [README iOS](https://github.com/wlvpn/ConsumerVPN-iOS/blob/main/SDK/README%20iOS.md)
  > To get the necessary assets/SDK, please contact support@wlvpn.com
 
 ## **7. Handshake Update Implementation**
 Handshake update implementation to detect VPN connection stability.
-
 > Refer to: [Handshake Update Implementation](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Handshake%20Update%20Implementation.md)

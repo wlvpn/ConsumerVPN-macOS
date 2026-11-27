@@ -45,6 +45,11 @@
 "ServerLocations" = "Server Locations";
 "Country" = "Country";
 "City" = "City";
+"ServerMaintenanceAlertTitle" = "Server in Maintenance";
+"ServerMaintenanceAlertMessage" = "This location is currently unavailable.\nPlease try again later.";
+"ServerMaintenanceAlertClose" = "Close";
+"DedicatedIPServersNotFetchedTitle" = "Dedicated IP Servers not fetched";
+"DedicatedIPServersNotFetchedOk" = "OK";
 
 /* Connection Strings */
 

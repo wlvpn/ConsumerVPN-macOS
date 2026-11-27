@@ -272,6 +272,17 @@ extension ApiManagerHelper {
         return countries
     }
     
+    func fetchServersWithDedicatedIPs() -> [Server] {
+        guard let servers = apiManager.fetchServersWithDedicatedIPs() as? [Server], servers.count > 0 else {
+            return []
+        }
+        return servers
+    }
+    
+    func updateAccountConfiguration() {
+        apiManager.updateAccountConfiguration()
+    }
+    
 }
 
 extension ApiManagerHelper: VPNConfigurationStatusReporting {
