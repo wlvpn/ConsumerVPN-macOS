@@ -40,8 +40,7 @@ class MainWindowController : BaseWindowController {
     @IBOutlet weak var contentView: NSView!
 
     fileprivate var currentView : NSView!
-    fileprivate var shouldConnectAtStartUp = false
-    fileprivate var cancelledConnection: Bool = false
+    fileprivate var shouldDisconnectAfterConnectionSucceeds = false
     
     fileprivate lazy var disconnectView : DisconnectView = {
         let disconnectView = DisconnectView.newInstance()
@@ -142,7 +141,7 @@ class MainWindowController : BaseWindowController {
                                                object: nil)
         
         if ApiManagerHelper.shared.isUserLogin(), UserDefaults.standard.bool(forKey: WLHideOnAppLaunch)  {
-            if shouldConnectAtStartUp {
+            if ApiManagerHelper.shared.hasPendingStartupConnection {
                 ApiManagerHelper.shared.refreshServer()
             }
         }
@@ -273,17 +272,11 @@ class MainWindowController : BaseWindowController {
     /// be made at startup and modify the vpn configuration accordingly for selected
     /// preferences.
     fileprivate func evaluateGeneralPreferences() {
-        
-        if UserDefaults.standard.bool(forKey: WLDoNotAutomaticallyConnect) == true {
-            shouldConnectAtStartUp = false
-        } else {
-            shouldConnectAtStartUp = true
-        }
+        let shouldConnectAtStartup = !UserDefaults.standard.bool(forKey: WLDoNotAutomaticallyConnect)
+        ApiManagerHelper.shared.configureStartupConnection(enabled: shouldConnectAtStartup)
         
         if UserDefaults.standard.bool(forKey: WLConnectToFastestServer) == true {
-            //Should just load balance to the fastest server for the currently assigned
-            //city on the vpn configuration.
-            ApiManagerHelper.shared.setServer(nil)
+            ApiManagerHelper.shared.resetServer()
             
         } else if UserDefaults.standard.bool(forKey: WLConnectToFastestServerInCountry) == true {
             
@@ -314,8 +307,11 @@ class MainWindowController : BaseWindowController {
     ///
     fileprivate func evaluateInitialConnectionToServer() {
         if ApiManagerHelper.shared.isConnectedToVPN() || ApiManagerHelper.shared.isVPNConnectionInProgress() {
+            ApiManagerHelper.shared.cancelConnectionIntent()
             return;
         }
+        guard ApiManagerHelper.shared.beginStartupConnection() else { return }
+
         if UserDefaults.standard.bool(forKey: WLConnectToFastestServerInCountry) == true {
             let countries = ApiManagerHelper.shared.fetchCountries()
             if let selectedCountryName = UserDefaults.standard.value(forKey: WLSelectedCountry) as? String,
@@ -327,7 +323,6 @@ class MainWindowController : BaseWindowController {
             ApiManagerHelper.shared.setCity(nil)
             ApiManagerHelper.shared.setCoutnry(nil)
         }
-        shouldConnectAtStartUp = false
         self.didSelectConnect()
     }
 }
@@ -376,7 +371,7 @@ extension MainWindowController : VPNAccountStatusReporting {
             let _ = await ApiManagerHelper.shared.refreshServer()
             let success = await ApiManagerHelper.shared.synchronizeConfiguration()
             self.connectView.vpnConnectButton.isClickable = success
-            if shouldConnectAtStartUp {
+            if ApiManagerHelper.shared.hasPendingStartupConnection {
                 evaluateInitialConnectionToServer()
             }
 
@@ -447,6 +442,7 @@ extension MainWindowController : VPNAccountStatusReporting {
 extension MainWindowController : VPNConnectionStatusReporting {
     func statusConnectionFailed(_ notification: Notification) {
         debugPrint("[ConsumerVPN] \(#function) \(notification)")
+
         if !ApiManagerHelper.shared.isNetworkReachable() {
             displayAlert(informativeText: "Connection Failed",
                          messageText: "Please check your internet connection.")
@@ -493,9 +489,9 @@ extension MainWindowController : VPNConnectionStatusReporting {
     func statusConnectionSucceeded(_ notification: Notification) {
         
         debugPrint("[ConsumerVPN] \(#function) \(notification)")
-        
-        guard !cancelledConnection else {
-            cancelledConnection = false
+
+        guard !shouldDisconnectAfterConnectionSucceeds else {
+            shouldDisconnectAfterConnectionSucceeds = false
             ApiManagerHelper.shared.disconnect()
             return
         }
@@ -513,6 +509,7 @@ extension MainWindowController : VPNConnectionStatusReporting {
     
     func statusConnectionDidDisconnect(_ notification: Notification) {
         debugPrint("[ConsumerVPN] \(#function) \(notification)")
+
         updateAppliedViewForDisconnectOrFailure()
         //connectionView
         connectView.toggleUIForEnabledState(isEnabled: true)
@@ -544,14 +541,19 @@ extension MainWindowController : VPNConnectionStatusReporting {
         if let error = notification.object as? NSError {
             if (error.code == VPNKitConfigurationRuntimeError.systemExtensionNotInstalled.rawValue) {
                 debugPrint("[ConsumerVPN] \(#function): \(notification)")
-                ApiManagerHelper.shared.installSystemExtension()
+                let shouldConnectAfterInstallation = ApiManagerHelper.shared.hasPendingConnectionIntent
+                ApiManagerHelper.shared.installSystemExtension(
+                    connectOnSuccess: shouldConnectAfterInstallation
+                )
             } else {
+                ApiManagerHelper.shared.cancelConnectionIntent()
+
                 displayAlert(informativeText: "Configuration Failed",
                              messageText: error.localizedDescription)
             }
         }
     }
-    
+
     //MARK: - VPN Health Check
     func statusConnectionHealthUpdate(_ notification: Notification) {
         debugPrint("[ConsumerVPN] \(#function) \(notification)")
@@ -593,7 +595,7 @@ extension MainWindowController : ConnectViewDelegate {
                 
                 // If not installed or failed, try to install
                 if status == .uninstalled || status == .failed || status == .unknown {
-                    ApiManagerHelper.shared.installSystemExtension()
+                    ApiManagerHelper.shared.installSystemExtension(connectOnSuccess: true)
                     // Installation attempt made, connect will happen after success notification
                     return
                 }
@@ -605,6 +607,7 @@ extension MainWindowController : ConnectViewDelegate {
                                                                     comment: " System Extension blocked"),
                                  messageText: NSLocalizedString("System extension blocked",
                                                                 comment: " System Extension blocked"))
+                    ApiManagerHelper.shared.cancelConnectionIntent()
                     connectView.vpnConnectButton.isClickable = true
                     return
                 }
@@ -614,7 +617,7 @@ extension MainWindowController : ConnectViewDelegate {
             } else {
                 // Fallback for earlier macOS versions
                 if !ApiManagerHelper.shared.systemExtensionInstalled() {
-                    ApiManagerHelper.shared.installSystemExtension()
+                    ApiManagerHelper.shared.installSystemExtension(connectOnSuccess: true)
                     // Installation attempt made, connect will happen after success notification
                     return
                 }
@@ -627,6 +630,7 @@ extension MainWindowController : ConnectViewDelegate {
                                                                     comment: " System Extension blocked"),
                                  messageText: NSLocalizedString("System extension blocked",
                                                                 comment: " System Extension blocked"))
+                    ApiManagerHelper.shared.cancelConnectionIntent()
                     connectView.vpnConnectButton.isClickable = true
                     return
                 }
@@ -648,7 +652,14 @@ extension MainWindowController : ConnectViewDelegate {
 
 extension MainWindowController : LoadingViewDelegate {
     func didSelectCancelConnect() {
-        cancelledConnection = true
+        if ApiManagerHelper.shared.cancelPendingSystemExtensionConnection() {
+            shouldDisconnectAfterConnectionSucceeds = false
+            connectView.vpnConnectButton.isClickable = true
+            connectView.vpnConnectButton.buttonText = NSLocalizedString("Connect", comment: "Connect")
+            return
+        }
+
+        shouldDisconnectAfterConnectionSucceeds = true
     }
     
 }
@@ -756,7 +767,12 @@ extension MainWindowController : VPNHelperStatusReporting {
     
     func statusHelperInstallSuccess(_ notification: Notification) {
         debugPrint("[ConsumerVPN] \(#function): \(notification)")
-        connectView.vpnConnectButton.isClickable = true
+        let hasPendingConnection = ApiManagerHelper.shared.hasPendingSystemExtensionConnection
+        connectView.vpnConnectButton.isClickable = !hasPendingConnection
+
+        if hasPendingConnection {
+            connectView.vpnConnectButton.buttonText = NSLocalizedString("Connecting", comment: "Connecting...")
+        }
     }
     
     func statusHelperInstallFailed(_ notification: Notification) {

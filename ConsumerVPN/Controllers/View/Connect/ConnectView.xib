@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="22155" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22155"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24506"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -67,8 +67,37 @@
                         <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="16" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iaC-qs-0EQ">
                             <rect key="frame" x="225" y="51" width="250" height="93"/>
                             <subviews>
+                                <button translatesAutoresizingMaskIntoConstraints="NO" id="jD5-be-MXo" customClass="CustomButton" customModule="ConsumerVPN" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="51" width="250" height="42"/>
+                                    <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="YOG-0h-f5e">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                        <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                    </buttonCell>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="250" id="8WB-bZ-do7"/>
+                                        <constraint firstAttribute="height" constant="42" id="abQ-tg-8ka"/>
+                                    </constraints>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                            <real key="value" value="8"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                            <integer key="value" value="15"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                            <real key="value" value="2"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="buttonText" value="Connect"/>
+                                    </userDefinedRuntimeAttributes>
+                                    <connections>
+                                        <action selector="didSelectConnectButton:" target="w3J-Qq-VRg" id="UFH-WA-Na2"/>
+                                    </connections>
+                                </button>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="2Cg-Bx-Zlj" customClass="CustomButton" customModule="ConsumerVPN" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="58" width="250" height="35"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="250" height="35"/>
                                     <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="bWR-eL-udj">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -95,35 +124,6 @@ DQ
                                     </userDefinedRuntimeAttributes>
                                     <connections>
                                         <action selector="didSelectChooseLocation:" target="w3J-Qq-VRg" id="wfS-Jg-INV"/>
-                                    </connections>
-                                </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="jD5-be-MXo" customClass="CustomButton" customModule="ConsumerVPN" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="250" height="42"/>
-                                    <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="YOG-0h-f5e">
-                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system"/>
-                                        <string key="keyEquivalent" base64-UTF8="YES">
-DQ
-</string>
-                                    </buttonCell>
-                                    <constraints>
-                                        <constraint firstAttribute="width" constant="250" id="8WB-bZ-do7"/>
-                                        <constraint firstAttribute="height" constant="42" id="abQ-tg-8ka"/>
-                                    </constraints>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                            <real key="value" value="8"/>
-                                        </userDefinedRuntimeAttribute>
-                                        <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
-                                            <integer key="value" value="15"/>
-                                        </userDefinedRuntimeAttribute>
-                                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                                            <real key="value" value="2"/>
-                                        </userDefinedRuntimeAttribute>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="buttonText" value="Connect"/>
-                                    </userDefinedRuntimeAttributes>
-                                    <connections>
-                                        <action selector="didSelectConnectButton:" target="w3J-Qq-VRg" id="UFH-WA-Na2"/>
                                     </connections>
                                 </button>
                             </subviews>

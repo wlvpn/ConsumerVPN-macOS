@@ -19,31 +19,19 @@ extension ApiManagerHelper: VPNHelperStatusReporting {
     func statusHelperInstallSuccess(_ notification: Notification) {
         debugPrint("[ConsumerVPN] \(#function) \(notification)")
         // Note: Success handled at ConnectionManager
-        
-        
-        
-        apiManager.synchronizeConfiguration() { [weak self] success in
-            guard let strongSelf = self else { return }
-            DispatchQueue.main.async { [weak strongSelf] in
-                
-                guard let strongSelf = strongSelf, let vpnConfiguration =  strongSelf.vpnConfiguration else {
-                    return
-                }
-               
+        DispatchQueue.main.async { [weak self] in
+            guard let self  else { return }
+            if let vpnConfiguration = self.vpnConfiguration {
                 switch vpnConfiguration.selectedProtocol {
                 case .wireGuard:
-                    strongSelf.installedStatusForWG = .installed
-                    
+                    self.installedStatusForWG = .installed
                 case .openVPN:
-                    strongSelf.installedStatusForOpenVPN = .installed
-                    
+                    self.installedStatusForOpenVPN = .installed
                 default: break
                 }
             }
-            
+            self.finishPendingSystemExtensionConnection(installationSucceeded: true)
         }
-        
-        
         
     }
     
@@ -63,6 +51,8 @@ extension ApiManagerHelper: VPNHelperStatusReporting {
     
     func statusHelperInstallFailed(_ notification: Notification) {
         debugPrint("[ConsumerVPN] \(#function) \(notification)")
+        finishPendingSystemExtensionConnection(installationSucceeded: false)
+
         guard let vpnConfiguration = vpnConfiguration else {return}
         
         if vpnConfiguration.selectedProtocol == .openVPN {

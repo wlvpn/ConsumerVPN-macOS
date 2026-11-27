@@ -8,7 +8,7 @@ Add following keys to the `V3APIAdapter` initialization code
 - `V3InstallFavoritesPlugin`    : By default `YES`
 - `kV3ServiceNameKey`           :  This is the name of the keychain item to use when storing the login and VPN credentials in the keychain. This should be the name of your app. If you set this to "My VPN App" then the API adapter will create services with names like "My VPN App Login" and  "My VPN App Access Token".
 
-```swift
+```objc
   NSDictionary *options = @{
                 kV3BaseUrlKey:               // WLVPN base URL,
                 kV3AlternateUrlsKey:         // WLVPN alternate URLs,
@@ -29,7 +29,7 @@ Add following keys to the `V3APIAdapter` initialization code
 - `kIKEv2V3BaseUrlKey`          : This is the baseurl for WLVPN API's.
 - `kIKEv2V3AlternateUrlsKey`    : The alternate Url in case baseurl fails.
  
-```swift
+```objc
  NSDictionary *connectionOptions = @{
                 kIKEv2UseIPAddress:         @YES,
                 kVPNManagerBrandNameKey:    clientName,
@@ -49,8 +49,9 @@ Add following keys to the `V3APIAdapter` initialization code
 - `kCityPOPHostname` : This will be set as the POP hostname for all city objects. Used when you get the   hostname for the City.
 - `kV3BaseUrlKey` : This is the baseurl for WLVPN API's.
 - `kV3AlternateUrlsKey`: This will be an array of alternate base URLs if baseurl fails.
-```swift
-  NSDictionary *apiManagerOptions = @{
+
+```objc
+    NSDictionary *apiManagerOptions = @{
                 kBundleNameKey:         bundleName,
                 kVPNDefaultProtocolKey: defaultProtocol,
                 kVPNAccessGroupNameKey: kAccessGroupName,
@@ -60,9 +61,7 @@ Add following keys to the `V3APIAdapter` initialization code
         };
 ```
 
-
-Check the example code below to see how to initialize the **`iOS`** app with the SDK:
-
+### Check the example code below to see how to initialize the **`iOS`** app with the SDK:
 
 ```objc
 @import VPNKit;
@@ -70,6 +69,7 @@ Check the example code below to see how to initialize the **`iOS`** app with the
 @import VPKWireGuardExtension;
 @import VPKWireGuardAdapter;
 @import VPKOpenVPNAdapter;
+
 #import "SDKInitializer.h"
 
 @implementation SDKInitializer
@@ -116,7 +116,7 @@ Check the example code below to see how to initialize the **`iOS`** app with the
         kIKEv2KeychainServiceName:          apiAdapter.passwordServiceName,
     };
     
-    NSMutableArray *adapters = [NSMutableArray arrayWithCapacity:2];
+    NSMutableArray *adapters = [NSMutableArray arrayWithCapacity:3];
     
     NSNumber *defaultProtocol = [NSNumber numberWithInt:VPNProtocolIKEv2];
     
@@ -126,17 +126,25 @@ Check the example code below to see how to initialize the **`iOS`** app with the
     id <VPNConnectionAdapterProtocol> connectionAdapter = [[VPNConnectionTestAdapter alloc] initWithOptions:connectionOptions];
     [adapters addObject:connectionAdapter];
 #else
-    id <VPNConnectionAdapterProtocol> connectionAdapter = [[NEVPNManagerAdapter alloc] initWithOptions:connectionOptions];
-    [adapters addObject:connectionAdapter];
+    // IKEv2 / IPSec 
+    id <VPNConnectionAdapterProtocol> neVPNAdapter = [[NEVPNManagerAdapter alloc] initWithOptions:connectionOptions];
+    [adapters addObject:neVPNAdapter];
+    
+    // WireGuard
     WireGuardAdapter *wireGuardAdapter = [self createWireGuardAdapterWithBrandName:brandName
                                                                             apiKey:apiKey];
-    [adapters addObject:wireGuardAdapter];
+    if (wireGuardAdapter) {
+        [adapters addObject:wireGuardAdapter];
+        defaultProtocol = [NSNumber numberWithInt:VPNProtocolWireGuard];
+    }
     
+    // OpenVPN
     OpenVPNAdapter *openVPNAdapter = [self createOpenVPNAdapterWithBrandName:brandName
-                                                                      apiKey:apiKey];
-    [adapters addObject:openVPNAdapter];
-    
-    defaultProtocol = [NSNumber numberWithInt:VPNProtocolWireGuard];
+                                                                        apiKey:apiKey
+                                                                        reseller:suffix];
+    if (openVPNAdapter) {
+        [adapters addObject:openVPNAdapter];
+    }
 #endif
     
     NSDictionary *apiManagerOptions = @{
@@ -170,38 +178,48 @@ Check the example code below to see how to initialize the **`iOS`** app with the
     wgConfig.apiKey = apiKey;
     wgConfig.extensionName = [bundleID stringByAppendingString:@".network-extension"];
     
+    if ([wgConfig validate] != WireGuardAdapterConfigurationErrorNone) {
+        return nil;
+    }
+    
     return [[WireGuardAdapter alloc] initWithConfiguration:wgConfig];
 }
+#endif
 
 + (OpenVPNAdapter *)createOpenVPNAdapterWithBrandName:(NSString *)brandName
-                                               apiKey:(NSString *)apiKey {
+                                               apiKey:(NSString *)apiKey
+                                             reseller:(NSString *)reseller {
+    // Extension name should match with your OpenVPN NE Bundle ID.
+    NSString *extensionName = [NSString stringWithFormat:@"%@.OpenVPNExtension", [[NSBundle mainBundle] bundleIdentifier]];
     
-    NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
-    NSString *bundleID = [infoDict objectForKey:@"CFBundleIdentifier"];
-    
-    OpenVPNAdapterConfiguration *openVPNConfig = [[OpenVPNAdapterConfiguration alloc] init];
-    
-    openVPNConfig.brandName = brandName;
-    openVPNConfig.useAPIKey = NO;
-    openVPNConfig.apiKey = apiKey;
-    openVPNConfig.useSystemExtension = YES;
-    openVPNConfig.extensionName = [bundleID stringByAppendingString:@".openvpnextension"];
+    OpenVPNAdapterConfiguration *openVPNConfig = [[OpenVPNAdapterConfiguration alloc] initWithBrandName:brandName
+                                                                                      configurationName:brandName
+                                                                                              useAPIKey:false
+                                                                                     useSystemExtension:false
+                                                                                                 apiURL:nil
+                                                                                              backupURL:nil
+                                                                                                 apiKey:apiKey
+                                                                                          extensionName:extensionName
+                                                                                               reseller:reseller];
+    if ([openVPNConfig validate] != OpenVPNAdapterConfigurationErrorNone) {
+        return nil;
+    }
     
     return [[OpenVPNAdapter alloc] initWithConfiguration:openVPNConfig];
 }
-#endif
 
 @end
 ```
 
 
-Check the example code below to see how to initialize the **`macOS`** app with the SDK:
+### Check the example code below to see how to initialize the **`macOS`** app with the SDK:
 
 
 ```objc
 @import VPNKit;
 @import VPNV3APIAdapter;
 @import VPKWireGuardAdapter;
+@import VPNV3APIAdapter;
 @import VPKOpenVPNAdapter;
 
 @implementation SDKInitializer
@@ -213,6 +231,7 @@ Check the example code below to see how to initialize the **`macOS`** app with t
  * @param configName The VPN configuration name of this client
  * @param apiKey    The api key provided on WLVPN signup
  * @param suffix    The username suffix provided on WLVPN Signup
+ *
  * @return An initialized VPNAPIManager ready to use
  */
 - (nonnull VPNAPIManager*) initializeAPIManagerWithBrandName:(NSString *)brandName
@@ -238,24 +257,45 @@ Check the example code below to see how to initialize the **`macOS`** app with t
     
     V3APIAdapter *apiAdapter = [[V3APIAdapter alloc] initWithOptions:apiAdapterOptions];
     
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+    NSString *applicationSupportDirectory = [paths firstObject];
+    
+    NSDictionary *connectionOptions = @{
+        kVPNManagerUsernameExtensionKey:    suffix,
+        kVPNManagerBrandNameKey:            brandName,
+        kVPNManagerConfigurationNameKey:    configName,
+        kVPNSharedSecretKey:                @"vpn",
+        kVPNHelperDisableIPSec:             [NSNumber numberWithBool:YES],
+        kVPNApplicationSupportDirectoryKey: applicationSupportDirectory,
+        kIKEv2KeychainServiceName:          apiAdapter.passwordServiceName,
+    };
+    
+    // Create adapters
     NEVPNManagerAdapter *neVPNAdapter = [self createNEVPNManagerAdapter:brandName
                                                            extensionKey:suffix
                                                                 service:apiAdapter.passwordServiceName];
     
-    NSMutableArray *adapters = [NSMutableArray arrayWithCapacity:4];
+    NSMutableArray *adapters = [NSMutableArray arrayWithCapacity:3];
     
     NSNumber *defaultProtocol = [NSNumber numberWithInteger:VPNProtocolIKEv2];
     
     // Order is important
     if (@available(macOS 10.13, *)) {
         WireGuardAdapter *wireGuardAdapter = [self createWireGuardAdapterWithBrandName:brandName bundleIdentifier:bundleID apiKey:apiKey];
-        [adapters addObject: wireGuardAdapter];
-        defaultProtocol = [NSNumber numberWithInteger:VPNProtocolWireGuard];
-    }
-    
-    if (@available(macOS 12.0, *)) {
-        OpenVPNAdapter *openVPNAdapter = [self createOpenVPNAdapterWithBrandName:brandName bundleIdentifier:bundleID apiKey:apiKey];
-        [adapters addObject:openVPNAdapter];
+        
+        if (wireGuardAdapter) {
+            [adapters addObject:wireGuardAdapter];
+            
+            defaultProtocol = [NSNumber numberWithInteger:VPNProtocolWireGuard];
+        }
+        
+        // OpenVPN
+        OpenVPNAdapter *openVPNAdapter = [self createOpenVPNAdapterWithBrandName:brandName
+                                                                        apiKey:apiKey
+                                                                        reseller:suffix];
+        if (openVPNAdapter) {
+            [adapters addObject:openVPNAdapter];
+        }
     }
     
     [adapters addObject: neVPNAdapter];
@@ -302,22 +342,33 @@ Check the example code below to see how to initialize the **`macOS`** app with t
     wgConfig.useAPIKey = NO;
     wgConfig.extensionName = [NSString stringWithFormat:@"%@.network-extension", bundleIdentifier];
     wgConfig.apiKey = apiKey;
-
+    
+    if ([wgConfig validate] != WireGuardAdapterConfigurationErrorNone) {
+        return nil;
+    }
+    
     return [[WireGuardAdapter alloc] initWithConfiguration:wgConfig];
 }
 
 - (OpenVPNAdapter *)createOpenVPNAdapterWithBrandName:(NSString *)brandName
-                                     bundleIdentifier:(NSString *)bundleIdentifier
-                                               apiKey:(NSString *)apiKey {
+                                               apiKey:(NSString *)apiKey
+                                             reseller:(NSString *)reseller {
+    // Extension name should match with your OpenVPN NE Bundle ID.
+    NSString *extensionName = [NSString stringWithFormat:@"%@.OpenVPNExtension", [[NSBundle mainBundle] bundleIdentifier]];
     
-    OpenVPNAdapterConfiguration *openVPNConfig = [[OpenVPNAdapterConfiguration alloc] init];
-
-    openVPNConfig.brandName = brandName;
-    openVPNConfig.useAPIKey = NO;
-    openVPNConfig.extensionName = [NSString stringWithFormat:@"%@.openvpnextension", bundleIdentifier];
-    openVPNConfig.apiKey = apiKey;
-    openVPNConfig.useSystemExtension = YES;
-
+    OpenVPNAdapterConfiguration *openVPNConfig = [[OpenVPNAdapterConfiguration alloc] initWithBrandName:brandName
+                                                                                      configurationName:brandName
+                                                                                              useAPIKey:NO
+                                                                                     useSystemExtension:YES
+                                                                                                 apiURL:nil
+                                                                                              backupURL:nil
+                                                                                                 apiKey:apiKey
+                                                                                          extensionName:extensionName
+                                                                                               reseller:reseller];
+    if ([openVPNConfig validate] != OpenVPNAdapterConfigurationErrorNone) {
+        return nil;
+    }
+    
     return [[OpenVPNAdapter alloc] initWithConfiguration:openVPNConfig];
 }
 
@@ -326,7 +377,7 @@ Check the example code below to see how to initialize the **`macOS`** app with t
 ```
 
 
-Initialize the app from the **Appdelegate** as follows:
+### Initialize the app from the **Appdelegate** as follows:
 
 ```swift
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {

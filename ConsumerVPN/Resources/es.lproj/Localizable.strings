@@ -46,6 +46,11 @@
 "Servers" = "Servidores";
 "Country" = "País";
 "City" = "Ciudad";
+"ServerMaintenanceAlertTitle" = "Servidor en mantenimiento";
+"ServerMaintenanceAlertMessage" = "Esta ubicación no está disponible actualmente.\nPor favor, inténtalo de nuevo más tarde.";
+"ServerMaintenanceAlertClose" = "Cerrar";
+"DedicatedIPServersNotFetchedTitle" = "No se pudieron obtener los servidores de IP dedicada";
+"DedicatedIPServersNotFetchedOk" = "OK";
 
 /* Connection Strings */
 

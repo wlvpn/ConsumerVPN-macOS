@@ -24,8 +24,6 @@ class ConnectView: ColorView, UIViewFadeAnimation, VPNStatusReporting {
     @IBOutlet weak var vpnConnectButton: CustomButton!
     @IBOutlet weak var serverLocationButton: CustomButton!
     
-    fileprivate var shouldConnectAtStartUp = false
-
     weak var delegate: ConnectViewDelegate?
     var animatableViews: [NSView] = []
     

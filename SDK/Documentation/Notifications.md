@@ -27,7 +27,7 @@ class VPNManager: NSObject, VPNStatusReporting {
 ```
 
 # VPNHelperStatusReporting
-   Implement this protocol in your VPNManager to get the status updates for Helper or System Extention Installation.
+   Implement this protocol in your VPNManager to get the status updates for System Extention Installation.
 
 ```markdown
 - `statusHelperInstallSuccess`      : Notifies the receiver that the helper or system extention is installed. Includes the current VPNConfiguration.
@@ -86,6 +86,8 @@ Example Implementation:
 - `connectionShouldConnect`         : Notifies the receiver that the connection should connect.
 - `networkConnectionStatusChanged`  : Notifies the receiver that the network connection status has been changed.
 - `statusConnectionHealthUpdate`    : Notifies the receiver that the VPN connection is healthy or not.
+- `statusQuantumResistenceFailed`   : Notifies the receiver that the quantum connection was not successful. Includes an NSError describing the issue.
+- `statusQuantumResistenceCompleted`   : Optional. Notifies the receiver that the quantum-resistant transition completed without failing. The userInfo holds a `VPNQuantumResistanceCompletionResult` (NSNumber) under `VPNQuantumResistanceCompletionResultKey`: `Succeeded` (quantum-resistant key applied), `Disabled` (skipped because `quantumResistanceEnabled` is false), `AlreadyCompleted`. It is posted before the held `statusConnectionSucceeded` when the server retry is enabled.
 ```
 
 Example Implementation:
@@ -176,6 +178,17 @@ ViewController: VPNConnectionStatusReporting {
     func statusConnectionHealthUpdate(_ notification: Notification) {
         // Handle VPN connection health update in here
     }
+    
+    func statusQuantumResistenceFailed(_ notification: Notification) {
+        // Handle any update in here
+    }
+
+    func statusQuantumResistenceCompleted(_ notification: Notification) {
+        let result = notification.userInfo?[VPNQuantumResistanceCompletionResultKey] as? Int
+        // result matches VPNQuantumResistanceCompletionResult (succeeded, disabled, alreadyCompleted)
+    }
+    
+
 }
 
 ```
@@ -202,8 +215,8 @@ Example Implementation:
 
 ```swift
    func updateStatusForState(state : VPNConnectionStatus? = nil) {
-      // If no state was set, retrieves apiManager status directly to determine state.
-        let connectionStatus = state ?? apiManager.status
+      // If no state was set, retrieves apiManager connectionStatus directly to determine state.
+        let connectionStatus = state ?? apiManager.connectionStatus
       // Error occurred, displays error animation and returns
          if didFail { return }
          switch connectionStatus {
@@ -215,6 +228,25 @@ Example Implementation:
                   // Handle any update 
              case .statusConnected:
                  // Handle any update
+             default:
+                 // Handle any update
+       }
+  }
+```
+
+```swift
+   func updateHelperStatusForState(state : VPNConnectionStatus? = nil) {
+      // If no state was set, retrieves apiManager helperStatus directly to determine state.
+        let connectionStatus = state ?? apiManager.helperStatus
+      // Error occurred, displays error animation and returns
+         if didFail { return }
+         switch helperStatus {
+             case .statusHelperInstallSuccess:
+                  // Handle any update 
+             case .statusHelperInstallPending:
+                  // Handle any update 
+             case .statusHelperInstallFailed:
+                  // Handle any update
              default:
                  // Handle any update
        }
@@ -267,6 +299,9 @@ Implement this protocol in your VPNManager  to get the VPN server status updates
 - `statusServerUpdateWillBegin`     : Notifies the receiver that the list of VPN servers are about to update.
 - `statusServerUpdateSucceeded`     : Notifies the receiver that the list of VPN servers were updated successfully. Includes an array of servers that were updated.
 - `statusServerUpdateFailed`        : Notifies the receiver that the list of servers failed to update. Includes an NSError describing the reason for failure.
+- `statusDedicatedIPServersUpdateWillBegin`     : Notifies the receiver that the list of dedicated private VPN servers are about to update.
+- `statusDedicatedIPServersUpdateSucceeded`     : Notifies the receiver that the list of dedicated private VPN servers were updated successfully. Includes an array of servers that were updated.
+- `statusDedicatedIPServersUpdateFailed`        : Notifies the receiver that the list of dedicated private servers failed to update. Includes an NSError describing the reason for failure.
 ```
 
 
@@ -287,6 +322,19 @@ ViewController : VPNServerStatusReporting {
     func statusServerUpdateFailed(_ notification: Notification) {
         // Handle any update in here
     }
+    
+    func statusDedicatedIPServersUpdateWillBegin(_ notification: Notification) {
+        // Handle any update in here
+    }
+    
+    func statusDedicatedIPServersUpdateSucceeded(_ notification: Notification) {
+        // Handle any update in here
+    }
+    
+    func statusDedicatedIPServersUpdateFailed(_ notification: Notification) {
+        // Handle any update in here
+    }
+    
 }
 ```
 
@@ -306,6 +354,8 @@ ViewController : VPNServerStatusReporting {
 - `statusAccountFetchConfigFailed`          : Notify the receiver that the API configuration fetch operation has failed. Object property may hold `NSError` type describing the issue.
 - `statusAccountFetchConfigSucceeded`       : Notify the receiver that the API configuration fetch operation has completed successfully.
 - `statusAccountFetchConfigWillBegin`       : Notify the receiver that the API configuration fetch operation is about to begin.
+- `statusAccountFetchDedicatedIPServersSucceeded` : Notify the receiver that the dedicated IP servers fetch operation has completed successfully.
+- `statusAccountFetchDedicatedIPServersFailed`    : Notify the receiver that the dedicated IP servers fetch operation has failed.
 ```
 
 
@@ -321,11 +371,11 @@ ViewController: VPNAccountStatusReporting {
     
     //Parameter notification: Notification kicked back from the framework. Holds `Account` information.
     func statusLoginSucceeded(_ notification: Notification) {
-        // Handle any update in here
+        // Handle any update in here like calling refresh location, update server list and synchronize configuration.
     }
     
     func statusAutomaticLoginSuceeded(_ notification: Notification) {
-        // Handle any update in here
+        // Handle any update in here like calling refresh location, update server list.
     }
 
     /// Login failures are handled by the Login View Controller

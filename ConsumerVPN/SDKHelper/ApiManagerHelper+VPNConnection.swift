@@ -36,6 +36,7 @@ extension ApiManagerHelper {
             debugPrint("[ConsumerVPN] Connection in progresss")
             
         } else {
+            beginConnectionIntent()
             apiManager.connect()
         }
         
@@ -72,6 +73,7 @@ extension ApiManagerHelper: VPNConnectionStatusReporting {
     
     func statusConnectionSucceeded(_ notification: Notification) {
         debugPrint("[ConsumerVPN] \(#function): \(notification)")
+        completeActiveConnectionIntent()
         guard let vpnConfiguration = vpnConfiguration else {
             return
         }
@@ -92,10 +94,14 @@ extension ApiManagerHelper: VPNConnectionStatusReporting {
         if let error = notification.object as? NSError {
             debugPrint("[ConsumerVPN] Connection Failed with Error - \(error.localizedDescription)")
             if error.code == VPNKitConfigurationRuntimeError.permissionDeniedError.rawValue {
-                self.apiManager.installSystemExtension()
-                
+                guard hasActiveConnectionIntent else { return }
+
+                self.installSystemExtension(connectOnSuccess: true)
+                return
             }
         }
+
+        completeActiveConnectionIntent()
     }
     
     func statusConnectionWillBegin(_ notification: Notification) {

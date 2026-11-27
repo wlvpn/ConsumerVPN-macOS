@@ -9,11 +9,19 @@
 import Foundation
 import VPNKit
 
+private enum ConnectionIntentState {
+    case idle
+    case waitingForStartup
+    case connecting
+    case waitingForSystemExtension
+}
+
 /// `ApiManagerHelper` is a singleton class responsible for managing VPN API operations such as login, checking network reachability, refreshing location, handling VPN disconnection, and setting encryption.
 class ApiManagerHelper: NSObject {
     
     var installedStatusForOpenVPN: SystemExtensionStatus = .unknown
     var installedStatusForWG: SystemExtensionStatus = .unknown
+    private var connectionIntentState: ConnectionIntentState = .idle
     
     /// The instance of `VPNAPIManager` used to perform API operations.
     var apiManager: VPNAPIManager
@@ -159,10 +167,100 @@ class ApiManagerHelper: NSObject {
         apiManager.synchronizeConfiguration()
     }
     
-    func installSystemExtension() {
+    func configureStartupConnection(enabled: Bool) {
+        connectionIntentState = enabled ? .waitingForStartup : .idle
+    }
+
+    var hasPendingStartupConnection: Bool {
+        if case .waitingForStartup = connectionIntentState {
+            return true
+        }
+
+        return false
+    }
+
+    var hasPendingConnectionIntent: Bool {
+        if case .idle = connectionIntentState {
+            return false
+        }
+
+        return true
+    }
+
+    @discardableResult
+    func beginStartupConnection() -> Bool {
+        guard hasPendingStartupConnection else { return false }
+
+        connectionIntentState = .connecting
+        return true
+    }
+
+    func beginConnectionIntent() {
+        connectionIntentState = .connecting
+    }
+
+    var hasActiveConnectionIntent: Bool {
+        if case .connecting = connectionIntentState {
+            return true
+        }
+
+        return false
+    }
+
+    func completeActiveConnectionIntent() {
+        guard hasActiveConnectionIntent else { return }
+
+        connectionIntentState = .idle
+    }
+
+    func cancelConnectionIntent() {
+        connectionIntentState = .idle
+    }
+
+    func installSystemExtension(connectOnSuccess: Bool = false) {
+        if connectOnSuccess {
+            connectionIntentState = .waitingForSystemExtension
+        } else if hasPendingSystemExtensionConnection {
+            // Only clear a connect intent this same install flow set; an unrelated
+            // bare install (protocol switch, opening Preferences) must not cancel a
+            // startup or manual connect that's already pending elsewhere.
+            connectionIntentState = .idle
+        }
+
         apiManager.installSystemExtension()
     }
-    
+
+    var hasPendingSystemExtensionConnection: Bool {
+        if case .waitingForSystemExtension = connectionIntentState {
+            return true
+        }
+
+        return false
+    }
+
+    @discardableResult
+    func cancelPendingSystemExtensionConnection() -> Bool {
+        guard hasPendingSystemExtensionConnection else { return false }
+
+        connectionIntentState = .idle
+        return true
+    }
+
+    func finishPendingSystemExtensionConnection(installationSucceeded: Bool) {
+        guard hasPendingSystemExtensionConnection else { return }
+
+        connectionIntentState = .idle
+
+        guard installationSucceeded,
+              selectedProtocol == .wireGuard || selectedProtocol == .openVPN,
+              !isConnectedToVPN(),
+              !isVPNConnectionInProgress() else {
+            return
+        }
+
+        connect()
+    }
+
     func uninstallSystemExtension() {
         apiManager.uninstallSystemExtension()
     }

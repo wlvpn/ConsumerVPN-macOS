@@ -67,8 +67,10 @@ extension ServerViewController: NSTouchBarDelegate {
 @available(OSX 10.12.2, *)
 extension ServerViewController: NSScrubberDelegate {
     func scrubber(_ scrubber: NSScrubber, didSelectItemAt selectedIndex: Int) {
-        ApiManagerHelper.shared.selectServerWith(city: presentedTableData[selectedIndex])
-        
+        guard let city = presentedTableData[safe: selectedIndex] else {
+            return
+        }
+        ApiManagerHelper.shared.selectServerWith(city: city)
     }
 }
 
@@ -80,9 +82,14 @@ extension ServerViewController: NSScrubberDataSource {
     
     func scrubber(_ scrubber: NSScrubber, viewForItemAt index: Int) -> NSScrubberItemView {
         let customServerView = NSScrubberItemView()
-        
-        let serverName = NSTextField(labelWithString: "\(presentedTableData[index].name!)")
-        let flag  = NSImageView(image: presentedTableData[index].country!.flagImage)
+
+        guard let city = presentedTableData[safe: index] else {
+            return customServerView
+        }
+
+        let serverName = NSTextField(labelWithString: city.name ?? "")
+        let flagImage = city.country?.flagImage ?? NSImage()
+        let flag  = NSImageView(image: flagImage)
         
         serverName.font = NSFont.systemFont(ofSize: 16)
         
@@ -109,7 +116,7 @@ extension ServerViewController: NSScrubberDataSource {
 @available(OSX 10.12.2, *)
 extension ServerViewController: NSScrubberFlowLayoutDelegate {
     func scrubber(_ scrubber: NSScrubber, layout: NSScrubberFlowLayout, sizeForItemAt itemIndex: Int) -> NSSize {
-        if let cityName = presentedTableData[itemIndex].name {
+        if let cityName = presentedTableData[safe: itemIndex]?.name {
             let size = cityName.size(withAttributes: [.font: NSFont.systemFont(ofSize: 18)])
             // Calculated label content size plus the added widht of the flagImage plus it's left and right spacing
             return NSSize(width: (size.width + 30), height: size.height)

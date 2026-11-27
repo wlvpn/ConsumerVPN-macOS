@@ -271,6 +271,8 @@
 		F624649F2E5F41BD00BB1BF7 /* Binaries Size.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "Binaries Size.md"; sourceTree = "<group>"; };
 		F62464A02E5F41BD00BB1BF7 /* Handshake Update Implementation.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "Handshake Update Implementation.md"; sourceTree = "<group>"; };
 		F62464A12E5F41BD00BB1BF7 /* ServerFeatures.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ServerFeatures.md; sourceTree = "<group>"; };
+		F64875283092140E00859A6D /* Bypass Traffic Implementation.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "Bypass Traffic Implementation.md"; sourceTree = "<group>"; };
+		F64875293092140E00859A6D /* Dedicated IP Implementation.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "Dedicated IP Implementation.md"; sourceTree = "<group>"; };
 		F64E01CE2B279249002D8A1B /* VPKWireGuardAdapter.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = VPKWireGuardAdapter.xcframework; path = SDK/VPKWireGuardAdapter.xcframework; sourceTree = "<group>"; };
 		F64E01CF2B279249002D8A1B /* VPKWireGuardExtension.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = VPKWireGuardExtension.xcframework; path = SDK/VPKWireGuardExtension.xcframework; sourceTree = "<group>"; };
 		F66ED4DE2CFF4B27001F6DF5 /* Adapters.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Adapters.md; sourceTree = "<group>"; };
@@ -706,6 +708,8 @@
 				F66ED4E22CFF4B27001F6DF5 /* Classifiers.md */,
 				F66ED4E32CFF4B27001F6DF5 /* Connection.md */,
 				F66ED4E42CFF4B27001F6DF5 /* Data Traffic Counter.md */,
+				F64875283092140E00859A6D /* Bypass Traffic Implementation.md */,
+				F64875293092140E00859A6D /* Dedicated IP Implementation.md */,
 				F66ED4E52CFF4B27001F6DF5 /* Diagnostics.md */,
 				F66ED4E62CFF4B27001F6DF5 /* DNSUsage.md */,
 				F66ED4E72CFF4B27001F6DF5 /* Errors.md */,
@@ -1069,6 +1073,7 @@
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/SDK/VPNKit/**";
 				INFOPLIST_FILE = Theme/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -1079,7 +1084,7 @@
 					"$(PROJECT_DIR)/SDK/WireGuardNetworkExtension/Library/macOS",
 					"$(PROJECT_DIR)/SDK/WireGuardNetworkExtension/Library/iOS",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MARKETING_VERSION = "$(MARKETING_VERSION)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
@@ -1095,6 +1100,7 @@
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(PROJECT_NAME)-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TVOS_DEPLOYMENT_TARGET = 17.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1122,6 +1128,7 @@
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/SDK/VPNKit/**";
 				INFOPLIST_FILE = Theme/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -1132,7 +1139,7 @@
 					"$(PROJECT_DIR)/SDK/WireGuardNetworkExtension/Library/macOS",
 					"$(PROJECT_DIR)/SDK/WireGuardNetworkExtension/Library/iOS",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MARKETING_VERSION = "$(MARKETING_VERSION)";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "$(inherited)";
@@ -1146,6 +1153,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "ConsumerVPN/Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(PROJECT_NAME)-Swift.h";
 				SWIFT_VERSION = 5.0;
+				TVOS_DEPLOYMENT_TARGET = 17.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -1305,6 +1313,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = WireGuardNetworkExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2021 WLVPN Inc. All rights reserved.";
 				INFOPLIST_KEY_NSSystemExtensionUsageDescription = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -1315,7 +1324,7 @@
 					"$(PROJECT_DIR)/SDK",
 					"$(PROJECT_DIR)/SDK/WireGuardNetworkExtension/Library/macOS",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MARKETING_VERSION = "$(MARKETING_VERSION)";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -1328,6 +1337,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TVOS_DEPLOYMENT_TARGET = 17.0;
 			};
 			name = Debug;
 		};
@@ -1365,6 +1375,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = WireGuardNetworkExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2021 WLVPN Inc. All rights reserved.";
 				INFOPLIST_KEY_NSSystemExtensionUsageDescription = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -1375,7 +1386,7 @@
 					"$(PROJECT_DIR)/SDK",
 					"$(PROJECT_DIR)/SDK/WireGuardNetworkExtension/Library/macOS",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MARKETING_VERSION = "$(MARKETING_VERSION)";
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wlvpn.macos.consumervpn.network-extension";
@@ -1385,6 +1396,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
+				TVOS_DEPLOYMENT_TARGET = 17.0;
 			};
 			name = Release;
 		};
@@ -1419,13 +1431,14 @@
 				INFOPLIST_KEY_CFBundleDisplayName = OpenVPNNetworkExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2021 WLVPN Inc. All rights reserved.";
 				INFOPLIST_KEY_NSSystemExtensionUsageDescription = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MARKETING_VERSION = "$(MARKETING_VERSION)";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -1450,6 +1463,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_UPCOMING_FEATURE_NONISOLATED_NONSENDING_BY_DEFAULT = NO;
 				SWIFT_VERSION = 5.0;
+				TVOS_DEPLOYMENT_TARGET = 17.0;
 			};
 			name = Debug;
 		};
@@ -1484,13 +1498,14 @@
 				INFOPLIST_KEY_CFBundleDisplayName = OpenVPNNetworkExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2021 WLVPN Inc. All rights reserved.";
 				INFOPLIST_KEY_NSSystemExtensionUsageDescription = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MARKETING_VERSION = "$(MARKETING_VERSION)";
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wlvpn.macos.consumervpn.openvpnextension;
@@ -1511,6 +1526,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_UPCOMING_FEATURE_NONISOLATED_NONSENDING_BY_DEFAULT = NO;
 				SWIFT_VERSION = 5.0;
+				TVOS_DEPLOYMENT_TARGET = 17.0;
 			};
 			name = Release;
 		};

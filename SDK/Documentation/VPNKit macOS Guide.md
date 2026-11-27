@@ -5,7 +5,7 @@ The framework provides APIs to login, fetch servers, backup data in a database, 
 
 ## Table of contents
 
-1. [Integrating VPNKit framework](#integrating-vpnkit-framework)
+1. [Integrating VPNKit framework](#integrating-vpnKit-framework)
 2. [Project Settings](#project-settings)
     1. [Signing](#signing)
     2. [Capabilities](#capabilities)
@@ -29,9 +29,9 @@ The framework provides APIs to login, fetch servers, backup data in a database, 
 
 
 # `Integrating VPNKit framework`
-1. Copy the VPNKit SDKs (`VPNKit`, `VPNV3APIAdapter`) from macOS or XCFrameworks to the SDK folder of the project.
+1. Copy the VPNKit SDKs (VPNKit, VPNV3APIAdapter) from macOS or XCFrameworks to the SDK folder of the project.
     
-2. Copy the VPNKit Network Extension adapter SDKs (`VPKWireGuardAdapter`, `VPKWireGuardExtension`, `VPKOpenVPNAdapter`, `VPKOpenVPNNetworkExtension`) from macOS or XCFrameworks to the SDK folder of the project.
+2. Copy the VPNKitNetworkExtensionAdapters SDKs (VPKWireGuardAdapter, VPKWireGuardExtension) from macOS or XCFrameworks to the SDK folder of the project.
 
 - You can find the VPNKit changelog in its subfolder.
 
@@ -81,7 +81,6 @@ An initialized `VPNAPIManager` object for various API and connection adapter set
 ```swift
 import VPNKit
 import VPNV3APIAdapter
-import VPKWireGuardAdapter
 import VPKOpenVPNAdapter
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -124,7 +123,7 @@ func login(username : String, password: String) {
 ### 2. Fetching the servers
 ```swift
 // Fetch all of the cities from the APIManager
-fetchedCities = apiManager.fetchAllCities() 
+let fetchedCities = apiManager.fetchAllCities() 
 ```
 
 > Refer: [Fetch](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/Fetch.md)
@@ -168,7 +167,8 @@ extension VPNManager: VPNConfigurationStatusReporting {
 
 
  **NOTE:**
-- If selected protocol is WireGuard or OpenVPN, check the corresponding **System Extension** is installed or pending approval.
+- If selected protocol is Wireguard, check **WireGuard System Extension** is installed or not.
+- If selected protocol is OpenVPN, check **Priviledge Helper** is installed or not.
 
 > Refer: [APIManager](https://github.com/wlvpn/ConsumerVPN-macOS/blob/main/SDK/Documentation/APIManager.md)
 
@@ -192,6 +192,7 @@ The user can connect and disconnect using the API.
 - You can select the vpn server by setting the VPN configuration either by country, city or server from the available server list.
 - If all the server properties (country, city, and server) are left nil, then the api manager would choose the optimal location for connection.
 - Before connecting, you can check for the validity of the user by `apiManager.activeUser`
+
 ```swift
     if apiManager.activeUser {
         apiManager.vpnConfiguration.country = nil
